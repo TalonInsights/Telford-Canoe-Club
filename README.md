@@ -1,36 +1,31 @@
 # Telford Canoe Club — Website
 
-Static site, no build step. Vercel serves the repo root as-is.
-
-## Current state
-
-A holding page (`index.html`) is live while the real site is built. `robots.txt`
-blocks indexing and the page carries `noindex` — both need flipping at launch.
+Next.js 16 (App Router, TypeScript strict) + Tailwind v4 + Supabase + PayPal +
+Resend. Built to `docs/TCC-BUILD-SPEC-v2.0.md`; progress in `STATUS.md`;
+working rules in `CLAUDE.md`.
 
 ## Stack
 
-| Piece    | Choice                                      |
-| -------- | ------------------------------------------- |
-| Hosting  | Vercel (`talon-insights` team)              |
-| Repo     | `TalonInsights/Telford-Canoe-Club`, `main`  |
-| Build    | None — static files from the repo root      |
-| Framework preset | Other                               |
+| Piece | Choice |
+|---|---|
+| Hosting | Vercel (`talon-insights` team → transfers to the club at P13-01) |
+| Repo | `TalonInsights/Telford-Canoe-Club`, `main` auto-deploys |
+| Framework | Next.js 16, App Router, server components by default |
+| Styling | Tailwind CSS v4 mapped to `--tcc-*` tokens |
+| Backend | Supabase (Postgres, Auth, Storage) — pending account decision, see STATUS.md |
+| Payments | PayPal Checkout (Orders v2) + webhooks |
+| Email | Resend |
 
-Every push to `main` deploys to production. Pull requests get preview URLs.
-
-## Local preview
+## Local dev
 
 ```bash
-python -m http.server 3030
+pnpm install
+pnpm dev
 ```
 
-Then open <http://localhost:3030>.
+Serves on <http://localhost:3030>. Also: `pnpm typecheck`, `pnpm lint`,
+`pnpm build`, `pnpm test`, `pnpm contrast`.
 
-## Launch checklist
-
-- [ ] Replace the holding page with the real site
-- [ ] Remove `<meta name="robots" content="noindex, nofollow">` from `index.html`
-- [ ] Open `robots.txt` up to crawlers and add the `Sitemap:` line
-- [ ] Add `sitemap.xml` (a header rule for it is already in `vercel.json`)
-- [ ] Add page rewrites to `vercel.json` if the site becomes multi-route
-- [ ] Point the club's domain at the Vercel project
+Environment: copy `.env.example` → `.env.local` and fill in. Secrets never
+reach git or the client bundle; `SUPABASE_SERVICE_ROLE_KEY` and
+`PAYPAL_CLIENT_SECRET` are server-only.
