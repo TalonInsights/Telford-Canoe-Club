@@ -1,0 +1,4 @@
+# Site is a holding page while the real site is built.
+# At launch: swap to "Allow: /" and add the Sitemap line back in.
+User-agent: *
+Disallow: /

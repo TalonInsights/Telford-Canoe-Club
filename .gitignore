@@ -1,0 +1,11 @@
+# Secrets
+.env
+.env.*
+*.key
+*.pem
+
+# Tooling
+node_modules/
+.vercel/
+.DS_Store
+Thumbs.db
