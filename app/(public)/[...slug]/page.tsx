@@ -1,14 +1,13 @@
 import Link from 'next/link'
 
-import { Footer } from '@/components/layout/footer'
-import { Header } from '@/components/layout/header'
 import { PageHero } from '@/components/layout/page-hero'
 import { Button } from '@/components/ui/button'
 
 /**
- * HOME-06 (prep) — shared placeholder so no home-page link 404s while the
- * real routes are built. Each real route that lands takes precedence over
- * this catch-all automatically; delete the file once the site map is done.
+ * HOME-06 — shared placeholder so no home-page link 404s while the real
+ * routes are built. Each real route that lands takes precedence over this
+ * catch-all automatically; delete the file once the site map is done.
+ * Chrome (header/skip link/footer) comes from the (public) layout.
  */
 
 export const dynamic = 'force-static'
@@ -25,16 +24,12 @@ export default async function PlaceholderPage({
 
   return (
     <>
-      <Header />
-      <main id="main">
-        <PageHero title={title || 'Coming soon'} intro="This page is being built." />
-        <div className="mx-auto w-full max-w-[1200px] px-4 py-section-tight md:px-6">
-          <Button asChild variant="secondary">
-            <Link href="/">Back to the home page</Link>
-          </Button>
-        </div>
-      </main>
-      <Footer />
+      <PageHero title={title || 'Coming soon'} intro="This page is being built." />
+      <div className="mx-auto w-full max-w-[1200px] px-4 py-section-tight md:px-6">
+        <Button asChild variant="secondary">
+          <Link href="/">Back to the home page</Link>
+        </Button>
+      </div>
     </>
   )
 }
