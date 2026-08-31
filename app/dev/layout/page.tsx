@@ -1,5 +1,7 @@
 import { Container } from '@/components/layout/container'
+import { Footer } from '@/components/layout/footer'
 import { CentredColumn, FullGrid, Split75 } from '@/components/layout/grids'
+import { Header } from '@/components/layout/header'
 import { PageHero } from '@/components/layout/page-hero'
 import { Section } from '@/components/layout/section'
 import { ImageFallback } from '@/components/site/image-fallback'
@@ -28,8 +30,10 @@ function DummyCard({ i }: { i: number }) {
 
 export default function LayoutDemo() {
   return (
-    <main>
-      <PageHero
+    <>
+      <Header />
+      <main>
+        <PageHero
         title="Layout proving ground"
         intro="Every §3.4 section shape with mismatched content, 1–8 items, at 375, 768 and 1280. Removed before launch (P12-02)."
       />
@@ -97,14 +101,16 @@ export default function LayoutDemo() {
         </div>
       </Section>
 
-      <footer className="bg-foam py-8">
-        <Container>
-          <p className="text-micro text-ink-muted">
-            Audit: section edges align to this container; tones alternate; last rows balanced;
-            sibling image boxes share one ratio; no text block over 68ch.
-          </p>
-        </Container>
-      </footer>
-    </main>
+        <div className="bg-foam py-8">
+          <Container>
+            <p className="text-micro text-ink-muted">
+              Audit: section edges align to this container; tones alternate; last rows balanced;
+              sibling image boxes share one ratio; no text block over 68ch.
+            </p>
+          </Container>
+        </div>
+      </main>
+      <Footer />
+    </>
   )
 }

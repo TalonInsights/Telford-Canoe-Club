@@ -23,3 +23,6 @@ are overridden by the `--tcc-*` tokens in P0-03 regardless of preset.
 
 Verification (P0-04): all primitives rendered with default/disabled/checked/loading
 states on `/dev/ui`; axe (wcag2a+2aa+21aa+22aa) → **0 violations**, 31 rule passes.
+
+| Header + MobileNav | https://21st.dev/@shadcnblockscom/components/shadcnblocks-com-navbar1 (live search "sticky navbar with mobile sheet drawer"; runners-up: Navbar 5 same author 21/25; rejected: Floating Header — floating not solid; Adaptive Notch — gimmick) | shadcnblocks | MIT | 4/4/4/4/5 = 21 | Rebuilt on TCC primitives: deep solid sticky bar, signal active underline + `aria-current`, Next `Link`/`usePathname`, radix Sheet drawer (focus trap verified: focus moves in, Escape closes), 44px targets, CTA slot, sentence case; dropdown layer dropped (nav is flat until CMS nav in P7-05) |
+| Footer | https://21st.dev/@mvp_Subha/components/footer-column (live search "simple footer three columns"; rejected: solaceui Footer 3 — newsletter form; Stacked Circular — social-only; Sticky Footer — animated gimmick) | mvp_Subha | MIT | 3/3/4/3/5 = 18 | Rebuilt: deep tone, stone secondary text (10.8:1), address + Paddle UK affiliation + policy links, role alias email only, 36px link targets |
