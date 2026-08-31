@@ -61,7 +61,7 @@ export function HomeHero({
         className="object-cover object-[70%_center] md:object-center"
       />
       <motion.div
-        className="absolute inset-0 bg-deep/65"
+        className="tcc-reveal-guarantee absolute inset-0 bg-deep/65"
         aria-hidden="true"
         {...(animate
           ? {
@@ -73,11 +73,11 @@ export function HomeHero({
       />
       <Container className="relative z-10 pb-14 md:pb-20">
         <div className="max-w-[40rem] lg:w-2/3">
-          <motion.h1 {...rise(0)}>{title}</motion.h1>
-          <motion.p className="mt-4 max-w-[68ch] text-lg text-stone" {...rise(0.1)}>
+          <motion.h1 className="tcc-reveal-guarantee" {...rise(0)}>{title}</motion.h1>
+          <motion.p className="tcc-reveal-guarantee mt-4 max-w-[68ch] text-lg text-stone" {...rise(0.1)}>
             {intro}
           </motion.p>
-          <motion.div className="mt-7 flex flex-wrap gap-3" {...rise(0.15)}>
+          <motion.div className="tcc-reveal-guarantee mt-7 flex flex-wrap gap-3" {...rise(0.15)}>
             <Button asChild variant="signal" size="lg">
               <Link href={primary.href}>{primary.label}</Link>
             </Button>

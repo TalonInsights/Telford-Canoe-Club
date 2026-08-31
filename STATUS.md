@@ -29,7 +29,16 @@ Spec: `docs/TCC-BUILD-SPEC-v2.0.md` · Validation: `docs/SPEC-VALIDATION.md` · 
 - [x] P0-24 DateTime/Money helpers — 7 vitest tests pass incl. BST wall-clock assertions
 - [x] P0-25 not-found/error/loading — branded 404 with nav, retryable error page, layout-matched skeletons
 - [x] P0-26 lib/supabase clients written (browser/server/admin+server-only/middleware); cloud project + generated types BLOCKED: Supabase account-ownership decision (see Questions)
-- [ ] P0-27 Vercel linked, preview deploys, env vars
+- [x] P0-27 Vercel linked (framework switched Other→nextjs via vercel.json); push→production verified live twice; PR previews are on by default; env vars deferred — every secret-bearing service (Supabase/PayPal/Resend) is still account-blocked
+
+**Phase 0 exit (31 Aug 2026):** 26 of 27 tasks fully ticked; P0-26 split (code ✓ / cloud project BLOCKED).
+`pnpm build` green. `docs/components.md` covers every §3.6 row (21 primitives + 17 blocks, all
+sourced via live 21st search, all MIT). axe 0 violations on /dev/ui (23 blocks). Balance audit
+passed mechanically at 375/768/1280. Lighthouse mobile on the production deployment: **home
+95/98/96/100** (LCP 2.9s — P2-01 tightens to <2.5s); /dev/ui 90 perf — the kitchen-sink page
+carries every client bundle at once and is deleted at P12-02; its one a11y fail (heading order)
+fixed same day. Hero reveal: rAF paths code-verified + CSS reveal-guarantee added and
+wiring-verified; visual play-through needs a foreground browser — first item of Phase 2 QA.
 
 ## Phase 1 — Database schema, RLS, seed
 - [ ] P1-01 enums · [ ] P1-02 profiles+triggers · [ ] P1-03 membership_periods · [ ] P1-04 memberships · [ ] P1-05 membership_members · [ ] P1-06 views · [ ] P1-07 role/member functions · [ ] P1-08 events/bookings/media · [ ] P1-09 documents · [ ] P1-10 pages/posts · [ ] P1-11 committee_roles/notices · [ ] P1-12 segments · [ ] P1-13 email tables · [ ] P1-14 audit_log · [ ] P1-15 import_batches · [ ] P1-16 storage buckets · [ ] P1-17 RLS harness · [ ] P1-18 seed

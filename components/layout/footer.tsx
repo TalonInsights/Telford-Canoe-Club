@@ -34,7 +34,7 @@ const policies = [
 function FooterColumn({ title, links }: { title: string; links: { title: string; href: string }[] }) {
   return (
     <nav aria-label={title}>
-      <h4 className="text-white">{title}</h4>
+      <h2 className="text-lg text-white">{title}</h2>
       <ul className="mt-3 space-y-1">
         {links.map((l) => (
           <li key={l.href}>

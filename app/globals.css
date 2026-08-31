@@ -180,6 +180,24 @@
   }
 }
 
+/*
+ * Reveal guarantee for the framer-driven hero (§3.7): framer inlines
+ * opacity 0 at SSR, then animates via requestAnimationFrame. If rAF never
+ * runs (background tab, JS failure), the content must not stay invisible —
+ * this animation outranks the inline style and snaps everything visible
+ * shortly after the orchestrated reveal would have finished. In the normal
+ * path framer completes first and this is a no-op.
+ */
+@keyframes tcc-reveal-guarantee {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.tcc-reveal-guarantee {
+  animation: tcc-reveal-guarantee 1ms linear 1.4s forwards;
+}
+
 @layer base {
   * {
     @apply border-border;
