@@ -1,7 +1,25 @@
 'use client'
 
-import { CalendarDays, Check, CircleAlert, Info, LifeBuoy } from 'lucide-react'
+import {
+  CalendarDays,
+  Check,
+  CircleAlert,
+  FileText,
+  Home,
+  Info,
+  LifeBuoy,
+  Mail,
+  Users,
+} from 'lucide-react'
 import { toast } from 'sonner'
+
+import { StatCard } from '@/components/admin/stat-card'
+import { CommitteeGrid } from '@/components/site/committee-grid'
+import { FaqAccordion } from '@/components/site/faq-accordion'
+import { PricingTiers } from '@/components/site/pricing-tiers'
+import { Timeline } from '@/components/site/timeline'
+import { EmptyState } from '@/components/ui/empty-state'
+import { Stepper } from '@/components/ui/stepper'
 
 import {
   Accordion,
@@ -361,6 +379,114 @@ export default function UiGallery() {
             <Skeleton className="h-11 w-40" />
             <Skeleton className="size-11 rounded-full" />
           </div>
+        </Block>
+
+        <Block title="PricingTiers">
+          <PricingTiers
+            tiers={[
+              {
+                name: 'Single adult',
+                pricePence: 2500,
+                description: 'For paddlers aged 18 and over.',
+                features: ['All club sessions', 'Club boats and kit', 'Members-only documents'],
+                href: '/register',
+                cta: 'Join as an adult',
+              },
+              {
+                name: 'Single junior',
+                pricePence: 1500,
+                description: 'Under 18, with a parent or guardian on record.',
+                features: ['All junior sessions', 'Club boats and kit', 'Coaching support'],
+                href: '/register',
+                cta: 'Join as a junior',
+              },
+              {
+                name: 'Family',
+                pricePence: 4000,
+                description: 'Everyone in one household.',
+                features: ['All club sessions', 'Club boats and kit', 'One renewal for everyone'],
+                href: '/register',
+                cta: 'Join as a family',
+              },
+            ]}
+          />
+        </Block>
+
+        <Block title="FaqAccordion">
+          <FaqAccordion
+            title="Common questions"
+            intro="Single-open accordion, two-column at desktop."
+            faqs={[
+              {
+                question: 'Do I need my own kayak?',
+                answer: 'No — club boats and paddles are available for members at every session.',
+              },
+              {
+                question: 'When does membership run to?',
+                answer: 'Every membership runs to 31 December, whenever you join.',
+              },
+            ]}
+          />
+        </Block>
+
+        <Block title="CommitteeGrid — holder and vacant variants">
+          <CommitteeGrid
+            roles={[
+              { roleTitle: 'Chair', holderName: 'Simon Wiles' },
+              { roleTitle: 'Welfare officer', holderName: null },
+              { roleTitle: 'Treasurer', holderName: null },
+              { roleTitle: 'Secretary', holderName: null },
+            ]}
+          />
+        </Block>
+
+        <Block title="Stepper — register → tier → pay">
+          <Stepper steps={['Create account', 'Choose tier', 'Pay']} current={1} />
+        </Block>
+
+        <Block title="StatCard">
+          <div className="grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <StatCard label="Paid members" value={84} icon={Users} hint="Across all tiers" />
+            <StatCard
+              label="Expiring in 30 days"
+              value={12}
+              icon={CircleAlert}
+              tone="warn"
+              hint="Renewals due"
+            />
+            <StatCard
+              label="Unpaid registrations"
+              value={7}
+              icon={Mail}
+              tone="signal"
+              hint="Never paid"
+            />
+            <StatCard label="Documents due review" value={3} icon={FileText} />
+          </div>
+        </Block>
+
+        <Block title="Timeline">
+          <Timeline
+            entries={[
+              { marker: '1960s', title: 'A hut below the Black Swan' },
+              {
+                marker: '1987',
+                title: 'The Jackfield lease',
+                description: 'Army reserves built the roads, parking, toilets and containers.',
+              },
+              { marker: 'Today', title: '40 national slaloms and counting' },
+            ]}
+          />
+        </Block>
+
+        <Block title="EmptyState">
+          <EmptyState
+            icon={Home}
+            title="Nothing scheduled"
+            description="Check back soon, or join the club to hear first."
+            action={<Button variant="secondary">See membership</Button>}
+            className="w-full"
+          />
         </Block>
       </div>
       <Toaster />
