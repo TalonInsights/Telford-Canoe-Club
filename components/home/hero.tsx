@@ -48,7 +48,7 @@ export function Hero() {
       {/* Gradient, not a flat wash: the photo stays legible up top while the
           text zone at the foot keeps AA contrast for white type. */}
       <motion.div
-        className="tcc-reveal-guarantee absolute inset-0 bg-gradient-to-t from-deep/90 via-deep/40 to-deep/15"
+        className="tcc-reveal-guarantee absolute inset-0 bg-gradient-to-t from-deep/95 via-deep/70 via-45% to-deep/10"
         aria-hidden="true"
         {...(animate
           ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.4 } }
