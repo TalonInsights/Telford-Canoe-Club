@@ -9,7 +9,7 @@ Spec: `docs/TCC-BUILD-SPEC-v2.0.md` · Validation: `docs/SPEC-VALIDATION.md` · 
 - [x] P0-04 shadcn primitives tokenised on /dev/ui — axe 0 violations (fixed tabs inactive contrast)
 - [x] P0-05 Layout system on /dev/layout — mechanical audit at 375/768/1280: every row full, equal heights, one left edge, no h-scroll; 7-item case = 4+3 span-balanced
 - [x] P0-06 Header + MobileNav — sourced (shadcnblocks navbar1, logged), drawer focus-trap + Escape verified, signal underline, aria-current
-- [ ] P0-07 Footer
+- [x] P0-07 Footer — sourced (mvp_Subha footer-column, logged); role aliases only, no personal addresses
 - [ ] P0-08 HomeHero
 - [ ] P0-09 SportCard/NewsCard/EventCard (one anatomy)
 - [ ] P0-10 PricingTiers
