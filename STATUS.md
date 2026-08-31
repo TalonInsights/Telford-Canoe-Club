@@ -12,20 +12,20 @@ Spec: `docs/TCC-BUILD-SPEC-v2.0.md` · Validation: `docs/SPEC-VALIDATION.md` · 
 - [x] P0-07 Footer — sourced (mvp_Subha footer-column, logged); role aliases only, no personal addresses
 - [x] P0-08 HomeHero — sourced+logged; svh heights fixed, reveal-once flag, reduced-motion; rAF-starved pane can’t play animations — visual QA deferred to deployed URL
 - [x] P0-09 Cards — one anatomy, equal heights proven with mismatched copy at 375/1280
-- [ ] P0-10 PricingTiers
-- [ ] P0-11 FaqAccordion
-- [ ] P0-12 CommitteeGrid
+- [x] P0-10 PricingTiers — sourced+logged, on /dev/ui
+- [x] P0-11 FaqAccordion — sourced+logged, on /dev/ui
+- [x] P0-12 CommitteeGrid — sourced+logged, vacant variant, on /dev/ui
 - [ ] P0-13 EventCalendar
 - [ ] P0-14 DatePicker/DateTimePicker
 - [ ] P0-15 FileUpload
 - [ ] P0-16 ImageGallery
 - [ ] P0-17 DataTable
-- [ ] P0-18 StatCard
-- [ ] P0-19 AdminSidebar + BottomTabBar
-- [ ] P0-20 EmptyState
-- [ ] P0-21 Stepper
+- [x] P0-18 StatCard — sourced+logged, tabular nums, on /dev/ui
+- [x] P0-19 AdminSidebar + BottomTabBar — sourced+logged (used by members/admin shells in P3-06)
+- [x] P0-20 EmptyState — sourced+logged, min-height rule, on /dev/ui
+- [x] P0-21 Stepper — sourced+logged, aria-current step, on /dev/ui
 - [ ] P0-22 SignInForm/SignUpForm
-- [ ] P0-23 Timeline
+- [x] P0-23 Timeline — sourced+logged, static, on /dev/ui
 - [x] P0-24 DateTime/Money helpers — 7 vitest tests pass incl. BST wall-clock assertions
 - [ ] P0-25 not-found/error/loading
 - [ ] P0-26 Supabase project + lib/supabase + types
