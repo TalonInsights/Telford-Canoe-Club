@@ -1,11 +1,23 @@
+import { Footer } from '@/components/layout/footer'
+import { Header } from '@/components/layout/header'
+import { HomeHero } from '@/components/site/home-hero'
+
 export default function Home() {
   return (
-    <main className="mx-auto flex w-full max-w-[1200px] grow flex-col items-start justify-center gap-4 px-4 py-section">
-      <h1>Paddle the Severn with Telford Canoe Club</h1>
-      <p className="max-w-[68ch] text-ink-muted">
-        Whitewater kayaking, freestyle and paddleboarding at Jackfield Rapids, Ironbridge. The new
-        club website is being built — this page becomes the full home page in Phase 2.
-      </p>
-    </main>
+    <>
+      <Header />
+      <main>
+        <HomeHero
+          title="Paddle the Severn with Telford Canoe Club"
+          intro="Whitewater kayaking, freestyle and paddleboarding from our own rapids at Jackfield, in the Ironbridge gorge."
+          image="/images/placeholders/hero-jackfield.jpg"
+          imageAlt="Looking down on the River Severn rapids at Jackfield with kayakers on the water"
+          primary={{ label: 'Join the club', href: '/join' }}
+          secondary={{ label: "See what's on", href: '/events' }}
+        />
+        <div className="py-section" aria-hidden="true" />
+      </main>
+      <Footer />
+    </>
   )
 }

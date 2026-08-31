@@ -10,8 +10,8 @@ Spec: `docs/TCC-BUILD-SPEC-v2.0.md` · Validation: `docs/SPEC-VALIDATION.md` · 
 - [x] P0-05 Layout system on /dev/layout — mechanical audit at 375/768/1280: every row full, equal heights, one left edge, no h-scroll; 7-item case = 4+3 span-balanced
 - [x] P0-06 Header + MobileNav — sourced (shadcnblocks navbar1, logged), drawer focus-trap + Escape verified, signal underline, aria-current
 - [x] P0-07 Footer — sourced (mvp_Subha footer-column, logged); role aliases only, no personal addresses
-- [ ] P0-08 HomeHero
-- [ ] P0-09 SportCard/NewsCard/EventCard (one anatomy)
+- [x] P0-08 HomeHero — sourced+logged; svh heights fixed, reveal-once flag, reduced-motion; rAF-starved pane can’t play animations — visual QA deferred to deployed URL
+- [x] P0-09 Cards — one anatomy, equal heights proven with mismatched copy at 375/1280
 - [ ] P0-10 PricingTiers
 - [ ] P0-11 FaqAccordion
 - [ ] P0-12 CommitteeGrid
