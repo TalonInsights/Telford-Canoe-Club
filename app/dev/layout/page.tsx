@@ -1,7 +1,11 @@
+import { Check } from 'lucide-react'
+
 import { Container } from '@/components/layout/container'
 import { Footer } from '@/components/layout/footer'
 import { CentredColumn, FullGrid, Split75 } from '@/components/layout/grids'
 import { Header } from '@/components/layout/header'
+import { EventCard, NewsCard, SportCard } from '@/components/site/cards'
+import { Badge } from '@/components/ui/badge'
 import { PageHero } from '@/components/layout/page-hero'
 import { Section } from '@/components/layout/section'
 import { ImageFallback } from '@/components/site/image-fallback'
@@ -56,6 +60,41 @@ export default function LayoutDemo() {
           </Section>
         )
       })}
+
+      <Section
+        tone="foam"
+        spacing="tight"
+        title="One card anatomy, three types, mismatched copy"
+        intro="SportCard, NewsCard, EventCard share the §3.4 anatomy — equal heights hold."
+      >
+        <FullGrid maxColumns={3}>
+          <SportCard
+            href="/paddlesports/whitewater-kayaking"
+            title="Whitewater kayaking"
+            summary="Short."
+          />
+          <NewsCard
+            href="/news/example"
+            title="Freestyle coaching at Jackfield with a visiting GB squad paddler"
+            summary="A much longer summary that will clamp at two lines whatever the committee writes, keeping the meta row and footer aligned across the row."
+            category="Coaching"
+            date="9 August 2025"
+          />
+          <EventCard
+            href="/events/example"
+            title="Club evening paddle"
+            summary="Water levels dependent."
+            category="Club night"
+            when="Thursday 5:30–9pm"
+            location="Jackfield Rapids"
+            status={
+              <Badge variant="success">
+                <Check /> Booking open
+              </Badge>
+            }
+          />
+        </FullGrid>
+      </Section>
 
       <Section
         tone="deep"
