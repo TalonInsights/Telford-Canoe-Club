@@ -37,11 +37,12 @@ export default async function JoinPage() {
         intro={`${settings.membershipYearLabel} · the same price whenever you join`}
       >
         <PricingTiers
+          yearNote={settings.membershipYearLabel}
           tiers={[
             {
               name: 'Single adult',
               pricePence: adult.pricePence,
-              description: 'Annual membership for paddlers aged 18 and over.',
+              description: 'For paddlers aged 18 and over.',
               features: ['All club sessions', 'Club boats and kit while you learn', 'Members-only area and notices'],
               href: '/register?tier=adult',
               cta: 'Join as an adult',

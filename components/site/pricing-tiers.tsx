@@ -22,7 +22,13 @@ export type PricingTier = {
   cta: string
 }
 
-export function PricingTiers({ tiers }: { tiers: PricingTier[] }) {
+export function PricingTiers({
+  tiers,
+  yearNote = 'Annual membership',
+}: {
+  tiers: PricingTier[]
+  yearNote?: string
+}) {
   return (
     <FullGrid maxColumns={3}>
       {tiers.map((tier) => (
@@ -38,7 +44,7 @@ export function PricingTiers({ tiers }: { tiers: PricingTier[] }) {
             </span>
             <span className="text-sm text-ink-muted"> / year</span>
           </p>
-          <p className="text-micro text-ink-muted">Runs to 31 December</p>
+          <p className="text-micro text-ink-muted">{yearNote}</p>
           <ul className="mt-5 space-y-2.5">
             {tier.features.map((f) => (
               <li key={f} className="flex items-start gap-2 text-sm">
