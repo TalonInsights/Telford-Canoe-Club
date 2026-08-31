@@ -76,7 +76,7 @@ export function Hero() {
               size="lg"
               className="border border-white/40 bg-white/10 text-white hover:bg-white/20"
             >
-              <Link href="/sessions">When we paddle</Link>
+              <Link href="/events">When we paddle</Link>
             </Button>
           </motion.div>
         </div>

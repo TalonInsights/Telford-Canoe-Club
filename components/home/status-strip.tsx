@@ -12,7 +12,8 @@ import Link from 'next/link'
 import { Container } from '@/components/layout/container'
 import { formatDateShort, formatTime } from '@/lib/format'
 import { getRiverLevel } from '@/lib/river-level'
-import { getNextOnSite, getSiteSettings } from '@/lib/site-data'
+import { getClubSettings } from '@/lib/queries/settings'
+import { getUpcomingEvents } from '@/lib/queries/events'
 import { cn } from '@/lib/utils'
 
 function Cell({
@@ -70,9 +71,12 @@ function Cell({
 }
 
 export async function StatusStrip() {
-  const settings = getSiteSettings()
-  const next = getNextOnSite()
-  const level = await getRiverLevel()
+  const [settings, upcoming, level] = await Promise.all([
+    getClubSettings(),
+    getUpcomingEvents(1),
+    getRiverLevel(),
+  ])
+  const next = upcoming[0] ?? null
 
   return (
     <div className="border-b border-stone bg-card">
@@ -109,14 +113,14 @@ export async function StatusStrip() {
             label="Rapid today"
             value="See river levels"
             detail="What the gauge means for the water"
-            href="/the-site/river-levels"
+            href="/venue/river-levels"
           />
           {next ? (
             <Cell
               icon={CalendarDays}
               label="Next on site"
               value={next.title}
-              detail={formatDateShort(next.startsAt)}
+              detail={formatDateShort(next.starts_at)}
               href={`/events/${next.slug}`}
             />
           ) : (

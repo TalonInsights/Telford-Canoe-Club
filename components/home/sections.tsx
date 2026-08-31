@@ -47,7 +47,7 @@ export function Anomaly() {
           the way.
         </p>
         <Button asChild variant="secondary" className="mt-6">
-          <Link href="/the-site">More about the site</Link>
+          <Link href="/venue">More about the site</Link>
         </Button>
       </Split75>
     </Section>
@@ -121,7 +121,7 @@ export function TheRapid() {
           level in the strip above comes straight from it, updated through the day.
         </p>
         <Button asChild variant="secondary" className="mt-6">
-          <Link href="/the-site/river-levels">Reading the river levels</Link>
+          <Link href="/venue/river-levels">Reading the river levels</Link>
         </Button>
       </Split75>
     </Section>
@@ -176,7 +176,7 @@ export function Sessions() {
       intro="Regular sessions through the year, shaped by the seasons and the river."
       action={
         <Button asChild variant="secondary">
-          <Link href="/sessions">Session details</Link>
+          <Link href="/events">Session details</Link>
         </Button>
       }
     >

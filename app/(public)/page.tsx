@@ -11,25 +11,25 @@ import {
   WhatsOn,
 } from '@/components/home/sections'
 import { StatusStrip } from '@/components/home/status-strip'
-import {
-  getFacilities,
-  getLatestPosts,
-  getSiteSettings,
-  getSportCards,
-  getUpcomingEvents,
-} from '@/lib/site-data'
+import { getUpcomingEvents } from '@/lib/queries/events'
+import { getClubSettings } from '@/lib/queries/settings'
+import { getFacilities, getLatestPosts, getSportCards } from '@/lib/site-data'
 
 /** Static with 15-minute revalidation — the EA level refreshes on the same cycle. */
 export const revalidate = 900
 
 export default async function HomePage() {
-  const [settings, facilities, sports, events, posts] = await Promise.all([
-    getSiteSettings(),
-    getFacilities(),
-    getSportCards(),
-    getUpcomingEvents(3),
-    getLatestPosts(3),
-  ])
+  const [settings, rawEvents] = await Promise.all([getClubSettings(), getUpcomingEvents(3)])
+  const facilities = getFacilities()
+  const sports = getSportCards()
+  const posts = getLatestPosts(3)
+  const events = rawEvents.map((e) => ({
+    slug: e.slug,
+    title: e.title,
+    category: e.category,
+    startsAt: e.starts_at,
+    location: e.location_name,
+  }))
 
   return (
     <>

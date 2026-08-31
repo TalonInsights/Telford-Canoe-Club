@@ -97,7 +97,15 @@ export function Header({ items = siteNav, cta }: { items?: NavItem[]; cta?: Reac
             ))}
           </nav>
 
-          <div className="hidden items-center gap-2 lg:flex">{cta ?? defaultCta}</div>
+          <div className="hidden items-center gap-2 lg:flex">
+            <Link
+              href="/login"
+              className="flex min-h-11 items-center px-2 text-sm font-medium text-white/90 hover:text-white"
+            >
+              Log in
+            </Link>
+            {cta ?? defaultCta}
+          </div>
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>

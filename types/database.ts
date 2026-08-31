@@ -50,6 +50,48 @@ export type Database = {
         }
         Relationships: []
       }
+      club_settings: {
+        Row: {
+          bank_payment_note: string
+          created_at: string
+          id: boolean
+          membership_year_label: string
+          price_adult_pence: number
+          price_family_pence: number
+          price_junior_pence: number
+          show_unconfirmed: boolean
+          site_status: string
+          site_status_note: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          bank_payment_note?: string
+          created_at?: string
+          id?: boolean
+          membership_year_label?: string
+          price_adult_pence?: number
+          price_family_pence?: number
+          price_junior_pence?: number
+          show_unconfirmed?: boolean
+          site_status?: string
+          site_status_note?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          bank_payment_note?: string
+          created_at?: string
+          id?: boolean
+          membership_year_label?: string
+          price_adult_pence?: number
+          price_family_pence?: number
+          price_junior_pence?: number
+          show_unconfirmed?: boolean
+          site_status?: string
+          site_status_note?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       committee_roles: {
         Row: {
           contact_email: string | null
@@ -1262,6 +1304,13 @@ export type Database = {
       membership_covers: {
         Args: { mid: string; uid: string }
         Returns: boolean
+      }
+      request_membership: {
+        Args: {
+          p_family_names?: string[]
+          p_tier: Database["public"]["Enums"]["membership_tier"]
+        }
+        Returns: string
       }
       set_user_role: {
         Args: {

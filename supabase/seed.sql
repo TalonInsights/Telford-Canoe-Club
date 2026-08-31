@@ -6,21 +6,18 @@
 -- site-images bucket once local storage credentials exist; the paths used
 -- here already follow the §9 naming.
 
-delete from committee_roles where role_title in
-  ('Chair','Secretary','Treasurer','Membership secretary','Welfare officer',
-   'Coaching lead','Site and equipment','Social');
+delete from committee_roles;
 delete from events where slug in ('club-evening-paddle','pool-session','freestyle-session');
 delete from posts where slug in ('paddle-uk-club-membership','tcc-committee');
 
-insert into committee_roles (role_title, holder_display_name, contact_email, sort_order, description) values
-  ('Chair', 'Simon Wiles', 'committee@telfordcanoeclub.co.uk', 1, 'Leads the committee and represents the club.'),
-  ('Secretary', null, 'committee@telfordcanoeclub.co.uk', 2, 'Minutes, correspondence and club records.'),
-  ('Treasurer', null, 'committee@telfordcanoeclub.co.uk', 3, 'Club finances, membership payments and PayPal.'),
-  ('Membership secretary', null, 'membership@telfordcanoeclub.co.uk', 4, 'Keeps the member register and renewals.'),
-  ('Welfare officer', null, 'committee@telfordcanoeclub.co.uk', 5, 'Safeguarding and junior members.'),
-  ('Coaching lead', null, 'committee@telfordcanoeclub.co.uk', 6, 'Coaching programme and courses.'),
-  ('Site and equipment', null, 'committee@telfordcanoeclub.co.uk', 7, 'Jackfield site, containers, boats and kit.'),
-  ('Social', null, 'committee@telfordcanoeclub.co.uk', 8, 'Socials, BBQs and the annual dinner.');
+-- The real 2026 committee (from April), per the club's committee page.
+insert into committee_roles (role_title, holder_display_name, sort_order, description) values
+  ('Chairman', 'Simon Wiles', 1, 'Leads the committee and represents the club.'),
+  ('Treasurer', 'Josh Smyth', 2, 'Club finances and membership payments.'),
+  ('Secretary', 'Bek Farley-Brown', 3, 'Minutes, correspondence and club records.'),
+  ('Membership secretary', 'Susanna Smyth', 4, 'The member register, renewals and Paddle UK affiliation.'),
+  ('Committee member', 'David Allen', 5, 'General committee duties and site management.'),
+  ('Freestyle champion', 'Simon Wyndham', 6, 'Freestyle coaching, workshops and the club''s freestyle programme.');
 
 insert into events (slug, title, summary, category, location_name, location_address,
                     starts_at, ends_at, visibility, status, water_level_dependent,
