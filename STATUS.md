@@ -47,6 +47,11 @@ wiring-verified; visual play-through needs a foreground browser — first item o
 
 **Phase 1 exit (31 Aug 2026):** cloud project `tcc-website` (`ruxtoklrnijuijfupfvj`, AWS eu-west-2/London) created on the user's Supabase org per their instruction. All 16 migrations applied; `types/database.ts` generated from the live schema. Migrations were applied via the dashboard's SQL API in the user's session — no DB password or service key ever passed through tooling; the DB password was generated in-browser and discarded (reset from the dashboard if direct psql access is ever needed).
 
+## Home page package (TCC-HOME-CLAUDE-CODE-BRIEF.md, 31 Aug 2026)
+- [ ] HOME-01 drop in home page · [ ] HOME-02 environment · [ ] HOME-03 content wiring · [ ] HOME-04 client-gated switches · [ ] HOME-05 images · [ ] HOME-06 placeholder route · [ ] HOME-07 verification
+- **BLOCKED: `tcc-home.zip` not received** — the brief arrived alone; `tcc-home.zip`, `TCC-HOME-PAGE-v1.0.md` and `TCC-BUILD-SPEC-v2.2.md` are not on this machine (searched Downloads/Desktop/Documents). Prep done without ticking: EA env vars added to `.env.example`/`.env.local`; shared `(public)/[...slug]` placeholder route created (kills dead home links AND the Phase-0 prefetch-404 console noise).
+- Integration deltas to reconcile at install (this repo is further along than the brief assumes): Next 16 not 15 · dev port 3030 not 3000 · Supabase Phase 1 is LIVE (site-data getters can swap to real queries once the anon key is pasted) · existing tokenised `components/ui/button.tsx` vs zip `Button` (Windows case-insensitive collision) · existing Header/Footer/layout/globals from Phase 0 to merge per brief §1.2 · repo docs carry spec v2.0 — v2.2 referenced but not supplied.
+
 ## Phase 2 — Public site
 - [ ] P2-01 hero · [ ] P2-02 three sports · [ ] P2-03 events strip · [ ] P2-04 news · [ ] P2-05 venue strip · [ ] P2-06 join CTA · [ ] P2-07 /paddlesports · [ ] P2-08 whitewater · [ ] P2-09 freestyle · [ ] P2-10 SUP · [ ] P2-11 /about · [ ] P2-12 committee · [ ] P2-13 role-descriptions · [ ] P2-14 policies · [ ] P2-15 privacy · [ ] P2-16 /venue · [ ] P2-17 /events · [ ] P2-18 event detail · [ ] P2-19 news pages · [ ] P2-20 /join · [ ] P2-21 /contact · [ ] P2-22 CMS route · [ ] P2-23 metadata/sitemap/robots
 
