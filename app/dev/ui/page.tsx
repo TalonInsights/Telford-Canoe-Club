@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from 'react'
+
 import {
   CalendarDays,
   Check,
@@ -13,8 +15,16 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 
+import { type ColumnDef } from '@tanstack/react-table'
+
+import { DataTable, exportCsv, selectionColumn } from '@/components/admin/data-table'
 import { StatCard } from '@/components/admin/stat-card'
+import { SignInForm, SignUpForm } from '@/components/site/auth-forms'
 import { CommitteeGrid } from '@/components/site/committee-grid'
+import { EventCalendar } from '@/components/site/event-calendar'
+import { ImageGallery } from '@/components/site/image-gallery'
+import { DatePicker, DateTimePicker } from '@/components/ui/date-picker'
+import { FileUpload } from '@/components/ui/file-upload'
 import { FaqAccordion } from '@/components/site/faq-accordion'
 import { PricingTiers } from '@/components/site/pricing-tiers'
 import { Timeline } from '@/components/site/timeline'
@@ -99,6 +109,43 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+
+type DemoMember = { name: string; tier: string; status: string; paid: string }
+
+const demoMembers: DemoMember[] = [
+  { name: 'S. Wiles', tier: 'Adult', status: 'Active', paid: '£25' },
+  { name: 'J. Rapids', tier: 'Family', status: 'Expiring soon', paid: '£40' },
+  { name: 'A. Weir', tier: 'Junior', status: 'Active', paid: '£15' },
+]
+
+const demoColumns: ColumnDef<DemoMember>[] = [
+  selectionColumn<DemoMember>(),
+  { accessorKey: 'name', header: 'Name' },
+  { accessorKey: 'tier', header: 'Tier' },
+  { accessorKey: 'status', header: 'Status' },
+  { accessorKey: 'paid', header: 'Paid' },
+]
+
+function fakeUpload(_file: File, onProgress: (pct: number) => void): Promise<void> {
+  return new Promise((resolve) => {
+    let pct = 0
+    const t = setInterval(() => {
+      pct += 20
+      onProgress(Math.min(pct, 100))
+      if (pct >= 100) {
+        clearInterval(t)
+        resolve()
+      }
+    }, 150)
+  })
+}
+
+const nextThursday = (() => {
+  const d = new Date()
+  d.setDate(d.getDate() + ((4 - d.getDay() + 7) % 7 || 7))
+  d.setHours(17, 30, 0, 0)
+  return d
+})()
 
 function Swatch({ name, cls, hex }: { name: string; cls: string; hex: string }) {
   return (
@@ -488,8 +535,110 @@ export default function UiGallery() {
             className="w-full"
           />
         </Block>
+        <Block title="EventCalendar — month grid, mobile list under 640px">
+          <div className="w-full">
+            <EventCalendar
+              events={[
+                {
+                  id: '1',
+                  slug: 'club-evening-paddle',
+                  title: 'Club evening paddle',
+                  category: 'club_night',
+                  startsAt: nextThursday,
+                },
+                {
+                  id: '2',
+                  slug: 'pool-session',
+                  title: 'Pool session',
+                  category: 'pool',
+                  startsAt: new Date(+nextThursday + 3 * 86400000),
+                },
+              ]}
+            />
+          </div>
+        </Block>
+
+        <Block title="DatePicker and DateTimePicker">
+          <DatePickerDemo />
+        </Block>
+
+        <Block title="FileUpload — simulated 20MB image uploads">
+          <FileUpload accept={['image/jpeg', 'image/png', 'image/webp']} upload={fakeUpload} />
+        </Block>
+
+        <Block title="ImageGallery — lightbox + click-to-load video tile">
+          <div className="w-full">
+            <ImageGallery
+              items={[
+                {
+                  kind: 'image',
+                  src: '/images/placeholders/hero-jackfield.jpg',
+                  alt: 'Jackfield Rapids from above',
+                  caption: 'Jackfield Rapids',
+                },
+                {
+                  kind: 'video',
+                  embedUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                  title: 'Freestyle session highlights',
+                },
+              ]}
+            />
+          </div>
+        </Block>
+
+        <Block title="DataTable — sort, select, CSV export">
+          <div className="w-full">
+            <DataTable
+              columns={demoColumns}
+              data={demoMembers}
+              countLabel={(n) => `${n} members`}
+              bulkActions={(rows) => (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() =>
+                    exportCsv(
+                      'members.csv',
+                      rows.map((r) => ({ ...r }))
+                    )
+                  }
+                >
+                  Export CSV
+                </Button>
+              )}
+            />
+          </div>
+        </Block>
+
+        <Block title="SignInForm">
+          <SignInForm
+            onPassword={async (v) => {
+              toast.success(`Would log in ${v.email}`)
+            }}
+            onMagicLink={async (v) => {
+              toast.success(`Would email a link to ${v.email}`)
+            }}
+          />
+        </Block>
+
+        <Block title="SignUpForm — junior fields appear from date of birth">
+          <SignUpForm onSubmit={async (v) => {
+              toast.success(`Would register ${v.email}`)
+            }} />
+        </Block>
       </div>
       <Toaster />
     </main>
+  )
+}
+
+function DatePickerDemo() {
+  const [date, setDate] = useState<Date | undefined>()
+  const [when, setWhen] = useState<Date | undefined>()
+  return (
+    <div className="grid w-full max-w-md gap-4">
+      <DatePicker value={date} onChange={setDate} />
+      <DateTimePicker value={when} onChange={setWhen} />
+    </div>
   )
 }
