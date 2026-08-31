@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     template: '%s — Telford Canoe Club',
   },
   description:
-    'Whitewater kayaking, freestyle and paddleboarding on the River Severn at Jackfield Rapids, Ironbridge.',
+    'The club with its own stretch of the Severn — whitewater kayaking, freestyle and paddleboarding from our gated site at Jackfield Rapids, Ironbridge.',
 }
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {

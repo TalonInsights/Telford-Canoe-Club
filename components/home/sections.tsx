@@ -38,8 +38,8 @@ export function Anomaly() {
         <p>
           The Severn runs broad and quiet through most of Shropshire — then squeezes into the
           Ironbridge gorge and breaks into white water at Jackfield. That accident of geography
-          gives a landlocked county something rare: a paddleable rapid with a gate, a car park
-          and a club behind it.
+          gives a landlocked county something almost no club can offer: a paddleable rapid its
+          members can call their own — gate, bank and car park included.
         </p>
         <p className="mt-4 text-ink-muted">
           Telford Canoe Club has paddled this stretch since the 1960s and has held the lease at
@@ -240,7 +240,7 @@ export function KeepingSiteOpen() {
     <Section
       tone="deep"
       title="A club that keeps its own gate open"
-      intro="No staff, no landlord to call — just members. Membership fees and volunteer hands are what keep the water reachable."
+      intro="Having our own stretch of river is what makes this club special — and it stays ours because members keep it so. Membership fees and volunteer hands are what hold the lease and keep the gate open."
     >
       <div className="flex flex-wrap gap-3">
         <Button asChild variant="signal">

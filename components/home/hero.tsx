@@ -45,8 +45,10 @@ export function Hero() {
         sizes="100vw"
         className="object-cover object-[40%_center]"
       />
+      {/* Gradient, not a flat wash: the photo stays legible up top while the
+          text zone at the foot keeps AA contrast for white type. */}
       <motion.div
-        className="tcc-reveal-guarantee absolute inset-0 bg-deep/65"
+        className="tcc-reveal-guarantee absolute inset-0 bg-gradient-to-t from-deep/90 via-deep/40 to-deep/15"
         aria-hidden="true"
         {...(animate
           ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.4 } }
@@ -55,14 +57,15 @@ export function Hero() {
       <Container className="relative z-10 pb-14 md:pb-20">
         <div className="max-w-[40rem] lg:w-2/3">
           <motion.h1 className="tcc-reveal-guarantee" {...rise(0)}>
-            Paddle the Severn with Telford Canoe Club
+            Your own stretch of the Severn
           </motion.h1>
           <motion.p
             className="tcc-reveal-guarantee mt-4 max-w-[68ch] text-lg text-stone"
             {...rise(0.1)}
           >
-            A volunteer-run club with its own rapid at Jackfield, in the Ironbridge gorge —
-            whitewater, freestyle and paddleboarding from our own gated riverside site.
+            That&apos;s what makes Telford Canoe Club different: our own gated site and our own
+            rapid at Jackfield, in the Ironbridge gorge. Join, and this water is yours to
+            paddle — whitewater, freestyle and paddleboarding included.
           </motion.p>
           <motion.div className="tcc-reveal-guarantee mt-7 flex flex-wrap gap-3" {...rise(0.15)}>
             <Button asChild variant="signal" size="lg">
