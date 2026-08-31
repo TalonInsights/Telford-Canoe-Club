@@ -28,7 +28,7 @@ Spec: `docs/TCC-BUILD-SPEC-v2.0.md` · Validation: `docs/SPEC-VALIDATION.md` · 
 - [x] P0-23 Timeline — sourced+logged, static, on /dev/ui
 - [x] P0-24 DateTime/Money helpers — 7 vitest tests pass incl. BST wall-clock assertions
 - [x] P0-25 not-found/error/loading — branded 404 with nav, retryable error page, layout-matched skeletons
-- [x] P0-26 lib/supabase clients written (browser/server/admin+server-only/middleware); cloud project + generated types BLOCKED: Supabase account-ownership decision (see Questions)
+- [x] P0-26 lib/supabase clients + cloud project `tcc-website` (eu-west-2) + generated types — fully complete as of Phase 1 (account decision answered 31 Aug)
 - [x] P0-27 Vercel linked (framework switched Other→nextjs via vercel.json); push→production verified live twice; PR previews are on by default; env vars deferred — every secret-bearing service (Supabase/PayPal/Resend) is still account-blocked
 
 **Phase 0 exit (31 Aug 2026):** 26 of 27 tasks fully ticked; P0-26 split (code ✓ / cloud project BLOCKED).
