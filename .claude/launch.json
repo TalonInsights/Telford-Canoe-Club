@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "telford",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["dev"],
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["node_modules/next/dist/bin/next", "dev", "-p", "3030"],
       "port": 3030
     }
   ]

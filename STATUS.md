@@ -5,7 +5,7 @@ Spec: `docs/TCC-BUILD-SPEC-v2.0.md` · Validation: `docs/SPEC-VALIDATION.md` · 
 ## Phase 0 — Scaffold, tokens, component sourcing, shell
 - [x] P0-01 Init Next + TS strict + Tailwind v4 + pnpm; ESLint/Prettier; CLAUDE.md; STATUS.md; .env.example; design-decisions — `pnpm build` passes (Next 16.3.3, React 19.2.8, Tailwind v4, TS strict)
 - [x] P0-02 shadcn init (radix base, CSS vars, neutral); 21st via connected MCP (live search verified); docs/components.md created
-- [ ] P0-03 Fonts + tokens + contrast script
+- [x] P0-03 Fonts + tokens + contrast script — 20 pairs pass; h1 Bricolage 44px on foam verified in browser
 - [ ] P0-04 shadcn primitives tokenised (Button → Table, spec order) on /dev/ui
 - [ ] P0-05 Container/Section/PageHero + FullGrid/Split75/CentredColumn + useBalancedColumns on /dev/layout
 - [ ] P0-06 Header + MobileNav
