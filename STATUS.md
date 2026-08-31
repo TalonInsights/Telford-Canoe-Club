@@ -26,7 +26,7 @@ Spec: `docs/TCC-BUILD-SPEC-v2.0.md` · Validation: `docs/SPEC-VALIDATION.md` · 
 - [ ] P0-21 Stepper
 - [ ] P0-22 SignInForm/SignUpForm
 - [ ] P0-23 Timeline
-- [ ] P0-24 DateTime/Money helpers + unit tests
+- [x] P0-24 DateTime/Money helpers — 7 vitest tests pass incl. BST wall-clock assertions
 - [ ] P0-25 not-found/error/loading
 - [ ] P0-26 Supabase project + lib/supabase + types
 - [ ] P0-27 Vercel linked, preview deploys, env vars
