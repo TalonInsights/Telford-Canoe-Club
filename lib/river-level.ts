@@ -33,9 +33,13 @@ type EAReading = {
 
 async function eaFetch<T>(path: string): Promise<T | null> {
   try {
+    // Hard per-call timeout: a hanging EA API once took the whole static
+    // build down with it (three 60s prerender attempts). Never throw — and
+    // never hang: the strip's fallback renders, and ISR retries in 15 min.
     const res = await fetch(`${API}${path}`, {
       next: { revalidate: REVALIDATE },
       headers: { accept: 'application/json' },
+      signal: AbortSignal.timeout(4000),
     })
     if (!res.ok) return null
     return (await res.json()) as T
