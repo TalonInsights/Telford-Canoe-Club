@@ -161,7 +161,7 @@ function Swatch({ name, cls, hex }: { name: string; cls: string; hex: string }) 
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section aria-label={title} className="rounded-xl border border-stone bg-card p-6">
-      <h3 className="mb-4">{title}</h3>
+      <h2 className="mb-4 text-xl">{title}</h2>
       <div className="flex flex-wrap items-center gap-3">{children}</div>
     </section>
   )

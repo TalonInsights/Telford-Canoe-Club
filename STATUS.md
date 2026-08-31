@@ -91,3 +91,10 @@ Spec: `docs/TCC-BUILD-SPEC-v2.0.md` · Validation: `docs/SPEC-VALIDATION.md` · 
 
 ## Blocked
 - P0-26 (cloud project + generated types): BLOCKED on the Supabase account decision above. Code scaffolding proceeds.
+
+## Environment notes
+- The embedded browser pane starves requestAnimationFrame, so framer-motion
+  animation completion can only be verified on the deployed URL in a real
+  browser; initial/target values and reduced-motion gating are code-reviewed
+  and typed. Lighthouse is likewise run against the production deployment,
+  not `next dev`.
