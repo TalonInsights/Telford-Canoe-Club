@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Static assets are not source — includes the dev-only axe runner copy.
+    "public/**",
   ]),
 ]);
 

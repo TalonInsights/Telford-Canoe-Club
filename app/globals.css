@@ -90,6 +90,10 @@
   --font-heading: var(--font-bricolage);
   --font-mono: ui-monospace, monospace;
 
+  /* §3.3 micro step — 13px, the floor; small (14px) is Tailwind's text-sm */
+  --text-micro: 0.8125rem;
+  --text-micro--line-height: 1.4;
+
   /* tcc-* utility colours (bg-deep, text-ink, border-stone, …) */
   --color-deep: var(--tcc-deep);
   --color-river: var(--tcc-river);

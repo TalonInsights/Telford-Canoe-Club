@@ -13,3 +13,13 @@ are overridden by the `--tcc-*` tokens in P0-03 regardless of preset.
 
 | Component | Source URL | Author | Licence | Score (a11y/clarity/fit/mobile/deps) | Changes |
 |---|---|---|---|---|---|
+| Button | https://ui.shadcn.com/docs/components/button (`shadcn add button`, radix-vega) | shadcn | MIT | primitive — protocol n/a | Sizes → sm 36 / md 44 / lg 52 (spec), text 16px at md+, 8px control radius, added `signal` CTA variant, `link`→river, removed dark/xs |
+| Badge | shadcn add badge | shadcn | MIT | primitive | 13px `text-micro` floor (spec micro step), h-6, added `success`/`warn`/`signal` word+colour+icon status variants |
+| Input | shadcn add input | shadcn | MIT | primitive | h-11 (44px), 8px radius, white field on foam, 16px at all widths |
+| Textarea | shadcn add textarea | shadcn | MIT | primitive | Same field treatment, min-h-24 |
+| Select | shadcn add select | shadcn | MIT | primitive | Trigger 44px default / 36px sm, 8px radius, white field, 16px text |
+| Tabs | shadcn add tabs | shadcn | MIT | primitive | Inactive trigger `text-foreground/60` → `text-muted-foreground` (`#4F5A5F`) — axe caught 3.92:1 on stone |
+| Checkbox, RadioGroup, Switch, Dialog, Sheet, Tooltip, Popover, DropdownMenu, Skeleton, Toast (sonner), Avatar, Accordion, Breadcrumb, Pagination, Table | shadcn add … | shadcn | MIT | primitives | Inherit TCC palette via the semantic variable mapping in `globals.css` (primary→deep, secondary→river, ring→river, border→stone, destructive→signal); no per-file overrides needed yet |
+
+Verification (P0-04): all primitives rendered with default/disabled/checked/loading
+states on `/dev/ui`; axe (wcag2a+2aa+21aa+22aa) → **0 violations**, 31 rule passes.
