@@ -27,8 +27,8 @@ Spec: `docs/TCC-BUILD-SPEC-v2.0.md` · Validation: `docs/SPEC-VALIDATION.md` · 
 - [x] P0-22 SignInForm/SignUpForm — RHF+Zod, §3.5 pattern, junior guardian path, on /dev/ui
 - [x] P0-23 Timeline — sourced+logged, static, on /dev/ui
 - [x] P0-24 DateTime/Money helpers — 7 vitest tests pass incl. BST wall-clock assertions
-- [ ] P0-25 not-found/error/loading
-- [ ] P0-26 Supabase project + lib/supabase + types
+- [x] P0-25 not-found/error/loading — branded 404 with nav, retryable error page, layout-matched skeletons
+- [x] P0-26 lib/supabase clients written (browser/server/admin+server-only/middleware); cloud project + generated types BLOCKED: Supabase account-ownership decision (see Questions)
 - [ ] P0-27 Vercel linked, preview deploys, env vars
 
 ## Phase 1 — Database schema, RLS, seed
