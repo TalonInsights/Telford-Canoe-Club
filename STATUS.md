@@ -7,7 +7,7 @@ Spec: `docs/TCC-BUILD-SPEC-v2.0.md` · Validation: `docs/SPEC-VALIDATION.md` · 
 - [x] P0-02 shadcn init (radix base, CSS vars, neutral); 21st via connected MCP (live search verified); docs/components.md created
 - [x] P0-03 Fonts + tokens + contrast script — 20 pairs pass; h1 Bricolage 44px on foam verified in browser
 - [x] P0-04 shadcn primitives tokenised on /dev/ui — axe 0 violations (fixed tabs inactive contrast)
-- [ ] P0-05 Container/Section/PageHero + FullGrid/Split75/CentredColumn + useBalancedColumns on /dev/layout
+- [x] P0-05 Layout system on /dev/layout — mechanical audit at 375/768/1280: every row full, equal heights, one left edge, no h-scroll; 7-item case = 4+3 span-balanced
 - [ ] P0-06 Header + MobileNav
 - [ ] P0-07 Footer
 - [ ] P0-08 HomeHero

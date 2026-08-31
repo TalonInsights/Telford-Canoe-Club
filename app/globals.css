@@ -150,6 +150,36 @@
   --spacing-title-gap: var(--space-title-gap);
 }
 
+/*
+ * §3.4 Full-grid engine. Track and span counts are computed by
+ * balancedColumns() and handed over as CSS variables by <FullGrid>; items in
+ * a short last row carry their own wider --gi-* span so no row is ever short.
+ * 1 column below 640px, 2-col balance to 1024px, max-col balance above.
+ */
+.tcc-fullgrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 16px;
+}
+@media (min-width: 640px) {
+  .tcc-fullgrid {
+    grid-template-columns: repeat(var(--g-tracks-sm, 2), minmax(0, 1fr));
+  }
+  .tcc-fullgrid > * {
+    grid-column: span var(--gi-sm, var(--g-span-sm, 1)) / span var(--gi-sm, var(--g-span-sm, 1));
+  }
+}
+@media (min-width: 1024px) {
+  .tcc-fullgrid {
+    grid-template-columns: repeat(var(--g-tracks-lg, 3), minmax(0, 1fr));
+    gap: 24px;
+  }
+  .tcc-fullgrid > * {
+    grid-column: span var(--gi-lg, var(--g-span-lg, 1)) / span var(--gi-lg, var(--g-span-lg, 1));
+  }
+}
+
 @layer base {
   * {
     @apply border-border;
