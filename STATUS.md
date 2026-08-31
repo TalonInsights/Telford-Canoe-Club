@@ -41,7 +41,11 @@ fixed same day. Hero reveal: rAF paths code-verified + CSS reveal-guarantee adde
 wiring-verified; visual play-through needs a foreground browser — first item of Phase 2 QA.
 
 ## Phase 1 — Database schema, RLS, seed
-- [ ] P1-01 enums · [ ] P1-02 profiles+triggers · [ ] P1-03 membership_periods · [ ] P1-04 memberships · [ ] P1-05 membership_members · [ ] P1-06 views · [ ] P1-07 role/member functions · [ ] P1-08 events/bookings/media · [ ] P1-09 documents · [ ] P1-10 pages/posts · [ ] P1-11 committee_roles/notices · [ ] P1-12 segments · [ ] P1-13 email tables · [ ] P1-14 audit_log · [ ] P1-15 import_batches · [ ] P1-16 storage buckets · [ ] P1-17 RLS harness · [ ] P1-18 seed
+- [x] P1-01 enums · [x] P1-02 profiles+triggers (signup, email-sync, role guard) · [x] P1-03 membership_periods (2025 past + 2026 current) · [x] P1-04 memberships (+promotion trigger) · [x] P1-05 membership_members · [x] P1-06 views (definer, self-gated — Decision 7) · [x] P1-07 helpers + set_user_role · [x] P1-08 events/bookings/media · [x] P1-09 documents · [x] P1-10 pages/posts (+reserved-slug constraint) · [x] P1-11 committee_roles/notices · [x] P1-12 segments (8 system) · [x] P1-13 email tables · [x] P1-14 audit_log + audit() · [x] P1-15 import_batches · [x] P1-16 storage (4 buckets, 16 policies)
+- [x] P1-17 RLS harness — **52/52 assertions pass** on the live DB (jwt-claim impersonation across anon/registered/member/committee/admin; caught and fixed a memberships↔membership_members policy recursion). `supabase/tests/rls-harness.sql`; `pnpm test:rls` runner comes with CI wiring.
+- [x] P1-18 seed — 8 committee roles (Chair = Simon Wiles placeholder), 3 events, 2 posts committed; dataset browsable. *Placeholder image upload into `site-images` pending the anon key paste (user-held credential) — carried into Phase 2 prep.*
+
+**Phase 1 exit (31 Aug 2026):** cloud project `tcc-website` (`ruxtoklrnijuijfupfvj`, AWS eu-west-2/London) created on the user's Supabase org per their instruction. All 16 migrations applied; `types/database.ts` generated from the live schema. Migrations were applied via the dashboard's SQL API in the user's session — no DB password or service key ever passed through tooling; the DB password was generated in-browser and discarded (reset from the dashboard if direct psql access is ever needed).
 
 ## Phase 2 — Public site
 - [ ] P2-01 hero · [ ] P2-02 three sports · [ ] P2-03 events strip · [ ] P2-04 news · [ ] P2-05 venue strip · [ ] P2-06 join CTA · [ ] P2-07 /paddlesports · [ ] P2-08 whitewater · [ ] P2-09 freestyle · [ ] P2-10 SUP · [ ] P2-11 /about · [ ] P2-12 committee · [ ] P2-13 role-descriptions · [ ] P2-14 policies · [ ] P2-15 privacy · [ ] P2-16 /venue · [ ] P2-17 /events · [ ] P2-18 event detail · [ ] P2-19 news pages · [ ] P2-20 /join · [ ] P2-21 /contact · [ ] P2-22 CMS route · [ ] P2-23 metadata/sitemap/robots
@@ -91,15 +95,18 @@ wiring-verified; visual play-through needs a foreground browser — first item o
 4. **`is_junior` computed in views/functions**, not a stored generated column — volatile `now()` is invalid there and would go stale. (§1.2)
 5. **§9 images: use un-suffixed originals** — full-size exists for every LOW-RES suspect; elided filename resolved. (§2)
 6. **Split 7/5 text cells get inner `max-width: 68ch`** to satisfy audit rule ⑤. (§6)
+7. **`current_members`/`membership_history` are security-definer views, self-gated** (`is_current_member(auth.uid()) OR has_role(auth.uid(),'committee')`; history committee-only) — the spec's security-invoker view cannot satisfy its own §5.4 matrix. (SPEC-VALIDATION §1.4)
+8. **Membership policy cross-references go through definer helpers** (`membership_covers`, `is_membership_payer`) — direct policy-to-policy references recurse infinitely; caught by the P1-17 harness.
 
 ## Defects found
 - (validation) Five spec defects logged in `docs/SPEC-VALIDATION.md` §1; fixes folded into Decisions above; §5.4 member-name visibility resolved at P1-06.
 
 ## Questions for Talon
-- P0-26/P13-01: which account owns the dev Supabase project (Talon dev then transfer, or club org from day one)? Blocking only the cloud project, not the code.
+- ~~P0-26/P13-01: Supabase account~~ — answered 31 Aug: user's own org for now, transfer at P13-01.
 
 ## Blocked
-- P0-26 (cloud project + generated types): BLOCKED on the Supabase account decision above. Code scaffolding proceeds.
+- ~~P0-26~~ resolved 31 Aug — project created, types generated.
+- P1-18 image upload + local `pnpm dev` against live data: waiting on the anon key being pasted into `.env.local` (see the file's comment for the exact dashboard page).
 
 ## Environment notes
 - The embedded browser pane starves requestAnimationFrame, so framer-motion
