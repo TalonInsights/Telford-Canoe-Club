@@ -56,6 +56,7 @@ export type Database = {
           created_at: string
           id: boolean
           membership_year_label: string
+          payment_provider: string
           price_adult_pence: number
           price_family_pence: number
           price_junior_pence: number
@@ -69,6 +70,7 @@ export type Database = {
           created_at?: string
           id?: boolean
           membership_year_label?: string
+          payment_provider?: string
           price_adult_pence?: number
           price_family_pence?: number
           price_junior_pence?: number
@@ -82,6 +84,7 @@ export type Database = {
           created_at?: string
           id?: boolean
           membership_year_label?: string
+          payment_provider?: string
           price_adult_pence?: number
           price_family_pence?: number
           price_junior_pence?: number
@@ -1280,6 +1283,27 @@ export type Database = {
       }
     }
     Functions: {
+      abandon_online_payment: {
+        Args: { p_order_ref: string }
+        Returns: undefined
+      }
+      admin_create_membership: {
+        Args: {
+          p_activate?: boolean
+          p_amount_pence?: number
+          p_family_names?: string[]
+          p_note?: string
+          p_period_id: string
+          p_source: Database["public"]["Enums"]["payment_source"]
+          p_tier: Database["public"]["Enums"]["membership_tier"]
+          p_user_id: string
+        }
+        Returns: string
+      }
+      admin_extend_membership: {
+        Args: { p_membership_id: string; p_note?: string }
+        Returns: string
+      }
       audit: {
         Args: {
           p_action: string
@@ -1290,6 +1314,14 @@ export type Database = {
           p_ip?: string
         }
         Returns: undefined
+      }
+      begin_online_payment: {
+        Args: { p_membership_id: string; p_order_ref: string }
+        Returns: undefined
+      }
+      complete_online_payment: {
+        Args: { p_capture_ref: string; p_order_ref: string }
+        Returns: string
       }
       has_role: {
         Args: { min: Database["public"]["Enums"]["app_role"]; uid: string }
@@ -1308,10 +1340,12 @@ export type Database = {
       request_membership: {
         Args: {
           p_family_names?: string[]
+          p_period_id?: string
           p_tier: Database["public"]["Enums"]["membership_tier"]
         }
         Returns: string
       }
+      run_expiry_sweep: { Args: never; Returns: Json }
       set_user_role: {
         Args: {
           new_role: Database["public"]["Enums"]["app_role"]
@@ -1358,12 +1392,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -1387,11 +1421,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -1412,11 +1446,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -1437,11 +1471,11 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -1454,11 +1488,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
