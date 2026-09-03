@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Bricolage_Grotesque, Figtree } from 'next/font/google'
 import './globals.css'
+import { Toaster } from '@/components/ui/sonner'
 import { cn } from '@/lib/utils'
 
 const bricolage = Bricolage_Grotesque({
@@ -26,7 +27,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en-GB" className={cn('h-full antialiased', bricolage.variable, figtree.variable)}>
-      <body className="flex min-h-full flex-col font-sans">{children}</body>
+      <body className="flex min-h-full flex-col font-sans">
+        {children}
+        <Toaster position="top-center" richColors closeButton />
+      </body>
     </html>
   )
 }

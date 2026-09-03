@@ -91,7 +91,6 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Toaster } from '@/components/ui/sonner'
 import { Switch } from '@/components/ui/switch'
 import {
   Table,
@@ -627,7 +626,6 @@ export default function UiGallery() {
             }} />
         </Block>
       </div>
-      <Toaster />
     </main>
   )
 }

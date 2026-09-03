@@ -13,7 +13,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -144,7 +144,10 @@ export function SignUpForm({ onSubmit }: { onSubmit: (values: SignUpValues) => P
     defaultValues: { acceptRules: false, acceptRisk: false, acceptPrivacy: false },
   })
   const { errors, isSubmitting } = form.formState
-  const dob = form.watch('dateOfBirth')
+  // useWatch (a real subscription hook) rather than form.watch — the latter's
+  // return value is a React Compiler stale-UI hazard, and this one gates the
+  // junior guardian fields appearing.
+  const dob = useWatch({ control: form.control, name: 'dateOfBirth' })
   const junior = !!dob && isJuniorDob(dob)
 
   const err = (k: keyof SignUpValues) => errors[k]?.message as string | undefined
@@ -245,16 +248,24 @@ export function SignUpForm({ onSubmit }: { onSubmit: (values: SignUpValues) => P
           ] as const
         ).map(([name, label]) => (
           <div key={name} className="grid gap-1">
-            <label className="flex min-h-11 items-center gap-2.5 text-sm">
-              <Checkbox
-                checked={form.watch(name)}
-                aria-invalid={!!errors[name]}
-                onCheckedChange={(v) =>
-                  form.setValue(name, !!v, { shouldValidate: form.formState.isSubmitted })
-                }
-              />
-              {label}
-            </label>
+            {/* Controller (not bare form.watch) so the checkbox re-renders on
+                change — form.watch's value is a React Compiler stale-UI hazard
+                when read straight into a memoised child. */}
+            <Controller
+              control={form.control}
+              name={name}
+              render={({ field }) => (
+                <label className="flex min-h-11 items-center gap-2.5 text-sm">
+                  <Checkbox
+                    checked={field.value === true}
+                    aria-invalid={!!errors[name]}
+                    onBlur={field.onBlur}
+                    onCheckedChange={(v) => field.onChange(v === true)}
+                  />
+                  {label}
+                </label>
+              )}
+            />
             {errors[name]?.message && (
               <p className="text-sm text-signal" role="alert">
                 {errors[name]?.message}
