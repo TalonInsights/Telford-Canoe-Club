@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import { CancelMembershipButton } from '@/components/admin/cancel-membership'
+import { ExtendMembershipButton, MarkRefundedButton } from '@/components/admin/membership-tools'
 import { RecordPaymentButton } from '@/components/admin/record-payment'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -96,6 +97,7 @@ export default async function MemberRecordPage({ params }: { params: Promise<{ i
                   </div>
                   <p className="mt-1 text-micro text-ink-muted">
                     {m.paid_at ? `Paid ${formatDate(m.paid_at)} · ${m.source.replace('manual_', '')}` : 'Not paid'}
+                    {m.paypal_capture_id && <> · ref {m.paypal_capture_id}</>}
                     {m.covered.length > 1 && <> · covers {m.covered.join(', ')}</>}
                     {m.notes && <> · {m.notes}</>}
                   </p>
@@ -107,8 +109,20 @@ export default async function MemberRecordPage({ params }: { params: Promise<{ i
                         amountPence={m.amount_pence}
                       />
                     )}
+                    {m.status === 'active' && (
+                      <ExtendMembershipButton
+                        membershipId={m.id}
+                        memberName={`${profile.first_name} ${profile.last_name}`}
+                      />
+                    )}
                     {(m.status === 'pending' || m.status === 'active') && (
                       <CancelMembershipButton
+                        membershipId={m.id}
+                        memberName={`${profile.first_name} ${profile.last_name}`}
+                      />
+                    )}
+                    {m.status === 'active' && m.paid_at && m.amount_pence > 0 && (
+                      <MarkRefundedButton
                         membershipId={m.id}
                         memberName={`${profile.first_name} ${profile.last_name}`}
                       />
