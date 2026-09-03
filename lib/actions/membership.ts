@@ -4,9 +4,18 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 
 import { requireRole, getSession } from '@/lib/auth/guards'
+import { sendMembershipActivatedEmails } from '@/lib/email/membership'
 import { isSupabaseConfigured, NOT_CONFIGURED_MESSAGE } from '@/lib/supabase/configured'
 import { createClient } from '@/lib/supabase/server'
 import type { ActionResult } from '@/lib/actions/auth'
+
+const sourceLabel: Record<string, string> = {
+  manual_bank: 'bank transfer',
+  manual_cash: 'cash',
+  complimentary: 'complimentary membership',
+  paypal: 'card',
+  imported: 'imported record',
+}
 
 const tierSchema = z.enum(['adult', 'junior', 'family'])
 
@@ -88,6 +97,32 @@ export async function recordPaymentAction(
     p_before: { status: before.status },
     p_after: { status: 'active', source: parsed.data.source },
   })
+
+  // P4-06: the manual path sends the same notifications as an online payment
+  // (silently skipped until the Resend key exists).
+  const [{ data: payer }, { data: period }] = await Promise.all([
+    supabase
+      .from('profiles')
+      .select('first_name, last_name, email')
+      .eq('user_id', before.primary_user_id)
+      .maybeSingle(),
+    supabase
+      .from('membership_periods')
+      .select('label')
+      .eq('id', before.period_id)
+      .maybeSingle(),
+  ])
+  if (payer) {
+    await sendMembershipActivatedEmails({
+      memberEmail: payer.email,
+      memberName: `${payer.first_name ?? ''} ${payer.last_name ?? ''}`.trim(),
+      tierLabel: before.tier.charAt(0).toUpperCase() + before.tier.slice(1),
+      periodLabel: period?.label ?? '',
+      amountPence: before.amount_pence,
+      method: sourceLabel[parsed.data.source] ?? parsed.data.source,
+    })
+  }
+
   revalidatePath('/admin/members')
   return { ok: true, message: 'Payment recorded — membership is now active' }
 }
@@ -127,6 +162,122 @@ export async function cancelMembershipAction(
   })
   revalidatePath('/admin/members')
   return { ok: true, message: 'Membership cancelled' }
+}
+
+const refundSchema = z.object({
+  membershipId: z.uuid(),
+  note: z.string().trim().min(3, 'Say where the refund was issued').max(500),
+})
+
+/**
+ * P4-07 — mark refunded (note only): the money moves in the provider's own
+ * dashboard (or back over the counter); this records the outcome. With real
+ * PayPal the webhook confirms it automatically — this is the manual twin.
+ */
+export async function markRefundedAction(
+  input: z.infer<typeof refundSchema>
+): Promise<ActionResult> {
+  await requireRole('committee')
+  const parsed = refundSchema.safeParse(input)
+  if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message ?? 'Invalid' }
+
+  const supabase = await createClient()
+  const { data: before } = await supabase
+    .from('memberships')
+    .select('status, notes')
+    .eq('id', parsed.data.membershipId)
+    .maybeSingle()
+  if (!before) return { ok: false, message: 'Membership not found' }
+  if (before.status === 'refunded') return { ok: false, message: 'Already marked refunded' }
+
+  const { error } = await supabase
+    .from('memberships')
+    .update({ status: 'refunded', notes: parsed.data.note })
+    .eq('id', parsed.data.membershipId)
+  if (error) return { ok: false, message: error.message }
+
+  await supabase.rpc('audit', {
+    p_action: 'membership.refunded',
+    p_entity: 'memberships',
+    p_entity_id: parsed.data.membershipId,
+    p_before: { status: before.status },
+    p_after: { status: 'refunded', note: parsed.data.note },
+  })
+  revalidatePath('/admin/members')
+  return { ok: true, message: 'Marked refunded' }
+}
+
+const extendSchema = z.object({
+  membershipId: z.uuid(),
+  note: z.string().trim().max(500).optional(),
+})
+
+/** P4-07 — goodwill extension into the next period (active, complimentary, £0). */
+export async function extendMembershipAction(
+  input: z.infer<typeof extendSchema>
+): Promise<ActionResult> {
+  await requireRole('committee')
+  const parsed = extendSchema.safeParse(input)
+  if (!parsed.success) return { ok: false, message: 'Invalid request' }
+
+  const supabase = await createClient()
+  const { error } = await supabase.rpc('admin_extend_membership', {
+    p_membership_id: parsed.data.membershipId,
+    ...(parsed.data.note ? { p_note: parsed.data.note } : {}),
+  })
+  if (error) return { ok: false, message: error.message }
+  revalidatePath('/admin/members')
+  return { ok: true, message: 'Extended into the next membership year' }
+}
+
+const adminCreateSchema = z.object({
+  userId: z.uuid(),
+  tier: tierSchema,
+  periodId: z.uuid(),
+  source: z.enum(['manual_bank', 'manual_cash', 'complimentary', 'imported']),
+  amountPence: z.number().int().min(0).max(100_000).optional(),
+  activate: z.boolean().default(true),
+  note: z.string().trim().max(500).optional(),
+  familyNames: z.array(z.string().trim().max(120)).max(12).default([]),
+})
+
+/** P9-07 — grant a membership to an existing account (walk-up cash, imports). */
+export async function adminCreateMembershipAction(input: {
+  userId: string
+  tier: 'adult' | 'junior' | 'family'
+  periodId: string
+  source: 'manual_bank' | 'manual_cash' | 'complimentary' | 'imported'
+  amountPence?: number
+  activate?: boolean
+  note?: string
+  familyNames?: string[]
+}): Promise<ActionResult> {
+  await requireRole('committee')
+  const parsed = adminCreateSchema.safeParse({
+    ...input,
+    activate: input.activate ?? true,
+    familyNames: input.familyNames ?? [],
+  })
+  if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message ?? 'Check the form' }
+
+  const supabase = await createClient()
+  const { error } = await supabase.rpc('admin_create_membership', {
+    p_user_id: parsed.data.userId,
+    p_tier: parsed.data.tier,
+    p_period_id: parsed.data.periodId,
+    p_source: parsed.data.source,
+    ...(parsed.data.amountPence !== undefined ? { p_amount_pence: parsed.data.amountPence } : {}),
+    p_activate: parsed.data.activate,
+    ...(parsed.data.note ? { p_note: parsed.data.note } : {}),
+    p_family_names: parsed.data.familyNames,
+  })
+  if (error) return { ok: false, message: error.message }
+  revalidatePath('/admin/members')
+  revalidatePath('/admin')
+  return {
+    ok: true,
+    message: parsed.data.activate ? 'Membership created and activated' : 'Membership created as pending',
+  }
 }
 
 const updateProfileSchema = z.object({
