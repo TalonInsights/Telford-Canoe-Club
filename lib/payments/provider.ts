@@ -2,6 +2,7 @@ import 'server-only'
 
 import { simulatedProvider } from '@/lib/payments/simulated'
 import { paypalProvider } from '@/lib/payments/paypal'
+import type { PaymentMode } from '@/lib/payments/mode'
 
 /**
  * The switch lives in club_settings.payment_provider (admin-editable, and
@@ -10,7 +11,7 @@ import { paypalProvider } from '@/lib/payments/paypal'
  *   simulated — the test gateway at /checkout/[ref]; no money moves
  *   paypal    — the real Orders v2 client (needs the D1 credentials)
  */
-export type PaymentMode = 'off' | 'simulated' | 'paypal'
+export type { PaymentMode }
 
 export type CreateOrderInput = {
   membershipId: string

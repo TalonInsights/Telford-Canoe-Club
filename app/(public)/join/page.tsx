@@ -8,6 +8,7 @@ import { Section } from '@/components/layout/section'
 import { FaqAccordion } from '@/components/site/faq-accordion'
 import { PricingTiers } from '@/components/site/pricing-tiers'
 import { Button } from '@/components/ui/button'
+import { isOnlinePaymentOn } from '@/lib/payments/mode'
 import { getClubSettings } from '@/lib/queries/settings'
 import { IMAGES } from '@/lib/site-data'
 
@@ -22,6 +23,7 @@ export const revalidate = 900
 export default async function JoinPage() {
   const settings = await getClubSettings()
   const [adult, junior, family] = settings.tiers
+  const onlineOn = isOnlinePaymentOn(settings.paymentProvider)
 
   return (
     <>
@@ -79,11 +81,17 @@ export default async function JoinPage() {
               title: '2 · Choose your tier',
               body: 'Pick adult, junior or family from your account. Family memberships list everyone at your address.',
             },
-            {
-              icon: HandCoins,
-              title: '3 · Pay the treasurer',
-              body: 'Online card payment is on its way. For now pay by bank transfer or cash, and the committee confirms your membership as soon as it lands.',
-            },
+            onlineOn
+              ? {
+                  icon: HandCoins,
+                  title: '3 · Pay your way',
+                  body: 'Pay online and your membership activates instantly — or pay the treasurer by bank transfer or cash and the committee confirms it as soon as it lands.',
+                }
+              : {
+                  icon: HandCoins,
+                  title: '3 · Pay the treasurer',
+                  body: 'Online card payment is on its way. For now pay by bank transfer or cash, and the committee confirms your membership as soon as it lands.',
+                },
           ].map((s) => (
             <div key={s.title} className="flex h-full flex-col rounded-xl border border-stone bg-card p-5">
               <span className="flex size-11 items-center justify-center rounded-lg bg-foam">
@@ -130,11 +138,17 @@ export default async function JoinPage() {
               answer:
                 'Club membership and Paddle UK membership are separate. If you hold Paddle UK membership, add the club on your JustGo profile and pop your number in your TCC profile — it genuinely helps the club with affiliation.',
             },
-            {
-              question: 'How do I pay right now?',
-              answer:
-                'Card payment through the site is coming. Until it arrives: request your tier from your account, then pay the treasurer by bank transfer or cash — the committee records it and your membership goes active.',
-            },
+            onlineOn
+              ? {
+                  question: 'How do I pay?',
+                  answer:
+                    'Two ways: pay online from your account and your membership activates instantly, or pay the treasurer by bank transfer or cash — the committee records it and your membership goes active.',
+                }
+              : {
+                  question: 'How do I pay right now?',
+                  answer:
+                    'Card payment through the site is coming. Until it arrives: request your tier from your account, then pay the treasurer by bank transfer or cash — the committee records it and your membership goes active.',
+                },
           ]}
         />
       </Section>

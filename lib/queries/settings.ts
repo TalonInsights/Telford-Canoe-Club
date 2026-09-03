@@ -1,13 +1,18 @@
+import type { PaymentMode } from '@/lib/payments/mode'
 import { isSupabaseConfigured } from '@/lib/supabase/configured'
 import { createClient } from '@/lib/supabase/server'
 import { getSiteSettings, type SiteSettings } from '@/lib/site-data'
 
-export type ClubSettings = SiteSettings & { bankPaymentNote: string }
+export type ClubSettings = SiteSettings & {
+  bankPaymentNote: string
+  paymentProvider: PaymentMode
+}
 
 const seedFallback: ClubSettings = {
   ...getSiteSettings(),
   bankPaymentNote:
     'Pay by bank transfer or cash to the treasurer — your membership is confirmed as soon as the committee records it.',
+  paymentProvider: 'simulated',
 }
 
 export async function getClubSettings(): Promise<ClubSettings> {
@@ -27,5 +32,6 @@ export async function getClubSettings(): Promise<ClubSettings> {
       { name: 'Family', pricePence: data.price_family_pence },
     ],
     bankPaymentNote: data.bank_payment_note,
+    paymentProvider: (data.payment_provider ?? 'off') as PaymentMode,
   }
 }

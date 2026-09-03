@@ -13,23 +13,31 @@ const tierSchema = z.enum(['adult', 'junior', 'family'])
 const requestSchema = z.object({
   tier: tierSchema,
   familyNames: z.array(z.string().trim().max(120)).max(12).default([]),
+  periodId: z.uuid().optional(),
 })
 
 /** Self-service: creates/updates a PENDING membership; committee activates on payment. */
 export async function requestMembershipAction(input: {
   tier: 'adult' | 'junior' | 'family'
   familyNames?: string[]
+  /** Renewal: request NEXT period while this year's membership is active. */
+  periodId?: string
 }): Promise<ActionResult> {
   if (!isSupabaseConfigured()) return { ok: false, message: NOT_CONFIGURED_MESSAGE }
   const session = await getSession()
   if (!session) return { ok: false, message: 'Log in first, then choose your membership.' }
-  const parsed = requestSchema.safeParse({ tier: input.tier, familyNames: input.familyNames ?? [] })
+  const parsed = requestSchema.safeParse({
+    tier: input.tier,
+    familyNames: input.familyNames ?? [],
+    periodId: input.periodId,
+  })
   if (!parsed.success) return { ok: false, message: 'Choose a valid membership tier' }
 
   const supabase = await createClient()
   const { error } = await supabase.rpc('request_membership', {
     p_tier: parsed.data.tier,
     p_family_names: parsed.data.familyNames,
+    ...(parsed.data.periodId ? { p_period_id: parsed.data.periodId } : {}),
   })
   if (error) return { ok: false, message: error.message }
   revalidatePath('/members/membership')

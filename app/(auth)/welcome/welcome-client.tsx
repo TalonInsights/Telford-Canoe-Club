@@ -1,10 +1,15 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
+import { HandCoins, Zap } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { requestMembershipAction } from '@/lib/actions/membership'
+import { startOnlineCheckoutAction } from '@/lib/actions/payments'
+import type { PaymentMode } from '@/lib/payments/mode'
+import { isOnlinePaymentOn } from '@/lib/payments/mode'
 import { Button } from '@/components/ui/button'
 import { Field } from '@/components/ui/form-field'
 import { Input } from '@/components/ui/input'
@@ -25,24 +30,54 @@ export function WelcomeClient({
   tiers,
   yearLabel,
   bankNote,
+  paymentProvider,
+  renewPeriod,
 }: {
   tiers: Tier[]
   yearLabel: string
   bankNote: string
+  paymentProvider: PaymentMode
+  renewPeriod: { id: string; label: string } | null
 }) {
+  const router = useRouter()
   const [selected, setSelected] = useState<TierKey | null>(null)
   const [familyNames, setFamilyNames] = useState<string[]>(['', ''])
   const [step, setStep] = useState(1)
   const [pending, startTransition] = useTransition()
+  const [busy, setBusy] = useState<'online' | 'manual' | null>(null)
   const [confirmed, setConfirmed] = useState(false)
 
-  const submit = () =>
+  const onlineOn = isOnlinePaymentOn(paymentProvider)
+  const selectedTier = tiers.find((t) => tierKeyByName[t.name] === selected)
+  const names = () => (selected === 'family' ? familyNames.filter((n) => n.trim()) : [])
+
+  const payOnline = () =>
     startTransition(async () => {
       if (!selected) return
+      setBusy('online')
+      const result = await startOnlineCheckoutAction({
+        tier: selected,
+        familyNames: names(),
+        periodId: renewPeriod?.id,
+      })
+      setBusy(null)
+      if (result.ok) {
+        router.push(result.redirect)
+      } else {
+        toast.error(result.message)
+      }
+    })
+
+  const payTreasurer = () =>
+    startTransition(async () => {
+      if (!selected) return
+      setBusy('manual')
       const result = await requestMembershipAction({
         tier: selected,
-        familyNames: selected === 'family' ? familyNames.filter((n) => n.trim()) : [],
+        familyNames: names(),
+        periodId: renewPeriod?.id,
       })
+      setBusy(null)
       if (result.ok) {
         setConfirmed(true)
         setStep(2)
@@ -55,19 +90,23 @@ export function WelcomeClient({
   return (
     <div className="w-full max-w-2xl">
       <div className="rounded-xl border border-stone bg-card p-6 sm:p-8">
-        <h1 className="text-2xl">Choose your membership</h1>
+        <h1 className="text-2xl">
+          {renewPeriod ? `Renew for ${renewPeriod.label}` : 'Choose your membership'}
+        </h1>
         <div className="mt-4">
-          <Stepper steps={['Create account', 'Choose tier', 'Pay the treasurer']} current={step} />
+          <Stepper steps={['Create account', 'Choose tier', 'Pay']} current={step} />
         </div>
 
         {confirmed ? (
           <div className="mt-6 rounded-lg border border-success/30 bg-foam p-5">
             <h2 className="text-lg text-success">Membership requested</h2>
             <p className="mt-2 text-sm text-ink-muted">{bankNote}</p>
-            <p className="mt-2 text-sm text-ink-muted">
-              Card payment through the site is on its way — until then this is the official
-              route, and your membership shows as pending until the committee confirms it.
-            </p>
+            {onlineOn && (
+              <p className="mt-2 text-sm text-ink-muted">
+                Changed your mind? You can still pay online from your membership page — it
+                activates instantly.
+              </p>
+            )}
             <Button asChild variant="secondary" className="mt-4">
               <Link href="/members/membership">See my membership</Link>
             </Button>
@@ -76,7 +115,7 @@ export function WelcomeClient({
           <>
             <fieldset className="mt-6">
               <legend className="text-sm font-medium">
-                Pick a tier — {yearLabel.toLowerCase()}
+                Pick a tier — {(renewPeriod ? `${renewPeriod.label} membership` : yearLabel).toLowerCase()}
               </legend>
               <div className="mt-3 grid gap-3 sm:grid-cols-3">
                 {tiers.map((tier) => {
@@ -138,12 +177,30 @@ export function WelcomeClient({
               </div>
             )}
 
-            <div className="mt-6">
-              <Button variant="signal" size="lg" disabled={!selected || pending} onClick={submit}>
-                {pending ? 'Requesting…' : 'Request this membership'}
+            <div className="mt-6 grid gap-2 sm:max-w-md">
+              {onlineOn && (
+                <Button variant="signal" size="lg" disabled={!selected || pending} onClick={payOnline}>
+                  <Zap aria-hidden="true" />
+                  {busy === 'online'
+                    ? 'Opening checkout…'
+                    : selectedTier
+                      ? `Pay ${formatMoneyGBP(selectedTier.pricePence)} online now`
+                      : 'Pay online now'}
+                </Button>
+              )}
+              <Button
+                variant={onlineOn ? 'outline' : 'signal'}
+                size={onlineOn ? 'default' : 'lg'}
+                disabled={!selected || pending}
+                onClick={payTreasurer}
+              >
+                <HandCoins aria-hidden="true" />
+                {busy === 'manual' ? 'Requesting…' : 'Pay the treasurer by bank transfer or cash'}
               </Button>
-              <p className="mt-2 text-micro text-ink-muted">
-                No payment is taken online yet — the next step explains how to pay the treasurer.
+              <p className="mt-1 text-micro text-ink-muted">
+                {onlineOn
+                  ? 'Online payment activates your membership instantly. The treasurer route stays open if you prefer it.'
+                  : 'No payment is taken online yet — the next step explains how to pay the treasurer.'}
               </p>
             </div>
           </>
