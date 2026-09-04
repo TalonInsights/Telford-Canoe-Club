@@ -9,6 +9,8 @@ import { EventCalendar } from '@/components/site/event-calendar'
 import { Badge } from '@/components/ui/badge'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { eventImageUrl } from '@/lib/events/images'
+import { eventCategoryLabel } from '@/lib/events/labels'
 import { formatDateTimeRange } from '@/lib/format'
 import { getPublishedEvents } from '@/lib/queries/events'
 import { IMAGES } from '@/lib/site-data'
@@ -21,24 +23,11 @@ export const metadata: Metadata = {
 
 export const revalidate = 900
 
-const categoryLabel: Record<string, string> = {
-  club_night: 'Club night',
-  trip: 'Trip',
-  freestyle: 'Freestyle',
-  slalom: 'Slalom',
-  pool: 'Pool session',
-  social: 'Social',
-  course: 'Course',
-  other: 'Event',
-}
-
 export default async function EventsPage() {
   const events = await getPublishedEvents()
   const now = new Date()
   const upcoming = events.filter((e) => new Date(e.starts_at) >= now && e.status === 'published')
   const past = events.filter((e) => new Date(e.starts_at) < now).reverse()
-
-  const imageFor = (path: string | null) => (path ? `/images/${path}` : null)
 
   return (
     <>
@@ -68,16 +57,18 @@ export default async function EventsPage() {
                   <EventCard
                     key={e.id}
                     href={`/events/${e.slug}`}
-                    image={imageFor(e.cover_image_path)}
+                    image={eventImageUrl(e.cover_image_path)}
                     imageAlt={e.title}
                     title={e.title}
                     summary={e.summary ?? undefined}
-                    category={categoryLabel[e.category] ?? 'Event'}
+                    category={eventCategoryLabel[e.category] ?? 'Event'}
                     when={formatDateTimeRange(e.starts_at, e.ends_at)}
                     location={e.location_name ?? undefined}
                     status={
                       e.water_level_dependent ? (
                         <Badge variant="outline">Water levels dependent</Badge>
+                      ) : e.booking_enabled ? (
+                        <Badge variant="outline">Confirm your place</Badge>
                       ) : undefined
                     }
                   />
@@ -109,13 +100,14 @@ export default async function EventsPage() {
                   <EventCard
                     key={e.id}
                     href={`/events/${e.slug}`}
-                    image={imageFor(e.cover_image_path)}
+                    image={eventImageUrl(e.cover_image_path)}
                     imageAlt={e.title}
                     title={e.title}
                     summary={e.summary ?? undefined}
-                    category={categoryLabel[e.category] ?? 'Event'}
+                    category={eventCategoryLabel[e.category] ?? 'Event'}
                     when={formatDateTimeRange(e.starts_at, e.ends_at)}
                     location={e.location_name ?? undefined}
+                    status={e.status === 'cancelled' ? <Badge variant="signal">Cancelled</Badge> : undefined}
                   />
                 ))}
               </FullGrid>

@@ -21,9 +21,10 @@ import Link from 'next/link'
 
 import { FullGrid, Split75 } from '@/components/layout/grids'
 import { Section } from '@/components/layout/section'
-import { NewsCard, SportCard } from '@/components/site/cards'
+import { EventCard, NewsCard, SportCard } from '@/components/site/cards'
 import { CtaBand } from '@/components/site/cta-band'
 import { FeatureCard } from '@/components/site/feature-card'
+import { eventCategoryLabel } from '@/lib/events/labels'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
 import { formatDate, formatDateTimeRange, formatMoneyGBP } from '@/lib/format'
@@ -229,15 +230,17 @@ export function WhatsOn({ events }: { events: HomeEvent[] }) {
       ) : (
         <FullGrid maxColumns={3}>
           {events.map((e) => (
-            <div key={e.slug} className="flex h-full flex-col rounded-xl border border-stone bg-card p-5">
-              <h3 className="text-lg">
-                <Link href={`/events/${e.slug}`} className="hover:underline">
-                  {e.title}
-                </Link>
-              </h3>
-              <p className="mt-1 text-sm text-ink-muted">{formatDateTimeRange(e.startsAt)}</p>
-              {e.location && <p className="mt-auto pt-2 text-micro text-ink-muted">{e.location}</p>}
-            </div>
+            <EventCard
+              key={e.slug}
+              href={`/events/${e.slug}`}
+              image={e.image}
+              imageAlt={e.title}
+              title={e.title}
+              summary={e.summary ?? undefined}
+              category={eventCategoryLabel[e.category] ?? 'Event'}
+              when={formatDateTimeRange(e.startsAt, e.endsAt)}
+              location={e.location ?? undefined}
+            />
           ))}
         </FullGrid>
       )}

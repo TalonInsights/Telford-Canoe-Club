@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { CalendarDays, MapPin, Waves } from 'lucide-react'
+import { CalendarDays, MapPin, Tag, Waves } from 'lucide-react'
 
 import { BookingPanel } from '@/components/site/booking-panel'
 import { PageHero } from '@/components/layout/page-hero'
@@ -9,8 +9,14 @@ import { Section } from '@/components/layout/section'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { getSession } from '@/lib/auth/guards'
-import { formatDateTimeRange } from '@/lib/format'
-import { getEventBySlug } from '@/lib/queries/events'
+import { eventImageUrl } from '@/lib/events/images'
+import { eventCategoryLabel, eventDetailsParagraphs } from '@/lib/events/labels'
+import { formatDateTimeRange, formatMoneyGBP } from '@/lib/format'
+import {
+  getEventAttendance,
+  getEventBySlug,
+  getMyBookingForEvent,
+} from '@/lib/queries/events'
 
 export const revalidate = 900
 
@@ -19,9 +25,11 @@ type Params = { params: Promise<{ slug: string }> }
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params
   const event = await getEventBySlug(slug)
+  const image = eventImageUrl(event?.cover_image_path)
   return {
     title: event ? event.title : 'Event',
     description: event?.summary ?? 'A Telford Canoe Club event.',
+    ...(image ? { openGraph: { images: [image] } } : {}),
   }
 }
 
@@ -31,13 +39,18 @@ export default async function EventDetailPage({ params }: Params) {
   if (!event || event.status === 'draft') notFound()
 
   const session = await getSession()
+  const [myBooking, attendance] = await Promise.all([
+    session ? getMyBookingForEvent(event.id) : Promise.resolve(null),
+    event.booking_enabled ? getEventAttendance(event.id) : Promise.resolve(null),
+  ])
+  const details = eventDetailsParagraphs(event.body)
 
   return (
     <>
       <PageHero
         title={event.title}
         intro={event.summary ?? undefined}
-        image={event.cover_image_path ? `/images/${event.cover_image_path}` : undefined}
+        image={eventImageUrl(event.cover_image_path) ?? undefined}
         imageAlt={event.title}
         crumbs={[{ title: 'Events', href: '/events' }]}
       />
@@ -71,6 +84,18 @@ export default async function EventDetailPage({ params }: Params) {
                   </div>
                 </div>
               )}
+              <div className="flex items-start gap-2.5">
+                <Tag className="mt-1 size-4 shrink-0 text-river" aria-hidden="true" />
+                <div>
+                  <dt className="text-micro font-medium text-ink-muted">What</dt>
+                  <dd>
+                    {eventCategoryLabel[event.category] ?? 'Event'}
+                    {event.visibility === 'members' && (
+                      <span className="block text-sm text-ink-muted">Members only</span>
+                    )}
+                  </dd>
+                </div>
+              </div>
               {event.water_level_dependent && (
                 <div className="flex items-start gap-2.5">
                   <Waves className="mt-1 size-4 shrink-0 text-river" aria-hidden="true" />
@@ -96,7 +121,7 @@ export default async function EventDetailPage({ params }: Params) {
                   <div>
                     <dt className="text-micro font-medium text-ink-muted">Cost</dt>
                     <dd>
-                      £{(event.cost_pence / 100).toFixed(2)}
+                      {formatMoneyGBP(event.cost_pence)}
                       {event.cost_note && (
                         <span className="block text-sm text-ink-muted">{event.cost_note}</span>
                       )}
@@ -105,6 +130,18 @@ export default async function EventDetailPage({ params }: Params) {
                 </div>
               )}
             </dl>
+
+            {details.length > 0 && (
+              <div className="mt-8 space-y-4 border-t border-stone pt-6">
+                <h2 className="text-xl">Details</h2>
+                {details.map((p, i) => (
+                  <p key={i} className="text-ink-muted">
+                    {p}
+                  </p>
+                ))}
+              </div>
+            )}
+
             <div className="mt-6">
               <Button asChild variant="outline" size="sm">
                 <a href={`/api/calendar/event/${event.slug}`}>Add to your calendar (.ics)</a>
@@ -124,6 +161,8 @@ export default async function EventDetailPage({ params }: Params) {
               }}
               signedIn={Boolean(session)}
               isCurrentMember={Boolean(session?.isCurrentMember)}
+              myBooking={myBooking}
+              attendance={attendance}
             />
           </div>
         </div>

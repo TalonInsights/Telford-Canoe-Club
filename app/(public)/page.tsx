@@ -11,6 +11,7 @@ import {
   WhatsOn,
 } from '@/components/home/sections'
 import { StatusStrip } from '@/components/home/status-strip'
+import { eventImageUrl } from '@/lib/events/images'
 import { getUpcomingEvents } from '@/lib/queries/events'
 import { getClubSettings } from '@/lib/queries/settings'
 import { getFacilities, getLatestPosts, getSportCards } from '@/lib/site-data'
@@ -28,7 +29,10 @@ export default async function HomePage() {
     title: e.title,
     category: e.category,
     startsAt: e.starts_at,
+    endsAt: e.ends_at,
     location: e.location_name,
+    summary: e.summary,
+    image: eventImageUrl(e.cover_image_path),
   }))
 
   return (

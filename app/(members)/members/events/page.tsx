@@ -47,10 +47,34 @@ export default async function MyEventsPage() {
               {b.event?.location_name && <> · {b.event.location_name}</>}
             </p>
           </div>
-          <Badge variant={b.status === 'booked' ? 'success' : 'outline'}>
-            {b.status === 'booked' ? 'Booked' : b.status === 'waitlist' ? 'Waitlist' : b.status}
+          <Badge
+            variant={
+              b.status === 'booked' || b.status === 'attended'
+                ? 'success'
+                : b.status === 'waitlist'
+                  ? 'signal'
+                  : 'outline'
+            }
+          >
+            {b.status === 'booked'
+              ? 'Confirmed'
+              : b.status === 'attended'
+                ? 'Checked in'
+                : b.status === 'waitlist'
+                  ? 'Waitlist'
+                  : b.status === 'no_show'
+                    ? 'No-show'
+                    : b.status}
           </Badge>
-          <CancelBookingButton bookingId={b.id} />
+          {(b.status === 'booked' || b.status === 'waitlist') &&
+            b.event &&
+            new Date(b.event.starts_at) > new Date() && (
+              <CancelBookingButton
+                bookingId={b.id}
+                label={b.status === 'waitlist' ? 'Leave waitlist' : 'Cancel'}
+                waitlist={b.status === 'waitlist'}
+              />
+            )}
         </li>
       ))}
     </ul>

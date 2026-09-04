@@ -1,6 +1,7 @@
 'use client'
 
-import { useTransition } from 'react'
+import { useRouter } from 'next/navigation'
+import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
 import { cancelBookingAction } from '@/lib/actions/bookings'
@@ -15,21 +16,32 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 
-export function CancelBookingButton({ bookingId }: { bookingId: string }) {
+export function CancelBookingButton({
+  bookingId,
+  label = 'Cancel',
+  waitlist = false,
+}: {
+  bookingId: string
+  label?: string
+  waitlist?: boolean
+}) {
+  const router = useRouter()
+  const [open, setOpen] = useState(false)
   const [pending, startTransition] = useTransition()
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost" size="sm">
-          Cancel
+          {label}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Cancel this booking?</DialogTitle>
+          <DialogTitle>{waitlist ? 'Leave the waitlist?' : 'Cancel your place?'}</DialogTitle>
           <DialogDescription>
-            Your place goes back to the club — if there&apos;s a waitlist, the next person moves
-            up.
+            {waitlist
+              ? 'You can confirm again later if there is still room.'
+              : 'Your place goes back to the club — if there’s a waitlist, the next person moves up.'}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
@@ -39,12 +51,15 @@ export function CancelBookingButton({ bookingId }: { bookingId: string }) {
             onClick={() =>
               startTransition(async () => {
                 const result = await cancelBookingAction(bookingId)
-                if (result.ok) toast.success(result.message ?? 'Cancelled')
-                else toast.error(result.message)
+                if (result.ok) {
+                  toast.success(result.message ?? 'Cancelled')
+                  setOpen(false)
+                  router.refresh()
+                } else toast.error(result.message)
               })
             }
           >
-            {pending ? 'Cancelling…' : 'Cancel booking'}
+            {pending ? 'Cancelling…' : waitlist ? 'Leave the waitlist' : 'Cancel my place'}
           </Button>
         </DialogFooter>
       </DialogContent>

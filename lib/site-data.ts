@@ -45,7 +45,11 @@ export type HomeEvent = {
   title: string
   category: string
   startsAt: string
+  endsAt: string | null
   location: string | null
+  summary: string | null
+  /** Resolved URL (storage or bundled placeholder) — see lib/events/images.ts. */
+  image: string | null
 }
 
 export type HomePost = {
