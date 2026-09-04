@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { Fragment } from 'react'
 
 import { BridgeArch } from '@/components/site/brand'
 import {
@@ -80,12 +81,14 @@ export function PageHero({
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 {crumbs.map((crumb) => (
-                  <BreadcrumbItem key={crumb.href} className="contents">
+                  <Fragment key={crumb.href}>
                     <BreadcrumbSeparator className="text-stone/60" />
-                    <BreadcrumbLink asChild className="hover:text-white">
-                      <Link href={crumb.href}>{crumb.title}</Link>
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
+                    <BreadcrumbItem>
+                      <BreadcrumbLink asChild className="hover:text-white">
+                        <Link href={crumb.href}>{crumb.title}</Link>
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                  </Fragment>
                 ))}
                 <BreadcrumbSeparator className="text-stone/60" />
                 <BreadcrumbItem className="min-w-0">

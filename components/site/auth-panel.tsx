@@ -36,7 +36,7 @@ export function AuthPanel() {
       <div className="relative hidden h-full flex-col justify-between p-10 lg:flex xl:p-14">
         <div>
           <ClubBadge className="size-28" detailed />
-          <p className="mt-8 max-w-[14ch] font-heading text-h2 leading-[1.15] font-semibold tracking-tight text-balance">
+          <p className="mt-8 max-w-[14ch] font-heading text-[length:var(--text-h2)] leading-[1.15] font-semibold tracking-tight text-balance">
             Your own stretch of the Severn
           </p>
           <p className="mt-3 max-w-[40ch] text-stone">
