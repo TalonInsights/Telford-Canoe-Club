@@ -1,6 +1,12 @@
 import { Footer } from '@/components/layout/footer'
 import { Header } from '@/components/layout/header'
+import { AuthPanel } from '@/components/site/auth-panel'
 
+/**
+ * Auth shell (DR-07): brand panel beside the form at ≥1024px, a brand strip
+ * above it below that. Every auth page — login, register, welcome, forgot,
+ * reset, verify — renders its own card into the form column unchanged.
+ */
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
@@ -11,8 +17,11 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         Skip to content
       </a>
       <Header />
-      <main id="main" className="flex flex-1 items-start justify-center bg-foam px-4 py-section-tight">
-        {children}
+      <main id="main" className="flex flex-1 flex-col bg-foam lg:flex-row">
+        <AuthPanel />
+        <div className="flex flex-1 items-start justify-center px-4 py-section-tight md:px-6">
+          {children}
+        </div>
       </main>
       <Footer />
     </>
