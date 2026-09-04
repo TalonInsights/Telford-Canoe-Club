@@ -10,6 +10,12 @@ const nextConfig: NextConfig = {
         hostname: 'telfordcanoeclub.co.uk',
         pathname: '/wp-content/uploads/**',
       },
+      // Committee-uploaded event covers (P5-02) in the public site-images bucket.
+      {
+        protocol: 'https',
+        hostname: '*.supabase.co',
+        pathname: '/storage/v1/object/public/**',
+      },
     ],
   },
   // §10.4 — every old-site URL keeps working (P12-01, brought forward).

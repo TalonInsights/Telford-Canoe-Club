@@ -10,12 +10,13 @@ const links: RailLink[] = [
   { title: 'Overview', href: '/admin', icon: 'home' },
   { title: 'Members', href: '/admin/members', icon: 'users' },
   { title: 'Add a membership', href: '/admin/members/new', icon: 'user-plus' },
+  { title: 'Events', href: '/admin/events', icon: 'calendar' },
   { title: 'Committee', href: '/admin/committee', icon: 'id' },
   { title: 'Audit log', href: '/admin/audit', icon: 'clipboard' },
   { title: 'Settings', href: '/admin/settings', icon: 'settings' },
 ]
 
-const tabBarLinks = [links[0], links[1], links[3], links[5]]
+const tabBarLinks = [links[0], links[1], links[3], links[4], links[6]]
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await requireRole('committee')
@@ -26,9 +27,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         title="TCC admin"
         rootHref="/admin"
         groups={[
-          { title: 'Club', links: links.slice(0, 3) },
-          { title: 'Records', links: links.slice(3, 5) },
-          { title: 'Setup', links: links.slice(5) },
+          { title: 'Club', links: links.slice(0, 4) },
+          { title: 'Records', links: links.slice(4, 6) },
+          { title: 'Setup', links: links.slice(6) },
         ]}
         footer={
           <form action={signOutAction}>
