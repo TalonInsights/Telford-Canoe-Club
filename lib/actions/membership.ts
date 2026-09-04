@@ -1,4 +1,4 @@
-'use server'
+﻿'use server'
 
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
@@ -44,13 +44,11 @@ export async function requestMembershipAction(input: {
   if (!parsed.success) return { ok: false, message: 'Choose a valid membership tier' }
 
   const supabase = await createClient()
-  // p_family (jsonb) replaces p_family_names in migration 0019 — args cast until
-  // types are regenerated against the migrated schema.
   const { error } = await supabase.rpc('request_membership', {
     p_tier: parsed.data.tier,
     p_family: familyPayload(parsed.data.family),
     ...(parsed.data.periodId ? { p_period_id: parsed.data.periodId } : {}),
-  } as never)
+  })
   if (error) return { ok: false, message: error.message }
   revalidatePath('/members/membership')
   return {
@@ -264,8 +262,6 @@ export async function adminCreateMembershipAction(input: {
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message ?? 'Check the form' }
 
   const supabase = await createClient()
-  // p_family (jsonb) replaces p_family_names in migration 0019 — args cast until
-  // types are regenerated against the migrated schema.
   const { error } = await supabase.rpc('admin_create_membership', {
     p_user_id: parsed.data.userId,
     p_tier: parsed.data.tier,
@@ -275,7 +271,7 @@ export async function adminCreateMembershipAction(input: {
     p_activate: parsed.data.activate,
     ...(parsed.data.note ? { p_note: parsed.data.note } : {}),
     p_family: familyPayload(parsed.data.family),
-  } as never)
+  })
   if (error) return { ok: false, message: error.message }
   revalidatePath('/admin/members')
   revalidatePath('/admin')

@@ -699,7 +699,10 @@ export type Database = {
       membership_members: {
         Row: {
           created_at: string
+          date_of_birth: string | null
           display_name: string
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
           id: string
           is_junior: boolean
           membership_id: string
@@ -707,7 +710,10 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          date_of_birth?: string | null
           display_name: string
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
           id?: string
           is_junior?: boolean
           membership_id: string
@@ -715,7 +721,10 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          date_of_birth?: string | null
           display_name?: string
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
           id?: string
           is_junior?: boolean
           membership_id?: string
@@ -1291,7 +1300,7 @@ export type Database = {
         Args: {
           p_activate?: boolean
           p_amount_pence?: number
-          p_family_names?: string[]
+          p_family?: Json
           p_note?: string
           p_period_id: string
           p_source: Database["public"]["Enums"]["payment_source"]
@@ -1339,7 +1348,7 @@ export type Database = {
       }
       request_membership: {
         Args: {
-          p_family_names?: string[]
+          p_family?: Json
           p_period_id?: string
           p_tier: Database["public"]["Enums"]["membership_tier"]
         }

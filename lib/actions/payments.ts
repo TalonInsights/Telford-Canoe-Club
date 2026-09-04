@@ -1,4 +1,4 @@
-'use server'
+﻿'use server'
 
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
@@ -50,13 +50,11 @@ export async function startOnlineCheckoutAction(input: {
   }
 
   const supabase = await createClient()
-  // p_family (jsonb) replaces p_family_names in migration 0019 — args cast until
-  // types are regenerated against the migrated schema.
   const { data: membershipId, error } = await supabase.rpc('request_membership', {
     p_tier: parsed.data.tier,
     p_family: familyPayload(parsed.data.family),
     ...(parsed.data.periodId ? { p_period_id: parsed.data.periodId } : {}),
-  } as never)
+  })
   if (error || !membershipId) return { ok: false, message: error?.message ?? 'Could not start checkout' }
 
   return beginCheckoutFor(membershipId)
