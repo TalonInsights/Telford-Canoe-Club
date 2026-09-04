@@ -23,6 +23,7 @@ export default async function RiverLevelsPage() {
       <PageHero
         title="River levels"
         intro="The rapid is a different place at different levels — check the gauge before you travel."
+        crumbs={[{ title: 'Venue', href: '/venue' }]}
       />
       <Section tone="white">
         <div className="mx-auto w-full max-w-[720px]">

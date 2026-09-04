@@ -29,6 +29,7 @@ export default function RoleDescriptionsPage() {
       <PageHero
         title="Club role descriptions"
         intro="What each role involves — the club has adopted the Paddle UK standard descriptions."
+        crumbs={[{ title: 'About', href: '/about' }]}
       />
       <Section tone="white">
         <div className="mx-auto w-full max-w-[720px]">

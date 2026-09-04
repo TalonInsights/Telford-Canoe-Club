@@ -24,6 +24,7 @@ export default function PrivacyPage() {
       <PageHero
         title="Privacy"
         intro="What this website collects, why, and what happens to it. The club's full privacy policy document is on the policies page."
+        crumbs={[{ title: 'About', href: '/about' }]}
       />
       <Section tone="white">
         <div className="mx-auto w-full max-w-[720px]">

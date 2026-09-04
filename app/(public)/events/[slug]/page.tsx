@@ -39,6 +39,7 @@ export default async function EventDetailPage({ params }: Params) {
         intro={event.summary ?? undefined}
         image={event.cover_image_path ? `/images/${event.cover_image_path}` : undefined}
         imageAlt={event.title}
+        crumbs={[{ title: 'Events', href: '/events' }]}
       />
       <Section tone="white">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">

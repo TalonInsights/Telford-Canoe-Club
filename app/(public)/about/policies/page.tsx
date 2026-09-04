@@ -31,6 +31,7 @@ export default function PoliciesPage() {
       <PageHero
         title="Club policies"
         intro="The documents that govern how the club runs — most adopted from the Paddle UK club framework."
+        crumbs={[{ title: 'About', href: '/about' }]}
       />
       <Section tone="white">
         <div className="mx-auto w-full max-w-[720px]">

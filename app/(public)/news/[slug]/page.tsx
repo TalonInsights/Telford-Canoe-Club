@@ -29,7 +29,7 @@ export default async function NewsPostPage({ params }: Params) {
 
   return (
     <>
-      <PageHero title={post.title} intro={post.excerpt} />
+      <PageHero title={post.title} intro={post.excerpt} crumbs={[{ title: 'News', href: '/news' }]} />
       <Section tone="white">
         <article className="mx-auto w-full max-w-[720px]">
           <div className="flex flex-wrap items-center gap-3 border-b border-stone pb-4">

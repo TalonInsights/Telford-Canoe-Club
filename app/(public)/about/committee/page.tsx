@@ -22,6 +22,7 @@ export default async function CommitteePage() {
       <PageHero
         title="Committee"
         intro="The 2026 committee, in role from April until the next AGM in September."
+        crumbs={[{ title: 'About', href: '/about' }]}
       />
       <Section tone="white">
         <CommitteeGrid
