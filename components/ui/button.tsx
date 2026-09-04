@@ -21,6 +21,9 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20",
         link: "text-river underline-offset-4 hover:underline",
+        // Secondary action on a deep field (heroes, CTA bands, rails).
+        inverse:
+          "border-white/40 bg-white/10 text-white hover:bg-white/20 focus-visible:border-white/60 focus-visible:ring-white/30",
       },
       size: {
         sm: "h-9 gap-1 px-3 text-sm has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",

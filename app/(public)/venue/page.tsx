@@ -6,6 +6,8 @@ import { Car, DoorOpen, MapPin, Waves } from 'lucide-react'
 import { FullGrid, Split75 } from '@/components/layout/grids'
 import { PageHero } from '@/components/layout/page-hero'
 import { Section } from '@/components/layout/section'
+import { CtaBand } from '@/components/site/cta-band'
+import { FeatureCard } from '@/components/site/feature-card'
 import { Button } from '@/components/ui/button'
 import { IMAGES } from '@/lib/site-data'
 
@@ -91,26 +93,16 @@ export default function VenuePage() {
               body: 'A natural rapid whose character changes with the level — check before you travel.',
             },
           ].map((f) => (
-            <div key={f.title} className="flex h-full flex-col rounded-xl border border-stone bg-card p-5">
-              <span className="flex size-11 items-center justify-center rounded-lg bg-foam">
-                <f.icon className="size-5 text-river" aria-hidden="true" />
-              </span>
-              <h3 className="mt-3 text-lg">{f.title}</h3>
-              <p className="mt-1 text-sm text-ink-muted">{f.body}</p>
-            </div>
+            <FeatureCard key={f.title} icon={f.icon} title={f.title} body={f.body} />
           ))}
         </FullGrid>
       </Section>
-      <Section tone="deep" spacing="tight" title="Check the river before you set off">
-        <div className="flex flex-wrap gap-3">
-          <Button asChild variant="signal">
-            <Link href="/venue/river-levels">Live river levels</Link>
-          </Button>
-          <Button asChild className="border border-white/40 bg-white/10 text-white hover:bg-white/20">
-            <Link href="/events">Session times</Link>
-          </Button>
-        </div>
-      </Section>
+      <CtaBand
+        title="Check the river before you set off"
+        intro="The Buildwas gauge tells you what the rapid is doing today — and club sessions run when the level is right."
+        primary={{ label: 'Live river levels', href: '/venue/river-levels' }}
+        secondary={{ label: 'Session times', href: '/events' }}
+      />
     </>
   )
 }

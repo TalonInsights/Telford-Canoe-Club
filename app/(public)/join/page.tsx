@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { CircleUserRound, HandCoins, ListChecks } from 'lucide-react'
 
 import { FullGrid } from '@/components/layout/grids'
 import { PageHero } from '@/components/layout/page-hero'
 import { Section } from '@/components/layout/section'
+import { CtaBand } from '@/components/site/cta-band'
 import { FaqAccordion } from '@/components/site/faq-accordion'
+import { FeatureCard } from '@/components/site/feature-card'
 import { PricingTiers } from '@/components/site/pricing-tiers'
 import { Button } from '@/components/ui/button'
 import { isOnlinePaymentOn } from '@/lib/payments/mode'
@@ -72,34 +73,24 @@ export default async function JoinPage() {
         <FullGrid maxColumns={3}>
           {[
             {
-              icon: CircleUserRound,
-              title: '1 · Create your account',
+              title: 'Create your account',
               body: 'Register with your details — under-18s add a parent or guardian. It takes about two minutes.',
             },
             {
-              icon: ListChecks,
-              title: '2 · Choose your tier',
+              title: 'Choose your tier',
               body: 'Pick adult, junior or family from your account. Family memberships list everyone at your address.',
             },
             onlineOn
               ? {
-                  icon: HandCoins,
-                  title: '3 · Pay your way',
+                  title: 'Pay your way',
                   body: 'Pay online and your membership activates instantly — or pay the treasurer by bank transfer or cash and the committee confirms it as soon as it lands.',
                 }
               : {
-                  icon: HandCoins,
-                  title: '3 · Pay the treasurer',
+                  title: 'Pay the treasurer',
                   body: 'Online card payment is on its way. For now pay by bank transfer or cash, and the committee confirms your membership as soon as it lands.',
                 },
-          ].map((s) => (
-            <div key={s.title} className="flex h-full flex-col rounded-xl border border-stone bg-card p-5">
-              <span className="flex size-11 items-center justify-center rounded-lg bg-foam">
-                <s.icon className="size-5 text-river" aria-hidden="true" />
-              </span>
-              <h3 className="mt-3 text-lg">{s.title}</h3>
-              <p className="mt-1 text-sm text-ink-muted">{s.body}</p>
-            </div>
+          ].map((s, i) => (
+            <FeatureCard key={s.title} step={i + 1} title={s.title} body={s.body} />
           ))}
         </FullGrid>
         <div className="mt-8">
@@ -152,16 +143,12 @@ export default async function JoinPage() {
           ]}
         />
       </Section>
-      <Section tone="deep" spacing="tight" title="The river is waiting">
-        <div className="flex flex-wrap gap-3">
-          <Button asChild variant="signal">
-            <Link href="/register">Create your account</Link>
-          </Button>
-          <Button asChild className="border border-white/40 bg-white/10 text-white hover:bg-white/20">
-            <Link href="/contact">Ask us anything first</Link>
-          </Button>
-        </div>
-      </Section>
+      <CtaBand
+        title="The river is waiting"
+        intro="Two minutes to register, one payment, and Jackfield is yours to paddle."
+        primary={{ label: 'Create your account', href: '/register' }}
+        secondary={{ label: 'Ask us anything first', href: '/contact' }}
+      />
     </>
   )
 }

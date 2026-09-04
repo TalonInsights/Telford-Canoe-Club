@@ -14,6 +14,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
 import { Container } from '@/components/layout/container'
+import { ClubBadge } from '@/components/site/brand'
 import { Button } from '@/components/ui/button'
 
 let heroRevealPlayed = false
@@ -54,6 +55,12 @@ export function Hero() {
           ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.4 } }
           : {})}
       />
+      {/* DR-09: the badge as a watermark fills the empty right two-thirds at
+          desktop — line art at 12% so the water still reads through it. */}
+      <ClubBadge
+        detailed
+        className="pointer-events-none absolute right-[6%] bottom-[14%] hidden size-80 text-white/[0.12] lg:block xl:size-96"
+      />
       <Container className="relative z-10 pb-14 md:pb-20">
         <div className="max-w-[40rem] lg:w-2/3">
           <motion.h1 className="tcc-reveal-guarantee" {...rise(0)}>
@@ -71,11 +78,7 @@ export function Hero() {
             <Button asChild variant="signal" size="lg">
               <Link href="/join">Join the club</Link>
             </Button>
-            <Button
-              asChild
-              size="lg"
-              className="border border-white/40 bg-white/10 text-white hover:bg-white/20"
-            >
+            <Button asChild variant="inverse" size="lg">
               <Link href="/events">When we paddle</Link>
             </Button>
           </motion.div>

@@ -5,6 +5,7 @@ import { FullGrid } from '@/components/layout/grids'
 import { PageHero } from '@/components/layout/page-hero'
 import { Section } from '@/components/layout/section'
 import { SportCard } from '@/components/site/cards'
+import { CtaBand } from '@/components/site/cta-band'
 import { Button } from '@/components/ui/button'
 import { getSportCards, IMAGES } from '@/lib/site-data'
 
@@ -77,16 +78,12 @@ export default function PaddlesportsPage() {
           ))}
         </FullGrid>
       </Section>
-      <Section tone="deep" spacing="tight" title="Ready to get on the water?">
-        <div className="flex flex-wrap gap-3">
-          <Button asChild variant="signal">
-            <Link href="/join">Join the club</Link>
-          </Button>
-          <Button asChild className="border border-white/40 bg-white/10 text-white hover:bg-white/20">
-            <Link href="/events">See what&apos;s on</Link>
-          </Button>
-        </div>
-      </Section>
+      <CtaBand
+        title="Ready to get on the water?"
+        intro="One membership covers every discipline — club boats and kit included while you learn."
+        primary={{ label: 'Join the club', href: '/join' }}
+        secondary={{ label: "See what's on", href: '/events' }}
+      />
     </>
   )
 }

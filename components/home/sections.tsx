@@ -6,13 +6,24 @@
  * settings gates (HOME-04). Layouts reuse the three §3.4 shapes only.
  */
 
-import { Bath, CalendarDays, Container as ContainerIcon, SquareParking, Warehouse } from 'lucide-react'
+import {
+  Bath,
+  CalendarDays,
+  Container as ContainerIcon,
+  GraduationCap,
+  SquareParking,
+  Warehouse,
+  Waves,
+  type LucideIcon,
+} from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
 import { FullGrid, Split75 } from '@/components/layout/grids'
 import { Section } from '@/components/layout/section'
 import { NewsCard, SportCard } from '@/components/site/cards'
+import { CtaBand } from '@/components/site/cta-band'
+import { FeatureCard } from '@/components/site/feature-card'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
 import { formatDate, formatDateTimeRange, formatMoneyGBP } from '@/lib/format'
@@ -22,7 +33,7 @@ import { IMAGES } from '@/lib/site-data'
 /* 3 · The anomaly — foam */
 export function Anomaly() {
   return (
-    <Section tone="foam" title="A rapid where no rapid should be">
+    <Section tone="foam" kicker="The venue" title="A rapid where no rapid should be">
       <Split75
         side="right"
         media={
@@ -55,7 +66,7 @@ export function Anomaly() {
 }
 
 /* 4 · Inside the gate — white */
-const facilityIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+const facilityIcons: Record<string, LucideIcon> = {
   parking: SquareParking,
   toilets: Bath,
   containers: ContainerIcon,
@@ -73,22 +84,19 @@ export function InsideTheGate({
   return (
     <Section
       tone="white"
+      kicker="Facilities"
       title="Inside the gate"
       intro="A members' site on the bank of the Severn — built up over decades, looked after by the people who paddle here."
     >
       <FullGrid maxColumns={3}>
-        {shown.map((f) => {
-          const Icon = facilityIcons[f.key] ?? ContainerIcon
-          return (
-            <div key={f.key} className="flex h-full flex-col rounded-xl border border-stone bg-card p-5">
-              <span className="flex size-11 items-center justify-center rounded-lg bg-foam">
-                <Icon className="size-5 text-river" aria-hidden="true" />
-              </span>
-              <h3 className="mt-3 text-lg">{f.title}</h3>
-              <p className="mt-1 text-sm text-ink-muted">{f.description}</p>
-            </div>
-          )
-        })}
+        {shown.map((f) => (
+          <FeatureCard
+            key={f.key}
+            icon={facilityIcons[f.key] ?? ContainerIcon}
+            title={f.title}
+            body={f.description}
+          />
+        ))}
       </FullGrid>
     </Section>
   )
@@ -97,7 +105,7 @@ export function InsideTheGate({
 /* 5 · The rapid — foam */
 export function TheRapid() {
   return (
-    <Section tone="foam" title="The rapid changes with the river">
+    <Section tone="foam" kicker="The water" title="The rapid changes with the river">
       <Split75
         side="left"
         media={
@@ -133,6 +141,7 @@ export function PaddleYourWay({ sports }: { sports: Sport[] }) {
   return (
     <Section
       tone="white"
+      kicker="Disciplines"
       title="Paddle your way"
       intro="Three ways onto the water, one membership — club boats and kit included while you find your feet."
     >
@@ -155,14 +164,17 @@ export function PaddleYourWay({ sports }: { sports: Sport[] }) {
 /* 7 · Sessions — foam */
 const sessionCards = [
   {
+    icon: Waves,
     title: 'Club evening paddles',
     body: 'Summer Thursdays, 5:30–9pm on our own water — levels permitting. Turn up, get changed, get on.',
   },
   {
+    icon: Bath,
     title: 'Pool sessions',
     body: 'Warm-water skills through the colder months — rolling practice and boat handling.',
   },
   {
+    icon: GraduationCap,
     title: 'Coaching and freestyle',
     body: 'Coached sessions across the year, from first strokes to playing the wave.',
   },
@@ -172,6 +184,7 @@ export function Sessions() {
   return (
     <Section
       tone="foam"
+      kicker="Sessions"
       title="When we paddle"
       intro="Regular sessions through the year, shaped by the seasons and the river."
       action={
@@ -182,10 +195,7 @@ export function Sessions() {
     >
       <FullGrid maxColumns={3}>
         {sessionCards.map((s) => (
-          <div key={s.title} className="flex h-full flex-col rounded-xl border border-stone bg-card p-5">
-            <h3 className="text-lg">{s.title}</h3>
-            <p className="mt-1 text-sm text-ink-muted">{s.body}</p>
-          </div>
+          <FeatureCard key={s.title} icon={s.icon} title={s.title} body={s.body} />
         ))}
       </FullGrid>
     </Section>
@@ -197,6 +207,7 @@ export function WhatsOn({ events }: { events: HomeEvent[] }) {
   return (
     <Section
       tone="white"
+      kicker="Events"
       title="What's on"
       action={
         <Button asChild variant="secondary">
@@ -237,23 +248,14 @@ export function WhatsOn({ events }: { events: HomeEvent[] }) {
 /* 9 · Keeping the site open — deep */
 export function KeepingSiteOpen() {
   return (
-    <Section
-      tone="deep"
+    <CtaBand
+      spacing="default"
+      kicker="Membership"
       title="A club that keeps its own gate open"
       intro="Having our own stretch of river is what makes this club special — and it stays ours because members keep it so. Membership fees and volunteer hands are what hold the lease and keep the gate open."
-    >
-      <div className="flex flex-wrap gap-3">
-        <Button asChild variant="signal">
-          <Link href="/join">Become a member</Link>
-        </Button>
-        <Button
-          asChild
-          className="border border-white/40 bg-white/10 text-white hover:bg-white/20"
-        >
-          <Link href="/about/committee">Meet the committee</Link>
-        </Button>
-      </div>
-    </Section>
+      primary={{ label: 'Become a member', href: '/join' }}
+      secondary={{ label: 'Meet the committee', href: '/about/committee' }}
+    />
   )
 }
 
@@ -262,6 +264,7 @@ export function LatestNews({ posts }: { posts: HomePost[] }) {
   return (
     <Section
       tone="foam"
+      kicker="News"
       title="Latest from the club"
       action={
         <Button asChild variant="secondary">
@@ -290,7 +293,7 @@ export function LatestNews({ posts }: { posts: HomePost[] }) {
 /* 11 · Join band — deep */
 export function JoinBand({ settings }: { settings: SiteSettings }) {
   return (
-    <Section tone="deep" spacing="tight" title="Join Telford Canoe Club">
+    <Section tone="deep" decor="arch" spacing="tight" title="Join Telford Canoe Club">
       <div className="flex flex-wrap items-center justify-between gap-6">
         <div>
           <p className="flex flex-wrap gap-x-6 gap-y-1 font-heading text-xl font-semibold">

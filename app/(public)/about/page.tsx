@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Split75 } from '@/components/layout/grids'
 import { PageHero } from '@/components/layout/page-hero'
 import { Section } from '@/components/layout/section'
+import { CtaBand } from '@/components/site/cta-band'
 import { Timeline } from '@/components/site/timeline'
 import { Button } from '@/components/ui/button'
 import { IMAGES } from '@/lib/site-data'
@@ -117,16 +118,12 @@ export default function AboutPage() {
           </div>
         </div>
       </Section>
-      <Section tone="deep" spacing="tight" title="Be part of the next chapter">
-        <div className="flex flex-wrap gap-3">
-          <Button asChild variant="signal">
-            <Link href="/join">Join the club</Link>
-          </Button>
-          <Button asChild className="border border-white/40 bg-white/10 text-white hover:bg-white/20">
-            <Link href="/contact">Get in touch</Link>
-          </Button>
-        </div>
-      </Section>
+      <CtaBand
+        title="Be part of the next chapter"
+        intro="Sixty years in, the club is still run by the people who paddle here."
+        primary={{ label: 'Join the club', href: '/join' }}
+        secondary={{ label: 'Get in touch', href: '/contact' }}
+      />
     </>
   )
 }

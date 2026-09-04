@@ -1,10 +1,9 @@
 import Image from 'next/image'
-import Link from 'next/link'
 
 import { Split75 } from '@/components/layout/grids'
 import { PageHero } from '@/components/layout/page-hero'
 import { Section } from '@/components/layout/section'
-import { Button } from '@/components/ui/button'
+import { CtaBand } from '@/components/site/cta-band'
 
 /**
  * Shared shape for the three sport pages: PageHero, then alternating 7/5
@@ -37,7 +36,13 @@ export function SportPage({
 }) {
   return (
     <>
-      <PageHero title={title} intro={intro} image={heroImage} imageAlt={heroImageAlt} />
+      <PageHero
+        title={title}
+        intro={intro}
+        image={heroImage}
+        imageAlt={heroImageAlt}
+        crumbs={[{ title: 'Paddlesports', href: '/paddlesports' }]}
+      />
       {sections.map((section, i) => (
         <Section key={i} tone={i % 2 === 0 ? 'white' : 'foam'}>
           <Split75
@@ -68,16 +73,12 @@ export function SportPage({
           </Split75>
         </Section>
       ))}
-      <Section tone="deep" spacing="tight" title={closing}>
-        <div className="flex flex-wrap gap-3">
-          <Button asChild variant="signal">
-            <Link href="/join">Join the club</Link>
-          </Button>
-          <Button asChild className="border border-white/40 bg-white/10 text-white hover:bg-white/20">
-            <Link href="/paddlesports">All paddlesports</Link>
-          </Button>
-        </div>
-      </Section>
+      <CtaBand
+        title={closing}
+        intro="One membership covers every discipline — club boats and kit included while you learn."
+        primary={{ label: 'Join the club', href: '/join' }}
+        secondary={{ label: 'All paddlesports', href: '/paddlesports' }}
+      />
     </>
   )
 }

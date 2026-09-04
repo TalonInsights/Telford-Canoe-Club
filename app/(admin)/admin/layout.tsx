@@ -33,7 +33,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         footer={
           <form action={signOutAction}>
             <p className="mb-2 truncate text-micro text-stone">{session.email}</p>
-            <Button type="submit" size="sm" className="w-full border border-white/30 bg-white/10 text-white hover:bg-white/20">
+            <Button type="submit" variant="inverse" size="sm" className="w-full">
               Log out
             </Button>
           </form>
