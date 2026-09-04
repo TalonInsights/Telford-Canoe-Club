@@ -15,9 +15,17 @@ export type MyMembership = MembershipRow & {
 export async function getMyMemberships(): Promise<MyMembership[]> {
   if (!isSupabaseConfigured()) return []
   const supabase = await createClient()
+  // Scope to the signed-in person explicitly. RLS returns own rows for members
+  // but ALL rows for committee/admin — so a committee member's own membership
+  // page must filter by user, not lean on RLS.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return []
   const { data: memberships } = await supabase
     .from('memberships')
     .select('*, membership_periods(label, ends_on), membership_members(*)')
+    .eq('primary_user_id', user.id)
     .order('created_at', { ascending: false })
   return (memberships ?? []).map((m) => {
     const period = m.membership_periods as unknown as { label: string; ends_on: string } | null
@@ -81,9 +89,15 @@ export type MyBooking = Tables<'event_bookings'> & {
 export async function getMyBookings(): Promise<MyBooking[]> {
   if (!isSupabaseConfigured()) return []
   const supabase = await createClient()
+  // Own bookings only — same reason as getMyMemberships (committee sees all via RLS).
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return []
   const { data } = await supabase
     .from('event_bookings')
     .select('*, events(slug, title, starts_at, ends_at, location_name)')
+    .eq('user_id', user.id)
     .neq('status', 'cancelled')
     .order('created_at', { ascending: false })
   return (data ?? []).map((b) => ({
