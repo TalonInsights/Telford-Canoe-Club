@@ -104,6 +104,11 @@ wiring-verified; visual play-through needs a foreground browser — first item o
 
 ---
 
+## Design refresh (4 Sep 2026 — client order: badge supplied, "complete creative freedom … same theme, pages symmetrical")
+Plan: `docs/plans/design-refresh.md`. The §3 system is unchanged; this adds the brand and rhythm inside it.
+- [x] DR-01 brand mark — `components/site/brand.tsx` (`ClubBadge` plain/detailed, `BridgeArch`, `Wordmark`), drawn from the badge; `/dev/brand` proving page (goes with the other /dev routes at P12-02) · [x] DR-02 `app/icon.svg` replaces the framework favicon, `apple-icon` + `opengraph-image` generated from the badge, `metadataBase` + OG defaults · [x] DR-03 header: badge + stacked wordmark + hairline; sheet to match · [x] DR-04 footer: badge column, one-line description, arch motif · [x] DR-05 `Section` gains `kicker` + `decor="arch"`; `CtaBand` replaces the six ad-hoc deep bands (home, about, venue, join, paddlesports, sport pages); `Button variant="inverse"` replaces the repeated white-on-deep class string · [x] DR-06 `PageHero`: gradient overlay instead of the flat wash, arch motif when image-less, `crumbs` → breadcrumb trail on every page below the top level (§3.5 rule 5 — was missing everywhere) · [x] DR-07 auth shell: `AuthPanel` beside the form at ≥1024px, brand strip above it below · [x] DR-08 `FeatureCard` (+ `step` variant) replaces five hand-rolled icon cards · [x] DR-09 home hero badge watermark (lg+) · [x] DR-10 badge in admin rail, checkout header, 404
+- **Club artwork:** the badge is an SVG rendition of Simon's logo. When the original file arrives, drop it in `public/brand/` and swap it in `brand.tsx` — nothing else changes.
+
 ## Decisions taken (Talon authorised overruling with evidence, 31 Aug 2026)
 1. **Next.js 16** instead of 15 — latest major at build start; avoids mid-contract upgrade. (SPEC-VALIDATION §5)
 2. **`--tcc-signal-soft: #FCEEEB`** replacing `#FBE8E4` — measured AA fix, 4.64:1. (§1.5)
