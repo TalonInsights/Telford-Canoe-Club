@@ -1328,9 +1328,22 @@ export type Database = {
         Args: { p_membership_id: string; p_order_ref: string }
         Returns: undefined
       }
+      book_event: {
+        Args: { p_event_id: string }
+        Returns: Database["public"]["Enums"]["booking_status"]
+      }
+      cancel_booking: { Args: { p_booking_id: string }; Returns: Json }
       complete_online_payment: {
         Args: { p_capture_ref: string; p_order_ref: string }
         Returns: string
+      }
+      event_attendance: {
+        Args: { p_event_id: string }
+        Returns: {
+          capacity: number
+          confirmed: number
+          waitlist: number
+        }[]
       }
       has_role: {
         Args: { min: Database["public"]["Enums"]["app_role"]; uid: string }

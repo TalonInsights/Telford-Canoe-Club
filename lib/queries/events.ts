@@ -1,8 +1,9 @@
 import { isSupabaseConfigured } from '@/lib/supabase/configured'
 import { createClient } from '@/lib/supabase/server'
-import type { Tables } from '@/lib/queries/helpers'
+import type { Enums, Tables } from '@/lib/queries/helpers'
 
 export type EventRow = Tables<'events'>
+export type BookingStatus = Enums<'booking_status'>
 
 /** Seed events shown until the database is connected — same three as supabase/seed.sql. */
 function seedEvents(): EventRow[] {
@@ -107,4 +108,113 @@ export async function getEventBySlug(slug: string): Promise<EventRow | null> {
   const supabase = await createClient()
   const { data } = await supabase.from('events').select('*').eq('slug', slug).maybeSingle()
   return data
+}
+
+/* ------------------------------------------------------------------ P5 — attendance */
+
+export type MyBooking = { id: string; status: BookingStatus }
+
+/** The signed-in person's own row for an event (explicitly user-scoped, never RLS-scoped). */
+export async function getMyBookingForEvent(eventId: string): Promise<MyBooking | null> {
+  if (!isSupabaseConfigured()) return null
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return null
+  const { data } = await supabase
+    .from('event_bookings')
+    .select('id, status')
+    .eq('event_id', eventId)
+    .eq('user_id', user.id)
+    .maybeSingle()
+  return data ? { id: data.id, status: data.status } : null
+}
+
+export type Attendance = { confirmed: number; waitlist: number; capacity: number | null }
+
+/** Live counts via the definer function — numbers only, safe for anyone. */
+export async function getEventAttendance(eventId: string): Promise<Attendance | null> {
+  if (!isSupabaseConfigured()) return null
+  const supabase = await createClient()
+  const { data } = await supabase.rpc('event_attendance', { p_event_id: eventId })
+  const row = Array.isArray(data) ? data[0] : data
+  if (!row) return null
+  return {
+    confirmed: row.confirmed ?? 0,
+    waitlist: row.waitlist ?? 0,
+    capacity: row.capacity ?? null,
+  }
+}
+
+/* ------------------------------------------------------------------ P5 — committee */
+
+export type AdminEventRow = EventRow & { confirmed: number; waitlist: number }
+
+/** Every event, every status, with confirmed/waitlist counts — committee only (RLS). */
+export async function getAdminEvents(): Promise<AdminEventRow[]> {
+  if (!isSupabaseConfigured()) return []
+  const supabase = await createClient()
+  const [{ data: events }, { data: bookings }] = await Promise.all([
+    supabase.from('events').select('*').order('starts_at', { ascending: false }),
+    supabase
+      .from('event_bookings')
+      .select('event_id, status')
+      .in('status', ['booked', 'attended', 'waitlist']),
+  ])
+  const counts = new Map<string, { confirmed: number; waitlist: number }>()
+  for (const b of bookings ?? []) {
+    const c = counts.get(b.event_id) ?? { confirmed: 0, waitlist: 0 }
+    if (b.status === 'waitlist') c.waitlist += 1
+    else c.confirmed += 1
+    counts.set(b.event_id, c)
+  }
+  return (events ?? []).map((e) => ({ ...e, ...(counts.get(e.id) ?? { confirmed: 0, waitlist: 0 }) }))
+}
+
+export async function getEventById(id: string): Promise<EventRow | null> {
+  if (!isSupabaseConfigured()) return null
+  const supabase = await createClient()
+  const { data } = await supabase.from('events').select('*').eq('id', id).maybeSingle()
+  return data
+}
+
+export type AttendeeRow = Tables<'event_bookings'> & {
+  first_name: string
+  last_name: string
+  email: string
+  phone: string | null
+  is_junior: boolean
+}
+
+/** Who is coming — every booking row for the event with the person attached. */
+export async function getEventAttendees(eventId: string): Promise<AttendeeRow[]> {
+  if (!isSupabaseConfigured()) return []
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('event_bookings')
+    .select('*, profiles(first_name, last_name, email, phone, date_of_birth)')
+    .eq('event_id', eventId)
+    .order('booked_at', { ascending: true })
+  const cutoff = new Date()
+  cutoff.setFullYear(cutoff.getFullYear() - 18)
+  return (data ?? []).map((b) => {
+    const { profiles, ...booking } = b
+    const p = profiles as unknown as {
+      first_name: string
+      last_name: string
+      email: string
+      phone: string | null
+      date_of_birth: string | null
+    } | null
+    const dob = p?.date_of_birth ? new Date(p.date_of_birth) : null
+    return {
+      ...booking,
+      first_name: p?.first_name ?? '',
+      last_name: p?.last_name ?? '',
+      email: p?.email ?? '',
+      phone: p?.phone ?? null,
+      is_junior: Boolean(dob && dob > cutoff),
+    }
+  })
 }
