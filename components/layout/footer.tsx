@@ -8,7 +8,7 @@
 import Link from 'next/link'
 
 import { Container } from '@/components/layout/container'
-import { PaddleGlyph } from '@/components/site/image-fallback'
+import { BridgeArch, ClubBadge, Wordmark } from '@/components/site/brand'
 
 const explore = [
   { title: 'Paddlesports', href: '/paddlesports' },
@@ -53,14 +53,19 @@ function FooterColumn({ title, links }: { title: string; links: { title: string;
 
 export function Footer() {
   return (
-    <footer className="bg-deep text-white">
-      <Container>
+    <footer className="relative overflow-hidden bg-deep text-white">
+      <BridgeArch className="absolute -right-24 -bottom-6 hidden w-[640px] text-white/[0.07] lg:block" />
+      <Container className="relative">
         <div className="grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <div className="flex items-center gap-2.5 font-heading text-lg font-semibold">
-              <PaddleGlyph className="size-7" />
-              Telford Canoe Club
-            </div>
+            <Link href="/" className="inline-flex items-center gap-3" aria-label="Telford Canoe Club home">
+              <ClubBadge className="size-12" />
+              <Wordmark />
+            </Link>
+            <p className="mt-4 max-w-[36ch] text-sm text-stone">
+              A members&apos; paddlesports club on its own stretch of the Severn — whitewater,
+              freestyle and paddleboarding since the 1960s.
+            </p>
             <address className="mt-3 text-sm text-stone not-italic">
               Jackfield Rapids
               <br />

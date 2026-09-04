@@ -14,7 +14,7 @@ import { Menu } from 'lucide-react'
 import { useState } from 'react'
 
 import { Container } from '@/components/layout/container'
-import { PaddleGlyph } from '@/components/site/image-fallback'
+import { ClubBadge, Wordmark } from '@/components/site/brand'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -80,15 +80,12 @@ export function Header({ items = siteNav, cta }: { items?: NavItem[]; cta?: Reac
   )
 
   return (
-    <header className="sticky top-0 z-40 bg-deep text-white">
+    <header className="sticky top-0 z-40 border-b border-white/10 bg-deep text-white">
       <Container>
         <div className="flex h-16 items-center justify-between gap-4">
-          <Link
-            href="/"
-            className="flex min-h-11 items-center gap-2.5 font-heading text-lg font-semibold"
-          >
-            <PaddleGlyph className="size-7 text-white" />
-            <span>Telford Canoe Club</span>
+          <Link href="/" className="flex min-h-11 items-center gap-3" aria-label="Telford Canoe Club home">
+            <ClubBadge className="size-10" />
+            <Wordmark />
           </Link>
 
           <nav aria-label="Main" className="hidden items-center gap-5 text-sm lg:flex">
@@ -120,9 +117,9 @@ export function Header({ items = siteNav, cta }: { items?: NavItem[]; cta?: Reac
             </SheetTrigger>
             <SheetContent side="right" className="w-80 border-river bg-deep text-white">
               <SheetHeader>
-                <SheetTitle className="flex items-center gap-2.5 text-white">
-                  <PaddleGlyph className="size-6 text-white" />
-                  Telford Canoe Club
+                <SheetTitle className="flex items-center gap-3 text-white">
+                  <ClubBadge className="size-9" />
+                  <Wordmark size="sm" />
                 </SheetTitle>
               </SheetHeader>
               <nav aria-label="Main" className="flex flex-col gap-1 px-4">

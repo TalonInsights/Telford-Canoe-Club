@@ -26,6 +26,7 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 
+import { ClubBadge } from '@/components/site/brand'
 import { cn } from '@/lib/utils'
 
 /**
@@ -69,7 +70,11 @@ export function SidebarRail({
 
   return (
     <aside className="sticky top-0 hidden h-svh w-60 shrink-0 flex-col bg-deep text-white lg:flex">
-      <Link href={rootHref} className="flex min-h-16 items-center px-5 font-heading font-semibold">
+      <Link
+        href={rootHref}
+        className="flex min-h-16 items-center gap-3 border-b border-white/10 px-5 font-heading font-semibold"
+      >
+        <ClubBadge className="size-8" />
         {title}
       </Link>
       <nav aria-label={title} className="flex grow flex-col gap-5 overflow-y-auto px-3 pb-4">

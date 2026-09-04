@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 import { Footer } from '@/components/layout/footer'
 import { Header } from '@/components/layout/header'
-import { PaddleGlyph } from '@/components/site/image-fallback'
+import { ClubBadge } from '@/components/site/brand'
 import { Button } from '@/components/ui/button'
 
 export default function NotFound() {
@@ -11,7 +11,7 @@ export default function NotFound() {
       <Header />
       <main className="flex grow items-center justify-center bg-foam px-4 py-section">
         <div className="max-w-md text-center">
-          <PaddleGlyph className="mx-auto size-14 text-river" />
+          <ClubBadge className="mx-auto size-20 text-deep" />
           <h1 className="mt-4">This page has drifted off downstream</h1>
           <p className="mt-3 text-ink-muted">
             The address might have changed when we rebuilt the site, or the page may never have
