@@ -10,12 +10,43 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { ChevronDown, type LucideIcon } from 'lucide-react'
+import {
+  CalendarDays,
+  ChevronDown,
+  ClipboardList,
+  FileText,
+  Home,
+  IdCard,
+  Megaphone,
+  Settings2,
+  UserRound,
+  UserRoundPlus,
+  Users,
+  type LucideIcon,
+} from 'lucide-react'
 import { useState } from 'react'
 
 import { cn } from '@/lib/utils'
 
-export type RailLink = { title: string; href: string; icon?: LucideIcon }
+/**
+ * Icons are looked up by name, not passed as props — a Server Component
+ * cannot hand a function (a lucide component) to a Client Component across
+ * the RSC boundary (React 19). Layouts pass `icon: 'home'`; we resolve it here.
+ */
+const ICONS: Record<string, LucideIcon> = {
+  home: Home,
+  id: IdCard,
+  calendar: CalendarDays,
+  file: FileText,
+  megaphone: Megaphone,
+  user: UserRound,
+  users: Users,
+  'user-plus': UserRoundPlus,
+  clipboard: ClipboardList,
+  settings: Settings2,
+}
+
+export type RailLink = { title: string; href: string; icon?: string }
 export type RailGroup = { title: string; links: RailLink[] }
 
 function railActive(pathname: string, href: string, exact: boolean) {
@@ -62,6 +93,7 @@ export function SidebarRail({
                 <ul className="mt-1 space-y-0.5">
                   {group.links.map((link) => {
                     const active = railActive(pathname, link.href, link.href === rootHref)
+                    const Icon = link.icon ? ICONS[link.icon] : undefined
                     return (
                       <li key={link.href}>
                         <Link
@@ -74,7 +106,7 @@ export function SidebarRail({
                               : 'text-stone hover:bg-river/50 hover:text-white'
                           )}
                         >
-                          {link.icon && <link.icon aria-hidden="true" className="size-4 shrink-0" />}
+                          {Icon && <Icon aria-hidden="true" className="size-4 shrink-0" />}
                           {link.title}
                         </Link>
                       </li>
@@ -102,6 +134,7 @@ export function BottomTabBar({ links, rootHref }: { links: RailLink[]; rootHref:
       <ul className="flex h-14">
         {links.slice(0, 5).map((link) => {
           const active = railActive(pathname, link.href, link.href === rootHref)
+          const Icon = link.icon ? ICONS[link.icon] : undefined
           return (
             <li key={link.href} className="min-w-0 flex-1">
               <Link
@@ -112,11 +145,8 @@ export function BottomTabBar({ links, rootHref }: { links: RailLink[]; rootHref:
                   active ? 'text-white' : 'text-stone'
                 )}
               >
-                {link.icon && (
-                  <link.icon
-                    aria-hidden="true"
-                    className={cn('size-5', active && 'text-signal-soft')}
-                  />
+                {Icon && (
+                  <Icon aria-hidden="true" className={cn('size-5', active && 'text-signal-soft')} />
                 )}
                 <span className="max-w-full truncate px-1">{link.title}</span>
               </Link>

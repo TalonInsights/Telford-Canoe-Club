@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { CalendarDays, FileText, Home, IdCard, Megaphone, UserRound } from 'lucide-react'
 
 import { BottomTabBar, type RailLink } from '@/components/admin/shell-nav'
 import { Footer } from '@/components/layout/footer'
@@ -11,12 +10,12 @@ import { signOutAction } from '@/lib/actions/auth'
 import { isSupabaseConfigured, NOT_CONFIGURED_MESSAGE } from '@/lib/supabase/configured'
 
 const links: RailLink[] = [
-  { title: 'Overview', href: '/members', icon: Home },
-  { title: 'Membership', href: '/members/membership', icon: IdCard },
-  { title: 'Events', href: '/members/events', icon: CalendarDays },
-  { title: 'Documents', href: '/members/documents', icon: FileText },
-  { title: 'Notices', href: '/members/notices', icon: Megaphone },
-  { title: 'Profile', href: '/members/profile', icon: UserRound },
+  { title: 'Overview', href: '/members', icon: 'home' },
+  { title: 'Membership', href: '/members/membership', icon: 'id' },
+  { title: 'Events', href: '/members/events', icon: 'calendar' },
+  { title: 'Documents', href: '/members/documents', icon: 'file' },
+  { title: 'Notices', href: '/members/notices', icon: 'megaphone' },
+  { title: 'Profile', href: '/members/profile', icon: 'user' },
 ]
 
 export default async function MembersLayout({ children }: { children: React.ReactNode }) {

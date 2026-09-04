@@ -1,6 +1,4 @@
 import type { Metadata } from 'next'
-import { ClipboardList, Home, IdCard, Settings2, UserRoundPlus, Users } from 'lucide-react'
-
 import { BottomTabBar, SidebarRail, type RailLink } from '@/components/admin/shell-nav'
 import { Button } from '@/components/ui/button'
 import { requireRole } from '@/lib/auth/guards'
@@ -9,12 +7,12 @@ import { signOutAction } from '@/lib/actions/auth'
 export const metadata: Metadata = { title: { default: 'Admin', template: '%s — TCC admin' } }
 
 const links: RailLink[] = [
-  { title: 'Overview', href: '/admin', icon: Home },
-  { title: 'Members', href: '/admin/members', icon: Users },
-  { title: 'Add a membership', href: '/admin/members/new', icon: UserRoundPlus },
-  { title: 'Committee', href: '/admin/committee', icon: IdCard },
-  { title: 'Audit log', href: '/admin/audit', icon: ClipboardList },
-  { title: 'Settings', href: '/admin/settings', icon: Settings2 },
+  { title: 'Overview', href: '/admin', icon: 'home' },
+  { title: 'Members', href: '/admin/members', icon: 'users' },
+  { title: 'Add a membership', href: '/admin/members/new', icon: 'user-plus' },
+  { title: 'Committee', href: '/admin/committee', icon: 'id' },
+  { title: 'Audit log', href: '/admin/audit', icon: 'clipboard' },
+  { title: 'Settings', href: '/admin/settings', icon: 'settings' },
 ]
 
 const tabBarLinks = [links[0], links[1], links[3], links[5]]
