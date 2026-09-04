@@ -6,6 +6,7 @@ import { Check, Search, UserRoundPlus } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { adminCreateMembershipAction } from '@/lib/actions/membership'
+import type { FamilyMemberInput } from '@/lib/membership/family'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Field } from '@/components/ui/form-field'
@@ -25,6 +26,13 @@ type Period = { id: string; label: string; isCurrent: boolean }
 type TierKey = 'adult' | 'junior' | 'family'
 type Source = 'manual_cash' | 'manual_bank' | 'complimentary' | 'imported'
 
+const emptyMember = (): FamilyMemberInput => ({
+  name: '',
+  dob: '',
+  emergencyContactName: '',
+  emergencyContactPhone: '',
+})
+
 export function AddMembershipForm({
   people,
   periods,
@@ -43,7 +51,9 @@ export function AddMembershipForm({
   const [amount, setAmount] = useState<string>('')
   const [activate, setActivate] = useState(true)
   const [note, setNote] = useState('')
-  const [familyNames, setFamilyNames] = useState<string[]>(['', ''])
+  const [family, setFamily] = useState<FamilyMemberInput[]>([emptyMember()])
+  const setMember = (i: number, patch: Partial<FamilyMemberInput>) =>
+    setFamily((fs) => fs.map((f, j) => (j === i ? { ...f, ...patch } : f)))
   const [pending, startTransition] = useTransition()
 
   const matches = useMemo(() => {
@@ -69,7 +79,7 @@ export function AddMembershipForm({
         amountPence: amount.trim() === '' && source !== 'complimentary' ? undefined : amountPence,
         activate,
         note: note || undefined,
-        familyNames: tier === 'family' ? familyNames.filter((n) => n.trim()) : [],
+        family: tier === 'family' ? family.filter((m) => m.name.trim()) : [],
       })
       if (result.ok) {
         toast.success(result.message ?? 'Membership created')
@@ -193,17 +203,60 @@ export function AddMembershipForm({
         {tier === 'family' && (
           <div className="mt-4 rounded-lg border border-river/40 bg-foam p-4">
             <p className="text-sm font-medium">Everyone else at their address</p>
-            <div className="mt-3 grid gap-3">
-              {familyNames.map((name, i) => (
-                <Field key={i} label={`Family member ${i + 1}`} htmlFor={`am-fam-${i}`} optional>
-                  <Input
-                    id={`am-fam-${i}`}
-                    value={name}
-                    onChange={(e) =>
-                      setFamilyNames((names) => names.map((n, j) => (j === i ? e.target.value : n)))
-                    }
-                  />
-                </Field>
+            <p className="mt-1 text-micro text-ink-muted">
+              Each person is their own record — a date of birth flags juniors, and each keeps their
+              own emergency contact.
+            </p>
+            <div className="mt-3 grid gap-4">
+              {family.map((member, i) => (
+                <fieldset key={i} className="grid gap-3 rounded-lg border border-stone bg-card p-3">
+                  <legend className="px-1 text-micro font-medium text-ink-muted">
+                    Family member {i + 1}
+                  </legend>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <Field label="Full name" htmlFor={`am-fam-name-${i}`}>
+                      <Input
+                        id={`am-fam-name-${i}`}
+                        value={member.name}
+                        onChange={(e) => setMember(i, { name: e.target.value })}
+                      />
+                    </Field>
+                    <Field label="Date of birth" htmlFor={`am-fam-dob-${i}`} optional>
+                      <Input
+                        id={`am-fam-dob-${i}`}
+                        type="date"
+                        value={member.dob ?? ''}
+                        onChange={(e) => setMember(i, { dob: e.target.value })}
+                      />
+                    </Field>
+                    <Field label="Emergency contact name" htmlFor={`am-fam-ecn-${i}`} optional>
+                      <Input
+                        id={`am-fam-ecn-${i}`}
+                        value={member.emergencyContactName ?? ''}
+                        onChange={(e) => setMember(i, { emergencyContactName: e.target.value })}
+                      />
+                    </Field>
+                    <Field label="Emergency contact phone" htmlFor={`am-fam-ecp-${i}`} optional>
+                      <Input
+                        id={`am-fam-ecp-${i}`}
+                        type="tel"
+                        value={member.emergencyContactPhone ?? ''}
+                        onChange={(e) => setMember(i, { emergencyContactPhone: e.target.value })}
+                      />
+                    </Field>
+                  </div>
+                  {family.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="justify-self-start"
+                      onClick={() => setFamily((fs) => fs.filter((_, j) => j !== i))}
+                    >
+                      Remove
+                    </Button>
+                  )}
+                </fieldset>
               ))}
             </div>
             <Button
@@ -211,7 +264,7 @@ export function AddMembershipForm({
               variant="ghost"
               size="sm"
               className="mt-2"
-              onClick={() => setFamilyNames((names) => [...names, ''])}
+              onClick={() => setFamily((fs) => [...fs, emptyMember()])}
             >
               Add another person
             </Button>

@@ -5,6 +5,7 @@ import { z } from 'zod'
 
 import { getSession } from '@/lib/auth/guards'
 import { sendMembershipActivatedEmails } from '@/lib/email/membership'
+import { familyMemberSchema, familyPayload, type FamilyMemberInput } from '@/lib/membership/family'
 import { isOnlinePaymentOn } from '@/lib/payments/mode'
 import { getPaymentProvider } from '@/lib/payments/provider'
 import { getClubSettings } from '@/lib/queries/settings'
@@ -19,7 +20,7 @@ const tierLabel: Record<string, string> = { adult: 'Adult', junior: 'Junior', fa
 
 const startSchema = z.object({
   tier: z.enum(['adult', 'junior', 'family']),
-  familyNames: z.array(z.string().trim().max(120)).max(12).default([]),
+  family: z.array(familyMemberSchema).max(12).default([]),
   periodId: z.uuid().optional(),
 })
 
@@ -30,7 +31,7 @@ const startSchema = z.object({
  */
 export async function startOnlineCheckoutAction(input: {
   tier: 'adult' | 'junior' | 'family'
-  familyNames?: string[]
+  family?: FamilyMemberInput[]
   periodId?: string
 }): Promise<CheckoutResult> {
   if (!isSupabaseConfigured()) return { ok: false, message: NOT_CONFIGURED_MESSAGE }
@@ -38,7 +39,7 @@ export async function startOnlineCheckoutAction(input: {
   if (!session) return { ok: false, message: 'Log in first, then choose your membership.' }
   const parsed = startSchema.safeParse({
     tier: input.tier,
-    familyNames: input.familyNames ?? [],
+    family: input.family ?? [],
     periodId: input.periodId,
   })
   if (!parsed.success) return { ok: false, message: 'Choose a valid membership tier' }
@@ -49,11 +50,13 @@ export async function startOnlineCheckoutAction(input: {
   }
 
   const supabase = await createClient()
+  // p_family (jsonb) replaces p_family_names in migration 0019 — args cast until
+  // types are regenerated against the migrated schema.
   const { data: membershipId, error } = await supabase.rpc('request_membership', {
     p_tier: parsed.data.tier,
-    p_family_names: parsed.data.familyNames,
+    p_family: familyPayload(parsed.data.family),
     ...(parsed.data.periodId ? { p_period_id: parsed.data.periodId } : {}),
-  })
+  } as never)
   if (error || !membershipId) return { ok: false, message: error?.message ?? 'Could not start checkout' }
 
   return beginCheckoutFor(membershipId)

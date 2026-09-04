@@ -96,7 +96,10 @@ export default async function MyMembershipPage({
             )}
             {active.covered.length > 1 && (
               <p className="mt-2 text-sm text-ink-muted">
-                Covers: {active.covered.map((c) => c.display_name).join(', ')}
+                Covers:{' '}
+                {active.covered
+                  .map((c) => `${c.display_name}${c.is_junior ? ' (junior)' : ''}`)
+                  .join(', ')}
               </p>
             )}
             {expiringSoon && !nextPeriodRow && (

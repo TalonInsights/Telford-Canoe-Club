@@ -1,3 +1,4 @@
+import type { CoveredMember } from '@/lib/membership/family'
 import { isSupabaseConfigured } from '@/lib/supabase/configured'
 import { createClient } from '@/lib/supabase/server'
 import type { Tables } from '@/lib/queries/helpers'
@@ -81,7 +82,7 @@ export async function getMembersDirectory(): Promise<DirectoryRow[]> {
 
 export type MemberDetail = {
   profile: Tables<'profiles'>
-  memberships: (Tables<'memberships'> & { periodLabel: string; covered: string[] })[]
+  memberships: (Tables<'memberships'> & { periodLabel: string; covered: CoveredMember[] })[]
   bookings: (Tables<'event_bookings'> & { eventTitle: string | null })[]
 }
 
@@ -92,7 +93,7 @@ export async function getMemberDetail(userId: string): Promise<MemberDetail | nu
     supabase.from('profiles').select('*').eq('user_id', userId).maybeSingle(),
     supabase
       .from('memberships')
-      .select('*, membership_periods(label), membership_members(display_name)')
+      .select('*, membership_periods(label), membership_members(*)')
       .eq('primary_user_id', userId)
       .order('created_at', { ascending: false }),
     supabase
@@ -108,9 +109,7 @@ export async function getMemberDetail(userId: string): Promise<MemberDetail | nu
     memberships: (memberships ?? []).map((m) => ({
       ...m,
       periodLabel: (m.membership_periods as unknown as { label: string } | null)?.label ?? '',
-      covered: ((m.membership_members as unknown as { display_name: string }[]) ?? []).map(
-        (x) => x.display_name
-      ),
+      covered: (m.membership_members as unknown as CoveredMember[]) ?? [],
     })),
     bookings: (bookings ?? []).map((b) => ({
       ...b,

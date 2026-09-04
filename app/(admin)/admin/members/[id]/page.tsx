@@ -98,9 +98,27 @@ export default async function MemberRecordPage({ params }: { params: Promise<{ i
                   <p className="mt-1 text-micro text-ink-muted">
                     {m.paid_at ? `Paid ${formatDate(m.paid_at)} · ${m.source.replace('manual_', '')}` : 'Not paid'}
                     {m.paypal_capture_id && <> · ref {m.paypal_capture_id}</>}
-                    {m.covered.length > 1 && <> · covers {m.covered.join(', ')}</>}
                     {m.notes && <> · {m.notes}</>}
                   </p>
+                  {m.covered.length > 1 && (
+                    <div className="mt-2">
+                      <p className="text-micro font-medium text-ink-muted">Covers {m.covered.length} people</p>
+                      <ul className="mt-1 grid gap-1.5">
+                        {m.covered.map((c, i) => (
+                          <li key={i} className="flex flex-wrap items-center gap-x-2 gap-y-1 rounded-md bg-foam px-2.5 py-1.5 text-micro">
+                            <span className="font-medium text-ink">{c.display_name}</span>
+                            {c.is_junior && <Badge variant="outline">Junior</Badge>}
+                            {c.date_of_birth && <span className="text-ink-muted">b. {formatDate(c.date_of_birth)}</span>}
+                            {(c.emergency_contact_name || c.emergency_contact_phone) && (
+                              <span className="text-ink-muted">
+                                · emergency: {[c.emergency_contact_name, c.emergency_contact_phone].filter(Boolean).join(' · ')}
+                              </span>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                   <div className="mt-2 flex flex-wrap gap-2">
                     {m.status === 'pending' && (
                       <RecordPaymentButton

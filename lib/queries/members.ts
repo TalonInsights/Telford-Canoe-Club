@@ -1,3 +1,4 @@
+import type { CoveredMember } from '@/lib/membership/family'
 import { isSupabaseConfigured } from '@/lib/supabase/configured'
 import { createClient } from '@/lib/supabase/server'
 import type { Tables } from '@/lib/queries/helpers'
@@ -8,7 +9,7 @@ export type NoticeRow = Tables<'notices'>
 export type MyMembership = MembershipRow & {
   periodLabel: string
   periodEndsOn: string
-  covered: { display_name: string; is_junior: boolean }[]
+  covered: CoveredMember[]
 }
 
 export async function getMyMemberships(): Promise<MyMembership[]> {
@@ -16,7 +17,7 @@ export async function getMyMemberships(): Promise<MyMembership[]> {
   const supabase = await createClient()
   const { data: memberships } = await supabase
     .from('memberships')
-    .select('*, membership_periods(label, ends_on), membership_members(display_name, is_junior)')
+    .select('*, membership_periods(label, ends_on), membership_members(*)')
     .order('created_at', { ascending: false })
   return (memberships ?? []).map((m) => {
     const period = m.membership_periods as unknown as { label: string; ends_on: string } | null
@@ -24,7 +25,7 @@ export async function getMyMemberships(): Promise<MyMembership[]> {
       ...m,
       periodLabel: period?.label ?? '',
       periodEndsOn: period?.ends_on ?? '',
-      covered: (m.membership_members as unknown as { display_name: string; is_junior: boolean }[]) ?? [],
+      covered: (m.membership_members as unknown as CoveredMember[]) ?? [],
     }
   })
 }

@@ -5,6 +5,7 @@ import { z } from 'zod'
 
 import { requireRole, getSession } from '@/lib/auth/guards'
 import { sendMembershipActivatedEmails } from '@/lib/email/membership'
+import { familyMemberSchema, familyPayload, type FamilyMemberInput } from '@/lib/membership/family'
 import { isSupabaseConfigured, NOT_CONFIGURED_MESSAGE } from '@/lib/supabase/configured'
 import { createClient } from '@/lib/supabase/server'
 import type { ActionResult } from '@/lib/actions/auth'
@@ -21,14 +22,14 @@ const tierSchema = z.enum(['adult', 'junior', 'family'])
 
 const requestSchema = z.object({
   tier: tierSchema,
-  familyNames: z.array(z.string().trim().max(120)).max(12).default([]),
+  family: z.array(familyMemberSchema).max(12).default([]),
   periodId: z.uuid().optional(),
 })
 
 /** Self-service: creates/updates a PENDING membership; committee activates on payment. */
 export async function requestMembershipAction(input: {
   tier: 'adult' | 'junior' | 'family'
-  familyNames?: string[]
+  family?: FamilyMemberInput[]
   /** Renewal: request NEXT period while this year's membership is active. */
   periodId?: string
 }): Promise<ActionResult> {
@@ -37,17 +38,19 @@ export async function requestMembershipAction(input: {
   if (!session) return { ok: false, message: 'Log in first, then choose your membership.' }
   const parsed = requestSchema.safeParse({
     tier: input.tier,
-    familyNames: input.familyNames ?? [],
+    family: input.family ?? [],
     periodId: input.periodId,
   })
   if (!parsed.success) return { ok: false, message: 'Choose a valid membership tier' }
 
   const supabase = await createClient()
+  // p_family (jsonb) replaces p_family_names in migration 0019 — args cast until
+  // types are regenerated against the migrated schema.
   const { error } = await supabase.rpc('request_membership', {
     p_tier: parsed.data.tier,
-    p_family_names: parsed.data.familyNames,
+    p_family: familyPayload(parsed.data.family),
     ...(parsed.data.periodId ? { p_period_id: parsed.data.periodId } : {}),
-  })
+  } as never)
   if (error) return { ok: false, message: error.message }
   revalidatePath('/members/membership')
   return {
@@ -238,7 +241,7 @@ const adminCreateSchema = z.object({
   amountPence: z.number().int().min(0).max(100_000).optional(),
   activate: z.boolean().default(true),
   note: z.string().trim().max(500).optional(),
-  familyNames: z.array(z.string().trim().max(120)).max(12).default([]),
+  family: z.array(familyMemberSchema).max(12).default([]),
 })
 
 /** P9-07 — grant a membership to an existing account (walk-up cash, imports). */
@@ -250,17 +253,19 @@ export async function adminCreateMembershipAction(input: {
   amountPence?: number
   activate?: boolean
   note?: string
-  familyNames?: string[]
+  family?: FamilyMemberInput[]
 }): Promise<ActionResult> {
   await requireRole('committee')
   const parsed = adminCreateSchema.safeParse({
     ...input,
     activate: input.activate ?? true,
-    familyNames: input.familyNames ?? [],
+    family: input.family ?? [],
   })
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message ?? 'Check the form' }
 
   const supabase = await createClient()
+  // p_family (jsonb) replaces p_family_names in migration 0019 — args cast until
+  // types are regenerated against the migrated schema.
   const { error } = await supabase.rpc('admin_create_membership', {
     p_user_id: parsed.data.userId,
     p_tier: parsed.data.tier,
@@ -269,8 +274,8 @@ export async function adminCreateMembershipAction(input: {
     ...(parsed.data.amountPence !== undefined ? { p_amount_pence: parsed.data.amountPence } : {}),
     p_activate: parsed.data.activate,
     ...(parsed.data.note ? { p_note: parsed.data.note } : {}),
-    p_family_names: parsed.data.familyNames,
-  })
+    p_family: familyPayload(parsed.data.family),
+  } as never)
   if (error) return { ok: false, message: error.message }
   revalidatePath('/admin/members')
   revalidatePath('/admin')
