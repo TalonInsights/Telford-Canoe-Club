@@ -33,8 +33,8 @@ export function ContactForm() {
 
   if (sent) {
     return (
-      <div className="rounded-xl border border-success/30 bg-card p-6">
-        <h2 className="text-xl text-success">Message sent</h2>
+      <div className="rounded-lg border border-success/30 bg-foam p-5" role="status">
+        <p className="font-heading text-lg font-semibold text-success">Message sent</p>
         <p className="mt-2 text-sm text-ink-muted">{sent}</p>
       </div>
     )
@@ -49,7 +49,7 @@ export function ContactForm() {
         if (result.ok) setSent(result.message ?? 'The committee will come back to you soon.')
         else setFailed(result.message)
       })}
-      className="grid gap-4 rounded-xl border border-stone bg-card p-6"
+      className="grid gap-4"
     >
       <ErrorSummary
         errors={[
