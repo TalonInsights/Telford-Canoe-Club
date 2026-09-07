@@ -22,8 +22,7 @@ export default async function AdminEventPage({
   params: Promise<{ id: string }>
   searchParams: Promise<{ tab?: string }>
 }) {
-  await requireRole('committee')
-  const [{ id }, { tab }] = await Promise.all([params, searchParams])
+  const [, { id }, { tab }] = await Promise.all([requireRole('committee'), params, searchParams])
   const event = await getEventById(id)
   if (!event) notFound()
 

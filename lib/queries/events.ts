@@ -1,3 +1,4 @@
+import { getAuthUser } from '@/lib/auth/guards'
 import { isSupabaseConfigured } from '@/lib/supabase/configured'
 import { createClient } from '@/lib/supabase/server'
 import type { Enums, Tables } from '@/lib/queries/helpers'
@@ -117,11 +118,9 @@ export type MyBooking = { id: string; status: BookingStatus }
 /** The signed-in person's own row for an event (explicitly user-scoped, never RLS-scoped). */
 export async function getMyBookingForEvent(eventId: string): Promise<MyBooking | null> {
   if (!isSupabaseConfigured()) return null
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getAuthUser()
   if (!user) return null
+  const supabase = await createClient()
   const { data } = await supabase
     .from('event_bookings')
     .select('id, status')

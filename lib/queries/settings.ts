@@ -1,3 +1,5 @@
+import { cache } from 'react'
+
 import type { PaymentMode } from '@/lib/payments/mode'
 import { isSupabaseConfigured } from '@/lib/supabase/configured'
 import { createClient } from '@/lib/supabase/server'
@@ -15,7 +17,8 @@ const seedFallback: ClubSettings = {
   paymentProvider: 'simulated',
 }
 
-export async function getClubSettings(): Promise<ClubSettings> {
+/** Per-request cached: the home page alone reads this from three components. */
+export const getClubSettings = cache(async (): Promise<ClubSettings> => {
   if (!isSupabaseConfigured()) return seedFallback
   const supabase = await createClient()
   const { data } = await supabase.from('club_settings').select('*').maybeSingle()
@@ -34,4 +37,4 @@ export async function getClubSettings(): Promise<ClubSettings> {
     bankPaymentNote: data.bank_payment_note,
     paymentProvider: (data.payment_provider ?? 'off') as PaymentMode,
   }
-}
+})

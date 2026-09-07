@@ -29,14 +29,14 @@ export default async function MyMembershipPage({
 }: {
   searchParams: Promise<{ paid?: string }>
 }) {
-  const session = await getSession()
-  if (!session) redirect('/login')
-  const [{ paid }, memberships, settings, renewal] = await Promise.all([
+  const [session, { paid }, memberships, settings, renewal] = await Promise.all([
+    getSession(),
     searchParams,
     getMyMemberships(),
     getClubSettings(),
     getRenewalOffer(),
   ])
+  if (!session) redirect('/login')
 
   const active = memberships.find((m) => m.status === 'active')
   const pending = memberships.find((m) => m.status === 'pending')

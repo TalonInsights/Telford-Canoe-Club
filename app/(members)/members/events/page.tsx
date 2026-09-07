@@ -13,8 +13,7 @@ import { EmptyState } from '@/components/ui/empty-state'
 export const metadata: Metadata = { title: 'My bookings' }
 
 export default async function MyEventsPage() {
-  await requireCurrentMember()
-  const bookings = await getMyBookings()
+  const [, bookings] = await Promise.all([requireCurrentMember(), getMyBookings()])
 
   if (bookings.length === 0) {
     return (

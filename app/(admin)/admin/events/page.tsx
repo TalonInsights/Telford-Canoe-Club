@@ -10,8 +10,7 @@ import { getAdminEvents } from '@/lib/queries/events'
 export const metadata: Metadata = { title: 'Events' }
 
 export default async function AdminEventsPage() {
-  await requireRole('committee')
-  const rows = await getAdminEvents()
+  const [, rows] = await Promise.all([requireRole('committee'), getAdminEvents()])
   return (
     <>
       <div className="flex flex-wrap items-end justify-between gap-3">

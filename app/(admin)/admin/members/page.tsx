@@ -10,8 +10,7 @@ import { getMembersDirectory } from '@/lib/queries/admin'
 export const metadata: Metadata = { title: 'Members' }
 
 export default async function AdminMembersPage() {
-  await requireRole('committee')
-  const rows = await getMembersDirectory()
+  const [, rows] = await Promise.all([requireRole('committee'), getMembersDirectory()])
   return (
     <>
       <div className="flex flex-wrap items-end justify-between gap-3">

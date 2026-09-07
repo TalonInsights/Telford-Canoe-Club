@@ -9,8 +9,11 @@ import { formatMoneyGBP } from '@/lib/format'
 import { getAdminStats, getMembersDirectory } from '@/lib/queries/admin'
 
 export default async function AdminOverviewPage() {
-  await requireRole('committee')
-  const [stats, directory] = await Promise.all([getAdminStats(), getMembersDirectory()])
+  const [, stats, directory] = await Promise.all([
+    requireRole('committee'),
+    getAdminStats(),
+    getMembersDirectory(),
+  ])
   const pendingRows = directory.filter((r) => r.membership_status === 'pending' && r.membership_id)
 
   return (

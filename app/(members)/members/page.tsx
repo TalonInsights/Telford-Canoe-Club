@@ -29,8 +29,9 @@ function Card({ title, icon: Icon, href, children }: { title: string; icon: Reac
 }
 
 export default async function MembersDashboard() {
-  await requireCurrentMember()
-  const [memberships, bookings, notices, events] = await Promise.all([
+  // The guard and the data run together — the auth lookup is shared per request.
+  const [, memberships, bookings, notices, events] = await Promise.all([
+    requireCurrentMember(),
     getMyMemberships(),
     getMyBookings(),
     getMemberNotices(),

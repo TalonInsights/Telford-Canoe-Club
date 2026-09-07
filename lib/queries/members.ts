@@ -1,3 +1,4 @@
+import { getAuthUser } from '@/lib/auth/guards'
 import type { CoveredMember } from '@/lib/membership/family'
 import { isSupabaseConfigured } from '@/lib/supabase/configured'
 import { createClient } from '@/lib/supabase/server'
@@ -18,9 +19,7 @@ export async function getMyMemberships(): Promise<MyMembership[]> {
   // Scope to the signed-in person explicitly. RLS returns own rows for members
   // but ALL rows for committee/admin — so a committee member's own membership
   // page must filter by user, not lean on RLS.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getAuthUser()
   if (!user) return []
   const { data: memberships } = await supabase
     .from('memberships')
@@ -90,9 +89,7 @@ export async function getMyBookings(): Promise<MyBooking[]> {
   if (!isSupabaseConfigured()) return []
   const supabase = await createClient()
   // Own bookings only — same reason as getMyMemberships (committee sees all via RLS).
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getAuthUser()
   if (!user) return []
   const { data } = await supabase
     .from('event_bookings')

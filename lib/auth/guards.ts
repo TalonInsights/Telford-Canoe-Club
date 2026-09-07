@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import { cache } from 'react'
 
 import { isSupabaseConfigured } from '@/lib/supabase/configured'
 import { createClient } from '@/lib/supabase/server'
@@ -21,14 +22,26 @@ export type SessionInfo = {
   isCurrentMember: boolean
 }
 
-/** Null when signed out (or while Supabase is unconfigured). */
-export async function getSession(): Promise<SessionInfo | null> {
+/**
+ * The signed-in auth user, verified with GoTrue ONCE per request. React's
+ * `cache` dedupes every caller in the same render — the layout guard, the
+ * page guard and each "my X" query — so a members page costs one auth round
+ * trip instead of four.
+ */
+export const getAuthUser = cache(async () => {
   if (!isSupabaseConfigured()) return null
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
+  return user
+})
+
+/** Null when signed out (or while Supabase is unconfigured). Per-request cached. */
+export const getSession = cache(async (): Promise<SessionInfo | null> => {
+  const user = await getAuthUser()
   if (!user) return null
+  const supabase = await createClient()
 
   const [{ data: profile }, { data: current }] = await Promise.all([
     supabase.from('profiles').select('*').eq('user_id', user.id).maybeSingle(),
@@ -41,7 +54,7 @@ export async function getSession(): Promise<SessionInfo | null> {
     profile,
     isCurrentMember: Boolean(current),
   }
-}
+})
 
 /** §6 — layouts and every server action re-check on the server. */
 export async function requireRole(min: AppRole): Promise<SessionInfo> {
