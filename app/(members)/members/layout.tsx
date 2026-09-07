@@ -32,7 +32,12 @@ export default async function MembersLayout({ children }: { children: React.Reac
       <Header
         account={
           session
-            ? { firstName: session.profile.first_name, isCurrentMember: session.isCurrentMember }
+            ? {
+                firstName: session.profile.first_name,
+                lastName: session.profile.last_name,
+                isCurrentMember: session.isCurrentMember,
+                isCommittee: roleAtLeast(session.profile.role, 'committee'),
+              }
             : null
         }
       />

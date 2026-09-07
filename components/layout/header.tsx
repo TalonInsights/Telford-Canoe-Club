@@ -7,22 +7,32 @@
  * Changed: deep tone, signal active underline, Next Link + aria-current,
  * 44px touch targets, sentence case, CTA slot, members/admin variant hook.
  *
- * Account slot: signed-out visitors see Log in + Join; a signed-in person sees
- * their name and "Members area" (or "Choose a membership" until a membership
- * is active). Dynamic shells (members area) pass the session in; the static
- * public pages detect it in the browser so they stay cached — the server
- * always renders the signed-out slot, and the swap happens right after
+ * Account slot: signed-out visitors see Log in + Join. A signed-in person
+ * gets a compact account chip (initials + first name) opening a menu of their
+ * pages and Log out; until a membership is active the signal button reads
+ * "Choose a membership". Dynamic shells (members area) pass the session in;
+ * the static public pages detect it in the browser so they stay cached — the
+ * server always renders the signed-out slot and the swap happens right after
  * hydration from the auth cookie, before any network round trip.
  */
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { ChevronDown, LogOut, Menu } from 'lucide-react'
+import { useEffect, useState, useTransition } from 'react'
 
+import { signOutAction } from '@/lib/actions/auth'
 import { Container } from '@/components/layout/container'
 import { ClubBadge, Wordmark } from '@/components/site/brand'
 import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import {
   Sheet,
   SheetContent,
@@ -36,9 +46,15 @@ import { cn } from '@/lib/utils'
 export type NavItem = { title: string; href: string }
 
 /** What the header needs to know about the signed-in person. `null` = signed out. */
-export type HeaderAccount = { firstName: string | null; isCurrentMember: boolean } | null
+export type HeaderAccount = {
+  firstName: string | null
+  lastName?: string | null
+  isCurrentMember: boolean
+  isCommittee?: boolean
+} | null
 
 const siteNav: NavItem[] = [
+  { title: 'Home', href: '/' },
   { title: 'Paddlesports', href: '/paddlesports' },
   { title: 'About', href: '/about' },
   { title: 'Venue', href: '/venue' },
@@ -48,6 +64,7 @@ const siteNav: NavItem[] = [
 ]
 
 function isActive(pathname: string, href: string) {
+  if (href === '/') return pathname === '/'
   return pathname === href || pathname.startsWith(`${href}/`)
 }
 
@@ -55,10 +72,17 @@ function hasAuthCookie() {
   return typeof document !== 'undefined' && /(^|;\s*)sb-[^=]*-auth-token/.test(document.cookie)
 }
 
+function initials(account: NonNullable<HeaderAccount>) {
+  const letters = [account.firstName, account.lastName]
+    .map((n) => n?.trim().charAt(0).toUpperCase() ?? '')
+    .join('')
+  return letters || '•'
+}
+
 /**
  * Browser-side detection for the static public pages: the cookie says
  * "someone is signed in" instantly; the profile + membership check refines
- * the label a moment later.
+ * the chip a moment later.
  */
 function useDetectedAccount(initial: HeaderAccount | undefined): HeaderAccount | undefined {
   const [account, setAccount] = useState<HeaderAccount | undefined>(initial)
@@ -79,7 +103,7 @@ function useDetectedAccount(initial: HeaderAccount | undefined): HeaderAccount |
         return
       }
       // getSession() reads the cookie locally — no network — so the slot
-      // swaps within a frame; the membership check refines the label after.
+      // swaps within a frame; the membership check refines the chip after.
       const {
         data: { session },
       } = await supabase.auth.getSession()
@@ -88,15 +112,22 @@ function useDetectedAccount(initial: HeaderAccount | undefined): HeaderAccount |
         if (!cancelled) setAccount(null)
         return
       }
-      const metaName =
-        typeof user.user_metadata?.first_name === 'string' ? user.user_metadata.first_name : null
-      if (!cancelled) setAccount({ firstName: metaName, isCurrentMember: true })
+      const meta = (key: string) =>
+        typeof user.user_metadata?.[key] === 'string' ? (user.user_metadata[key] as string) : null
+      if (!cancelled) {
+        setAccount({ firstName: meta('first_name'), lastName: meta('last_name'), isCurrentMember: true })
+      }
       const [{ data: profile }, { data: current }] = await Promise.all([
-        supabase.from('profiles').select('first_name').eq('user_id', user.id).maybeSingle(),
+        supabase.from('profiles').select('first_name, last_name, role').eq('user_id', user.id).maybeSingle(),
         supabase.rpc('is_current_member', { uid: user.id }),
       ])
       if (!cancelled) {
-        setAccount({ firstName: profile?.first_name ?? metaName, isCurrentMember: Boolean(current) })
+        setAccount({
+          firstName: profile?.first_name ?? meta('first_name'),
+          lastName: profile?.last_name ?? meta('last_name'),
+          isCurrentMember: Boolean(current),
+          isCommittee: profile?.role === 'committee' || profile?.role === 'admin',
+        })
       }
     }
 
@@ -143,6 +174,82 @@ function NavLink({
   )
 }
 
+/** The signed-in chip: initials, first name, and a menu of the person's pages. */
+function AccountMenu({ account }: { account: NonNullable<HeaderAccount> }) {
+  const [pending, startTransition] = useTransition()
+  const name = account.firstName || 'My account'
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          type="button"
+          className="flex min-h-11 items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] py-1 pr-3 pl-1 text-sm font-medium text-white transition-colors hover:bg-white/[0.12] focus-visible:ring-3 focus-visible:ring-white/30 focus-visible:outline-none aria-expanded:bg-white/[0.12]"
+          aria-label={`Account menu for ${name}`}
+        >
+          <span
+            aria-hidden="true"
+            className="flex size-8 items-center justify-center rounded-full bg-river text-micro font-semibold tracking-wide"
+          >
+            {initials(account)}
+          </span>
+          <span className="max-w-32 truncate">{name}</span>
+          <ChevronDown aria-hidden="true" className="size-3.5 text-white/70" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-60">
+        <DropdownMenuLabel className="text-ink-muted">
+          {account.isCurrentMember ? 'Current member' : 'Account registered — no membership yet'}
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        {account.isCurrentMember ? (
+          <>
+            <DropdownMenuItem asChild>
+              <Link href="/members">Members area</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/members/membership">My membership</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/members/events">My bookings</Link>
+            </DropdownMenuItem>
+          </>
+        ) : (
+          <>
+            <DropdownMenuItem asChild>
+              <Link href="/welcome">Choose a membership</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/members/membership">My membership</Link>
+            </DropdownMenuItem>
+          </>
+        )}
+        <DropdownMenuItem asChild>
+          <Link href="/members/profile">Profile</Link>
+        </DropdownMenuItem>
+        {account.isCommittee && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link href="/admin">Committee admin</Link>
+            </DropdownMenuItem>
+          </>
+        )}
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          disabled={pending}
+          onSelect={(e) => {
+            e.preventDefault()
+            startTransition(() => signOutAction())
+          }}
+        >
+          <LogOut aria-hidden="true" />
+          {pending ? 'Logging out…' : 'Log out'}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
 export function Header({
   items = siteNav,
   cta,
@@ -155,40 +262,8 @@ export function Header({
 }) {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
+  const [signingOut, startSignOut] = useTransition()
   const account = useDetectedAccount(accountProp)
-
-  const signedIn = Boolean(account)
-  const primaryHref = account?.isCurrentMember ? '/members' : '/welcome'
-  const primaryLabel = account?.isCurrentMember ? 'Members area' : 'Choose a membership'
-  const greeting = account?.firstName ? `Hi, ${account.firstName}` : 'My account'
-
-  const desktopSecondary = signedIn ? (
-    <Link
-      href="/members/profile"
-      className="flex min-h-11 items-center px-2 text-sm font-medium text-white/90 hover:text-white"
-    >
-      {greeting}
-    </Link>
-  ) : (
-    <Link
-      href="/login"
-      className="flex min-h-11 items-center px-2 text-sm font-medium text-white/90 hover:text-white"
-    >
-      Log in
-    </Link>
-  )
-
-  const desktopPrimary =
-    cta ??
-    (signedIn ? (
-      <Button asChild variant="signal" size="sm">
-        <Link href={primaryHref}>{primaryLabel}</Link>
-      </Button>
-    ) : (
-      <Button asChild variant="signal" size="sm">
-        <Link href="/join">Join the club</Link>
-      </Button>
-    ))
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-deep text-white">
@@ -205,9 +280,31 @@ export function Header({
             ))}
           </nav>
 
-          <div className="hidden items-center gap-2 lg:flex">
-            {desktopSecondary}
-            {desktopPrimary}
+          <div className="hidden items-center gap-3 lg:flex">
+            {account ? (
+              <>
+                {!account.isCurrentMember && (
+                  <Button asChild variant="signal" size="sm">
+                    <Link href="/welcome">Choose a membership</Link>
+                  </Button>
+                )}
+                <AccountMenu account={account} />
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="flex min-h-11 items-center px-2 text-sm font-medium text-white/90 hover:text-white"
+                >
+                  Log in
+                </Link>
+                {cta ?? (
+                  <Button asChild variant="signal" size="sm">
+                    <Link href="/join">Join the club</Link>
+                  </Button>
+                )}
+              </>
+            )}
           </div>
 
           <Sheet open={open} onOpenChange={setOpen}>
@@ -240,18 +337,40 @@ export function Header({
                 ))}
               </nav>
               <div className="mt-auto flex flex-col gap-3 p-4">
-                {signedIn ? (
+                {account ? (
                   <>
+                    <div className="flex items-center gap-3 rounded-lg border border-white/15 bg-white/[0.06] p-3">
+                      <span
+                        aria-hidden="true"
+                        className="flex size-9 items-center justify-center rounded-full bg-river text-sm font-semibold"
+                      >
+                        {initials(account)}
+                      </span>
+                      <div className="min-w-0 text-sm">
+                        <p className="truncate font-medium">{account.firstName || 'My account'}</p>
+                        <p className="text-micro text-stone/85">
+                          {account.isCurrentMember ? 'Current member' : 'No membership yet'}
+                        </p>
+                      </div>
+                    </div>
                     <Button asChild variant="signal" onClick={() => setOpen(false)}>
-                      <Link href={primaryHref}>{primaryLabel}</Link>
+                      <Link href={account.isCurrentMember ? '/members' : '/welcome'}>
+                        {account.isCurrentMember ? 'Members area' : 'Choose a membership'}
+                      </Link>
                     </Button>
+                    {account.isCommittee && (
+                      <Button asChild variant="inverse" onClick={() => setOpen(false)}>
+                        <Link href="/admin">Committee admin</Link>
+                      </Button>
+                    )}
                     <Button
-                      asChild
                       variant="ghost"
                       className="text-white hover:bg-river hover:text-white"
-                      onClick={() => setOpen(false)}
+                      disabled={signingOut}
+                      onClick={() => startSignOut(() => signOutAction())}
                     >
-                      <Link href="/members/profile">{greeting}</Link>
+                      <LogOut aria-hidden="true" />
+                      {signingOut ? 'Logging out…' : 'Log out'}
                     </Button>
                   </>
                 ) : (
