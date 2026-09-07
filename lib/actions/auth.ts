@@ -30,7 +30,7 @@ export async function signUpAction(values: SignUpValues): Promise<ActionResult> 
     email: v.email,
     password: v.password,
     options: {
-      emailRedirectTo: `${siteUrl()}/verify`,
+      emailRedirectTo: `${siteUrl()}/auth/callback?next=/verify`,
       data: { first_name: v.firstName, last_name: v.lastName },
     },
   })
@@ -79,7 +79,7 @@ export async function magicLinkAction(values: MagicLinkValues): Promise<ActionRe
   const supabase = await createClient()
   const { error } = await supabase.auth.signInWithOtp({
     email: parsed.data.email,
-    options: { emailRedirectTo: `${siteUrl()}/members` },
+    options: { emailRedirectTo: `${siteUrl()}/auth/callback?next=/members` },
   })
   if (error) return { ok: false, message: error.message }
   return { ok: true, message: 'Check your email — the login link is on its way.' }
@@ -91,7 +91,7 @@ export async function forgotPasswordAction(values: MagicLinkValues): Promise<Act
   if (!parsed.success) return { ok: false, message: 'Enter your email address' }
   const supabase = await createClient()
   const { error } = await supabase.auth.resetPasswordForEmail(parsed.data.email, {
-    redirectTo: `${siteUrl()}/reset-password`,
+    redirectTo: `${siteUrl()}/auth/callback?next=/reset-password`,
   })
   if (error) return { ok: false, message: error.message }
   return { ok: true, message: 'Check your email for the reset link.' }
