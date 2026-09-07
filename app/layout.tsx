@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Bricolage_Grotesque, Figtree } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import { Toaster } from '@/components/ui/sonner'
 import { cn } from '@/lib/utils'
@@ -39,6 +40,8 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
       <body className="flex min-h-full flex-col font-sans">
         {children}
         <Toaster position="top-center" richColors closeButton />
+        {/* Vercel Web Analytics — cookieless, aggregated page views; nothing stored on the visitor's device. */}
+        <Analytics />
       </body>
     </html>
   )

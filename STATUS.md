@@ -140,3 +140,4 @@ Plan: `docs/plans/design-refresh.md`. The §3 system is unchanged; this adds the
   and typed. Lighthouse is likewise run against the production deployment,
   not `next dev`.
 - **Performance (4 Sep):** Vercel functions were in `iad1` while Supabase is in `eu-west-2` — every auth/data query crossed the Atlantic (members tab switch ≈ 1.0–1.2 s). Fixed: `vercel.json` `"regions": ["lhr1"]` (+ project default region set to lhr1), `getAuthUser`/`getSession`/`getClubSettings` wrapped in React `cache()` (one GoTrue call per request instead of 3–4), guards run in parallel with page queries, `loading.tsx` skeletons for the members and admin page slots so tab switches paint instantly.
+- **Analytics (5 Sep, client order):** Vercel Web Analytics — `@vercel/analytics` `<Analytics />` in the root layout, enabled on the Vercel project. Cookieless and aggregate-only, so no consent banner is needed under PECR; the privacy page's "Cookies and analytics" section describes it.

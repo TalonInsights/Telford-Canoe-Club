@@ -58,11 +58,17 @@ export default function PrivacyPage() {
               that they are removed.
             </p>
           </Block>
-          <Block heading="Cookies">
+          <Block heading="Cookies and analytics">
             <p>
               This site sets cookies only to keep you logged in. There is no advertising and no
               third-party tracking. Video embeds load only after you tap play, and use the
               providers&apos; privacy-enhanced players.
+            </p>
+            <p>
+              To see which pages are useful we use Vercel Web Analytics, which counts page views
+              without cookies and without storing anything on your device. It records the page,
+              the country and the type of browser, never who you are — visitors are not
+              identified and the figures are only ever aggregated.
             </p>
           </Block>
           <Block heading="Who we share it with">
