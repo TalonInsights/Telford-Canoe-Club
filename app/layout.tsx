@@ -22,10 +22,10 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
     default: 'Telford Canoe Club',
-    template: '%s — Telford Canoe Club',
+    template: '%s · Telford Canoe Club',
   },
   description:
-    'The club with its own stretch of the Severn — whitewater kayaking, freestyle and paddleboarding from our gated site at Jackfield Rapids, Ironbridge.',
+    'The club with its own stretch of the Severn: whitewater kayaking, freestyle and paddleboarding from our gated site at Jackfield Rapids, Ironbridge.',
   openGraph: {
     type: 'website',
     locale: 'en_GB',
@@ -40,7 +40,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
       <body className="flex min-h-full flex-col font-sans">
         {children}
         <Toaster position="top-center" richColors closeButton />
-        {/* Vercel Web Analytics — cookieless, aggregated page views; nothing stored on the visitor's device. */}
+        {/* Vercel Web Analytics, cookieless, aggregated page views; nothing stored on the visitor's device. */}
         <Analytics />
       </body>
     </html>

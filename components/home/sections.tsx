@@ -48,14 +48,14 @@ export function Anomaly() {
         }
       >
         <p>
-          The Severn runs broad and quiet through most of Shropshire — then squeezes into the
+          The Severn runs broad and quiet through most of Shropshire, then squeezes into the
           Ironbridge gorge and breaks into white water at Jackfield. That accident of geography
           gives a landlocked county something almost no club can offer: a paddleable rapid its
-          members can call their own — gate, bank and car park included.
+          members can call their own, gate, bank and car park included.
         </p>
         <p className="mt-4 text-ink-muted">
           Telford Canoe Club has paddled this stretch since the 1960s and has held the lease at
-          Jackfield since 1987 — hosting forty national slaloms and fifteen river races along
+          Jackfield since 1987, hosting forty national slaloms and fifteen river races along
           the way.
         </p>
         <Button asChild variant="secondary" className="mt-6">
@@ -87,7 +87,7 @@ export function InsideTheGate({
       tone="white"
       kicker="Facilities"
       title="Inside the gate"
-      intro="A members' site on the bank of the Severn — built up over decades, looked after by the people who paddle here."
+      intro="A members' site on the bank of the Severn, built up over decades, looked after by the people who paddle here."
     >
       <FullGrid maxColumns={3}>
         {shown.map((f) => (
@@ -122,7 +122,7 @@ export function TheRapid() {
         <p>
           The same stretch of water is a different place from one week to the next. Low water
           exposes the rocks and slows everything down; more flow and the waves build. Club
-          evening paddles run when the levels are right — that&apos;s the river&apos;s call,
+          evening paddles run when the levels are right, that&apos;s the river&apos;s call,
           not ours.
         </p>
         <p className="mt-4 text-ink-muted">
@@ -144,7 +144,7 @@ export function PaddleYourWay({ sports }: { sports: Sport[] }) {
       tone="white"
       kicker="Disciplines"
       title="Paddle your way"
-      intro="Three ways onto the water, one membership — club boats and kit included while you find your feet."
+      intro="Three ways onto the water, one membership, club boats and kit included while you find your feet."
     >
       <FullGrid maxColumns={3}>
         {sports.map((s) => (
@@ -167,12 +167,12 @@ const sessionCards = [
   {
     icon: Waves,
     title: 'Club evening paddles',
-    body: 'Summer Thursdays, 5:30–9pm on our own water — levels permitting. Turn up, get changed, get on.',
+    body: 'Summer Thursdays, 5:30–9pm on our own water, levels permitting. Turn up, get changed, get on.',
   },
   {
     icon: Bath,
     title: 'Pool sessions',
-    body: 'Warm-water skills through the colder months — rolling practice and boat handling.',
+    body: 'Warm-water skills through the colder months, rolling practice and boat handling.',
   },
   {
     icon: GraduationCap,
@@ -220,7 +220,7 @@ export function WhatsOn({ events }: { events: HomeEvent[] }) {
         <EmptyState
           icon={CalendarDays}
           title="Nothing scheduled just now"
-          description="Check back soon — or join the club and hear about sessions first."
+          description="Check back soon, or join the club and hear about sessions first."
           action={
             <Button asChild variant="secondary">
               <Link href="/join">Join the club</Link>
@@ -255,7 +255,7 @@ export function KeepingSiteOpen() {
       spacing="default"
       kicker="Membership"
       title="A club that keeps its own gate open"
-      intro="Having our own stretch of river is what makes this club special — and it stays ours because members keep it so. Membership fees and volunteer hands are what hold the lease and keep the gate open."
+      intro="Having our own stretch of river is what makes this club special, and it stays ours because members keep it so. Membership fees and volunteer hands are what hold the lease and keep the gate open."
       primary={{ label: 'Become a member', href: '/join' }}
       secondary={{ label: 'Meet the committee', href: '/about/committee' }}
     />

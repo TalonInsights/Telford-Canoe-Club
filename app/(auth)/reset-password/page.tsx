@@ -22,7 +22,7 @@ export default function ResetPasswordPage() {
         onSubmit={async (e) => {
           e.preventDefault()
           if (password.length < 10) {
-            setError('Use at least 10 characters — a short sentence works well')
+            setError('Use at least 10 characters, a short sentence works well')
             return
           }
           setSubmitting(true)
@@ -37,7 +37,7 @@ export default function ResetPasswordPage() {
         <Field
           label="New password"
           htmlFor="rp-password"
-          helper="At least 10 characters — a short sentence works well."
+          helper="At least 10 characters, a short sentence works well."
           error={error ?? undefined}
         >
           <Input

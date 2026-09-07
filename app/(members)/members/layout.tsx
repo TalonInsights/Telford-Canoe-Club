@@ -69,7 +69,7 @@ export default async function MembersLayout({ children }: { children: React.Reac
                   <p className="text-sm text-ink-muted">
                     {session.isCurrentMember
                       ? 'Current member'
-                      : 'Account registered — membership not active yet'}
+                      : 'Account registered, membership not active yet'}
                     {roleAtLeast(session.profile.role, 'committee') && (
                       <>
                         {' · '}

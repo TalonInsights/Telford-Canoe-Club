@@ -68,7 +68,7 @@ export function BookingPanel({
       <>
         <h2 className="text-xl">This event is cancelled</h2>
         <p className="mt-2 text-sm text-ink-muted">
-          Keep an eye on the events page — sessions come back around quickly.
+          Keep an eye on the events page, sessions come back around quickly.
         </p>
         <Button asChild variant="secondary" className="mt-4">
           <Link href="/events">See other events</Link>
@@ -80,7 +80,7 @@ export function BookingPanel({
       <>
         <h2 className="text-xl">Just turn up</h2>
         <p className="mt-2 text-sm text-ink-muted">
-          No need to confirm for this one — members can simply come along. If you&apos;re not a
+          No need to confirm for this one, members can simply come along. If you&apos;re not a
           member yet, join first and say hello when you arrive.
         </p>
         {!isCurrentMember && (
@@ -142,7 +142,7 @@ export function BookingPanel({
       <>
         <h2 className="text-xl">Members confirm their place here</h2>
         <p className="mt-2 text-sm text-ink-muted">
-          Log in to say you&apos;re coming — or join the club and this session (and every other) is
+          Log in to say you&apos;re coming, or join the club and this session (and every other) is
           included.
         </p>
         {counts && <p className="mt-2 text-sm text-ink-muted">{counts}</p>}
@@ -161,7 +161,7 @@ export function BookingPanel({
       <>
         <h2 className="text-xl">Confirming needs a current membership</h2>
         <p className="mt-2 text-sm text-ink-muted">
-          Your account isn&apos;t covered by an active membership yet — sort that first and come
+          Your account isn&apos;t covered by an active membership yet, sort that first and come
           straight back.
         </p>
         <Button asChild variant="signal" className="mt-4">
@@ -206,7 +206,7 @@ export function BookingPanel({
         <p className="flex items-center gap-2 text-sm font-medium text-river">
           <Users className="size-4" aria-hidden="true" /> {counts ?? 'Confirmations open'}
         </p>
-        <h2 className="mt-1 text-xl">{full ? 'Full — join the waitlist' : 'Are you coming?'}</h2>
+        <h2 className="mt-1 text-xl">{full ? 'Full: join the waitlist' : 'Are you coming?'}</h2>
         <p className="mt-2 text-sm text-ink-muted">
           {full
             ? 'If a place frees up you move in automatically and we email you.'
@@ -229,7 +229,7 @@ export function BookingPanel({
             })
           }
         >
-          {pending ? 'Confirming…' : full ? 'Join the waitlist' : "I'm coming — confirm my place"}
+          {pending ? 'Confirming…' : full ? 'Join the waitlist' : "Confirm I'm coming"}
         </Button>
       </>
     )

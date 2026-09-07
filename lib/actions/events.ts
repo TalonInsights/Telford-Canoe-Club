@@ -29,7 +29,7 @@ const eventSchema = z
     summary: z
       .string()
       .trim()
-      .min(10, 'Add a one-line summary — it shows on every event card')
+      .min(10, 'Add a one-line summary, it shows on every event card')
       .max(300, 'Keep the summary under 300 characters'),
     details: z.string().trim().max(5000).optional(),
     startsAt: isoDate,
@@ -117,7 +117,7 @@ export async function saveEventAction(
 
   const friendly = (message: string, code?: string) =>
     code === '23505' || /events_slug_key/.test(message)
-      ? 'That web address is already used by another event — change the slug'
+      ? 'That web address is already used by another event, change the slug'
       : message
 
   if (before) {
@@ -228,7 +228,7 @@ export async function setEventStatusAction(
       status === 'published'
         ? 'Event published'
         : status === 'cancelled'
-          ? 'Event cancelled — everyone confirmed has been told'
+          ? 'Event cancelled, everyone confirmed has been told'
           : 'Event taken back to draft',
   }
 }
@@ -361,5 +361,5 @@ export async function adminCancelBookingAction(bookingId: string): Promise<Actio
   revalidatePath(`/admin/events/${booking.event_id}`)
   revalidatePath('/members/events')
   if (ev) revalidatePath(`/events/${ev.slug}`)
-  return { ok: true, message: promoted ? 'Place removed — the next person on the waitlist has it' : 'Place removed' }
+  return { ok: true, message: promoted ? 'Place removed, the next person on the waitlist has it' : 'Place removed' }
 }

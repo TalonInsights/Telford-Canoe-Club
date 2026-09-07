@@ -26,7 +26,7 @@ export default async function AdminAddMembershipPage() {
       <h1 className="text-2xl">Add a membership</h1>
       <p className="mt-1 max-w-[68ch] text-sm text-ink-muted">
         For walk-up cash payers and anyone the committee signs up directly. The person needs an
-        account first — someone without one can register at the join page in about two minutes,
+        account first: someone without one can register at the join page in about two minutes,
         then appears here. (Bulk imports from the old site come with the migration phase.)
       </p>
       <div className="mt-6">

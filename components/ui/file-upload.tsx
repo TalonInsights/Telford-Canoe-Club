@@ -52,7 +52,7 @@ export function FileUpload({
       return `That file type isn't accepted here`
     }
     if (file.size > maxSizeMb * 1024 * 1024) {
-      return `Too large — the limit is ${maxSizeMb}MB`
+      return `Too large, the limit is ${maxSizeMb}MB`
     }
     return null
   }
@@ -88,7 +88,7 @@ export function FileUpload({
                   ? {
                       ...p,
                       status: 'error',
-                      error: e instanceof Error ? e.message : 'Upload failed — try again',
+                      error: e instanceof Error ? e.message : 'Upload failed, try again',
                     }
                   : p
               )
@@ -120,7 +120,7 @@ export function FileUpload({
         <CloudUpload aria-hidden="true" className="size-8 text-river" />
         <span className="font-medium">{label}</span>
         <span className="text-micro text-ink-muted">
-          {hint ?? `Drag and drop, or choose files — up to ${maxSizeMb}MB each`}
+          {hint ?? `Drag and drop, or choose files, up to ${maxSizeMb}MB each`}
         </span>
         <input
           ref={inputRef}

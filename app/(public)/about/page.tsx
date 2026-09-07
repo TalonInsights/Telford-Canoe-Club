@@ -13,7 +13,7 @@ import { IMAGES } from '@/lib/site-data'
 export const metadata: Metadata = {
   title: 'About the club',
   description:
-    'Telford Canoe Club is a forward-thinking paddlesports club on the River Severn — qualified coaches, permanent facilities at Jackfield Rapids, and sixty years of history.',
+    'Telford Canoe Club is a forward-thinking paddlesports club on the River Severn: qualified coaches, permanent facilities at Jackfield Rapids, and sixty years of history.',
 }
 
 export default function AboutPage() {
@@ -40,8 +40,8 @@ export default function AboutPage() {
         >
           <p>
             Telford Canoe Club is a forward-thinking paddlesports club based in Telford. We run on
-            an ethos of encouraging paddlesports — whitewater kayaking and canoeing, freestyle,
-            standup paddleboarding and more — to the widest possible range of participants. Our
+            an ethos of encouraging paddlesports, whitewater kayaking and canoeing, freestyle,
+            standup paddleboarding and more, to the widest possible range of participants. Our
             view is simple: there&apos;s nothing more mentally stimulating than time on the water
             in a natural environment, developing new skills and enjoying the outdoors.
           </p>
@@ -54,7 +54,7 @@ export default function AboutPage() {
           <p className="mt-4 text-ink-muted">
             With permanent facilities and parking right next to the Severn&apos;s Jackfield
             rapids, we run regular club nights and social BBQs through the long summer evenings,
-            weekend trips to the River Dee and venues like Cardiff International White Water — and
+            weekend trips to the River Dee and venues like Cardiff International White Water, and
             when the autumn rains open up the UK whitewater season, trips to rivers around the
             country, weather and water levels depending.
           </p>
@@ -91,7 +91,7 @@ export default function AboutPage() {
                   marker: 'Since then',
                   title: 'A racing and community pedigree',
                   description:
-                    'Forty national-ranking slaloms, fifteen national-ranking river races, the New Town Games — and an active, thriving club.',
+                    'Forty national-ranking slaloms, fifteen national-ranking river races, the New Town Games, and an active, thriving club.',
                 },
               ]}
             />

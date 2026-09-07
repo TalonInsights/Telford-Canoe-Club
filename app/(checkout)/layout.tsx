@@ -26,7 +26,7 @@ export default function CheckoutLayout({ children }: { children: React.ReactNode
       </main>
       <footer className="border-t border-stone bg-card">
         <div className="mx-auto w-full max-w-2xl px-4 py-4 text-micro text-ink-muted">
-          Simulated payment gateway for testing — no money moves.{' '}
+          Simulated payment gateway for testing, no money moves.{' '}
           <Link href="/members/membership" className="underline underline-offset-2">
             Return to Telford Canoe Club
           </Link>

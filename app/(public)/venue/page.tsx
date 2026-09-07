@@ -12,9 +12,9 @@ import { Button } from '@/components/ui/button'
 import { IMAGES } from '@/lib/site-data'
 
 export const metadata: Metadata = {
-  title: 'Venue — Jackfield Rapids',
+  title: 'Venue: Jackfield Rapids',
   description:
-    'The club’s own gated site at Jackfield Rapids in the Ironbridge gorge — address, parking, access and live river levels for the Severn.',
+    'The club’s own gated site at Jackfield Rapids in the Ironbridge gorge: address, parking, access and live river levels for the Severn.',
 }
 
 const ADDRESS = 'Jackfield Rapids, The Lloyds, Jackfield, Ironbridge, Telford TF8 7HJ'
@@ -44,7 +44,7 @@ export default function VenuePage() {
           <p>
             The club has held the lease at Jackfield since 1987, and generations of members have
             shaped it since: the access road, parking, toilets and equipment containers were all
-            built with the help of the local army reserves. It adds up to something rare — a
+            built with the help of the local army reserves. It adds up to something rare, a
             whitewater venue where you park next to the water, get changed in peace, and walk
             straight to the rapid.
           </p>
@@ -80,7 +80,7 @@ export default function VenuePage() {
             {
               icon: Car,
               title: 'Parking',
-              body: 'On-site parking right by the river — unload boats at the water.',
+              body: 'On-site parking right by the river, unload boats at the water.',
             },
             {
               icon: DoorOpen,
@@ -90,7 +90,7 @@ export default function VenuePage() {
             {
               icon: Waves,
               title: 'The water',
-              body: 'A natural rapid whose character changes with the level — check before you travel.',
+              body: 'A natural rapid whose character changes with the level, check before you travel.',
             },
           ].map((f) => (
             <FeatureCard key={f.title} icon={f.icon} title={f.title} body={f.body} />
@@ -99,7 +99,7 @@ export default function VenuePage() {
       </Section>
       <CtaBand
         title="Check the river before you set off"
-        intro="The Buildwas gauge tells you what the rapid is doing today — and club sessions run when the level is right."
+        intro="The Buildwas gauge tells you what the rapid is doing today, and club sessions run when the level is right."
         primary={{ label: 'Live river levels', href: '/venue/river-levels' }}
         secondary={{ label: 'Session times', href: '/events' }}
       />

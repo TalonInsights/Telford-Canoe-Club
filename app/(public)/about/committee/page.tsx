@@ -10,7 +10,7 @@ import { getCommitteeRoles } from '@/lib/queries/committee'
 export const metadata: Metadata = {
   title: 'Committee',
   description:
-    'The volunteers who run Telford Canoe Club — the 2026 committee, in role until the September AGM.',
+    'The volunteers who run Telford Canoe Club, the 2026 committee, in role until the September AGM.',
 }
 
 export const revalidate = 900
@@ -38,7 +38,7 @@ export default async function CommitteePage() {
         tone="foam"
         spacing="tight"
         title="Could you help take the club forward?"
-        intro="Anyone with an interest in the club's future — on the committee or coaching — is warmly encouraged to come forward. Roles follow the Paddle UK standard descriptions."
+        intro="Anyone with an interest in the club's future, on the committee or coaching, is warmly encouraged to come forward. Roles follow the Paddle UK standard descriptions."
       >
         <div className="flex flex-wrap gap-3">
           <Button asChild variant="secondary">

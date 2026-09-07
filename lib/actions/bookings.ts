@@ -57,8 +57,8 @@ export async function bookEventAction(eventId: string): Promise<ActionResult> {
     ok: true,
     message:
       status === 'waitlist'
-        ? "You're on the waitlist — we'll email you if a place frees up"
-        : "You're confirmed — see you on the water",
+        ? "You're on the waitlist, we'll email you if a place frees up"
+        : "You're confirmed, see you on the water",
   }
 }
 

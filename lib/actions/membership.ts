@@ -53,7 +53,7 @@ export async function requestMembershipAction(input: {
   revalidatePath('/members/membership')
   return {
     ok: true,
-    message: 'Membership requested — pay the treasurer and the committee will confirm it.',
+    message: 'Membership requested, pay the treasurer and the committee will confirm it.',
   }
 }
 
@@ -125,7 +125,7 @@ export async function recordPaymentAction(
   }
 
   revalidatePath('/admin/members')
-  return { ok: true, message: 'Payment recorded — membership is now active' }
+  return { ok: true, message: 'Payment recorded, membership is now active' }
 }
 
 const cancelSchema = z.object({

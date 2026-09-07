@@ -9,7 +9,7 @@ import { newsPosts } from '@/lib/content/news'
 
 export const metadata: Metadata = {
   title: 'News',
-  description: 'The latest from Telford Canoe Club — membership, committee and event reports.',
+  description: 'The latest from Telford Canoe Club: membership, committee and event reports.',
 }
 
 export default function NewsPage() {

@@ -21,7 +21,7 @@ export const signUpSchema = z
     firstName: z.string().trim().min(1, 'Enter your first name'),
     lastName: z.string().trim().min(1, 'Enter your last name'),
     email: z.email('Enter an email address like name@example.org'),
-    password: z.string().min(10, 'Use at least 10 characters — a short sentence works well'),
+    password: z.string().min(10, 'Use at least 10 characters, a short sentence works well'),
     dateOfBirth: z
       .string()
       .min(1, 'Enter your date of birth')
@@ -47,7 +47,7 @@ export const signUpSchema = z
         ctx.addIssue({
           code: 'custom',
           path: ['guardianName'],
-          message: "Enter a parent or guardian's full name — required for under-18s",
+          message: "Enter a parent or guardian's full name, required for under-18s",
         })
       }
       if (!data.guardianPhone?.trim()) {

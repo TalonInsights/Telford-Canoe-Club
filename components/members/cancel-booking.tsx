@@ -41,7 +41,7 @@ export function CancelBookingButton({
           <DialogDescription>
             {waitlist
               ? 'You can confirm again later if there is still room.'
-              : 'Your place goes back to the club — if there’s a waitlist, the next person moves up.'}
+              : 'Your place goes back to the club, if there’s a waitlist, the next person moves up.'}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>

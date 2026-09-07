@@ -87,7 +87,7 @@ export default async function AdminEventPage({
             <AttendeesTable rows={attendees} attendance={attendance} eventTitle={event.title} />
           ) : (
             <p className="rounded-xl border border-stone bg-card p-5 text-sm text-ink-muted">
-              This event doesn&apos;t take confirmations — members just turn up. Switch on
+              This event doesn&apos;t take confirmations, members just turn up. Switch on
               &ldquo;Members confirm attendance&rdquo; in the details tab to start collecting names.
             </p>
           )}

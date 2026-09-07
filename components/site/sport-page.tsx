@@ -75,7 +75,7 @@ export function SportPage({
       ))}
       <CtaBand
         title={closing}
-        intro="One membership covers every discipline — club boats and kit included while you learn."
+        intro="One membership covers every discipline, club boats and kit included while you learn."
         primary={{ label: 'Join the club', href: '/join' }}
         secondary={{ label: 'All paddlesports', href: '/paddlesports' }}
       />

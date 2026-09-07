@@ -22,7 +22,7 @@ export default async function RiverLevelsPage() {
     <>
       <PageHero
         title="River levels"
-        intro="The rapid is a different place at different levels — check the gauge before you travel."
+        intro="The rapid is a different place at different levels, check the gauge before you travel."
         crumbs={[{ title: 'Venue', href: '/venue' }]}
       />
       <Section tone="white">
@@ -30,7 +30,7 @@ export default async function RiverLevelsPage() {
           <div className="rounded-xl border border-stone bg-foam p-6 text-center">
             <p className="flex items-center justify-center gap-1.5 text-micro font-medium text-ink-muted">
               <Waves className="size-3.5" aria-hidden="true" />
-              {level ? `River Severn at ${level.stationName}` : 'River Severn — nearest gauge'}
+              {level ? `River Severn at ${level.stationName}` : 'River Severn, nearest gauge'}
             </p>
             {level ? (
               <>
@@ -39,7 +39,7 @@ export default async function RiverLevelsPage() {
                 </p>
                 <p className="mt-1 text-micro text-ink-muted">
                   Environment Agency reading, {formatDateShort(level.readingTime)}{' '}
-                  {formatTime(level.readingTime)} — updates through the day
+                  {formatTime(level.readingTime)}, updates through the day
                 </p>
               </>
             ) : (
@@ -61,16 +61,16 @@ export default async function RiverLevelsPage() {
             <h2 className="text-xl text-ink">Reading the gauge</h2>
             <p>
               The nearest Environment Agency gauge is at Buildwas, a few miles upstream of
-              Jackfield — what passes the gauge reaches the rapid shortly after. Low water
+              Jackfield, what passes the gauge reaches the rapid shortly after. Low water
               exposes the rocks and slows the wave down; more flow builds the features and pushes
               harder. The Severn responds slowly to rain, so a wet day rarely changes the level
-              instantly — but upstream reservoir releases (like the Clywedog) can add a useful
+              instantly, but upstream reservoir releases (like the Clywedog) can add a useful
               top-up.
             </p>
             <p>
               The committee will publish guidance bands for the rapid here once they&apos;re
               agreed. Until then: if you&apos;re unsure whether it&apos;s a good level for your
-              ability, ask on a club night before committing — and remember the site is used by
+              ability, ask on a club night before committing, and remember the site is used by
               competent paddlers at their own risk.
             </p>
           </div>

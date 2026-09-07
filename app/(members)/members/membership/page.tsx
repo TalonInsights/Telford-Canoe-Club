@@ -59,7 +59,7 @@ export default async function MyMembershipPage({
         >
           <PartyPopper className="mt-0.5 size-5 shrink-0 text-success" aria-hidden="true" />
           <div>
-            <p className="font-medium text-success">Payment received — welcome aboard!</p>
+            <p className="font-medium text-success">Payment received, welcome aboard!</p>
             <p className="mt-1 text-sm text-ink-muted">
               Your membership is active and the whole members area is open. A receipt is on its
               way to your inbox
@@ -75,7 +75,7 @@ export default async function MyMembershipPage({
         </div>
       )}
 
-      {/* Status card — every §4.3 / P4-05 state */}
+      {/* Status card, every §4.3 / P4-05 state */}
       <div className="rounded-xl border border-stone bg-card p-6">
         {active ? (
           <>
@@ -105,7 +105,7 @@ export default async function MyMembershipPage({
             {expiringSoon && !nextPeriodRow && (
               <p className="mt-3 flex items-center gap-2 text-sm text-warn">
                 <CalendarClock className="size-4" aria-hidden="true" />
-                Expires in {renewal.daysLeft} day{renewal.daysLeft === 1 ? '' : 's'} — renewal is
+                Expires in {renewal.daysLeft} day{renewal.daysLeft === 1 ? '' : 's'}, renewal is
                 open below.
               </p>
             )}
@@ -119,8 +119,8 @@ export default async function MyMembershipPage({
               {tierLabel[pending.tier]} membership · {formatMoneyGBP(pending.amount_pence)}
             </h2>
             <p className="mt-1 max-w-[68ch] text-sm text-ink-muted">
-              You began an online payment but didn&apos;t finish it. Pick it back up — it takes
-              seconds and activates instantly — or switch to paying the treasurer.
+              You began an online payment but didn&apos;t finish it. Pick it back up, it takes
+              seconds and activates instantly, or switch to paying the treasurer.
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               <Button asChild variant="signal">
@@ -155,7 +155,7 @@ export default async function MyMembershipPage({
               </>
             ) : (
               <p className="mt-2 text-sm text-ink-muted">
-                Paid already? The committee records payments as they arrive — your status updates
+                Paid already? The committee records payments as they arrive, your status updates
                 the moment they do.
               </p>
             )}
@@ -182,7 +182,7 @@ export default async function MyMembershipPage({
         <div className="rounded-xl border border-river/40 bg-foam p-6">
           <h2 className="text-lg">Renew for {renewal.nextPeriod.label}</h2>
           <p className="mt-1 max-w-[68ch] text-sm text-ink-muted">
-            Keep your membership rolling into {renewal.nextPeriod.label} — same two-minute flow,
+            Keep your membership rolling into {renewal.nextPeriod.label}, same two-minute flow,
             and nothing changes until the new year starts.
           </p>
           <Button asChild variant="signal" className="mt-4">
@@ -198,15 +198,15 @@ export default async function MyMembershipPage({
             {nextPeriodRow.status === 'active' ? (
               <>
                 <Check className="mr-1 inline size-4 text-success" aria-hidden="true" />
-                You&apos;re already covered for {renewal.nextPeriod.label} — nothing more to do.
+                You&apos;re already covered for {renewal.nextPeriod.label}, nothing more to do.
               </>
             ) : (
               <>
                 Your {renewal.nextPeriod.label} renewal is requested and waiting on payment
                 {nextPeriodRow.source === 'paypal' && nextPeriodRow.paypal_order_id ? (
                   <>
-                    {' '}
-                    — <Link className="underline underline-offset-2" href={`/checkout/${nextPeriodRow.paypal_order_id}`}>finish paying online</Link>.
+                    ,{' '}
+                    <Link className="underline underline-offset-2" href={`/checkout/${nextPeriodRow.paypal_order_id}`}>finish paying online</Link>.
                   </>
                 ) : (
                   '.'
@@ -249,7 +249,7 @@ export default async function MyMembershipPage({
                     </Badge>
                   </TableCell>
                   <TableCell className="px-4 tabular-nums">{formatMoneyGBP(m.amount_pence)}</TableCell>
-                  <TableCell className="px-4">{m.paid_at ? formatDate(m.paid_at) : '—'}</TableCell>
+                  <TableCell className="px-4">{m.paid_at ? formatDate(m.paid_at) : 'Not yet'}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

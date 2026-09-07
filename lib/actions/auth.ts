@@ -58,7 +58,7 @@ export async function signUpAction(values: SignUpValues): Promise<ActionResult> 
   return {
     ok: true,
     message:
-      'Account created — check your email and tap the verification link, then come back and log in.',
+      'Account created, check your email and tap the verification link, then come back and log in.',
   }
 }
 
@@ -68,7 +68,7 @@ export async function signInAction(values: SignInValues): Promise<ActionResult> 
   if (!parsed.success) return { ok: false, message: 'Check the form and try again' }
   const supabase = await createClient()
   const { error } = await supabase.auth.signInWithPassword(parsed.data)
-  if (error) return { ok: false, message: 'Wrong email or password — try again, or use an email link' }
+  if (error) return { ok: false, message: 'Wrong email or password. Try again, or use an email link' }
   redirect('/members')
 }
 
@@ -82,7 +82,7 @@ export async function magicLinkAction(values: MagicLinkValues): Promise<ActionRe
     options: { emailRedirectTo: `${siteUrl()}/auth/callback?next=/members` },
   })
   if (error) return { ok: false, message: error.message }
-  return { ok: true, message: 'Check your email — the login link is on its way.' }
+  return { ok: true, message: 'Check your email, the login link is on its way.' }
 }
 
 export async function forgotPasswordAction(values: MagicLinkValues): Promise<ActionResult> {
@@ -100,7 +100,7 @@ export async function forgotPasswordAction(values: MagicLinkValues): Promise<Act
 export async function resetPasswordAction(password: string): Promise<ActionResult> {
   if (!isSupabaseConfigured()) return { ok: false, message: NOT_CONFIGURED_MESSAGE }
   if (typeof password !== 'string' || password.length < 10) {
-    return { ok: false, message: 'Use at least 10 characters — a short sentence works well' }
+    return { ok: false, message: 'Use at least 10 characters, a short sentence works well' }
   }
   const supabase = await createClient()
   const { error } = await supabase.auth.updateUser({ password })

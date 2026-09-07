@@ -47,7 +47,7 @@ export function CommitteeGrid({ roles }: { roles: CommitteeRole[] }) {
             <h3 className="mt-3 text-lg">{role.roleTitle}</h3>
             {vacant ? (
               <p className="text-sm text-ink-muted">
-                Vacant —{' '}
+                Vacant:{' '}
                 <Link
                   href="/about/role-descriptions"
                   className="font-medium text-river underline-offset-4 hover:underline"

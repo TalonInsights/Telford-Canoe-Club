@@ -12,7 +12,7 @@ import { getSportCards, IMAGES } from '@/lib/site-data'
 export const metadata: Metadata = {
   title: 'Paddlesports',
   description:
-    'Whitewater kayaking, freestyle and paddleboarding at Telford Canoe Club — one club, every kind of paddling, for all ages and abilities.',
+    'Whitewater kayaking, freestyle and paddleboarding at Telford Canoe Club: one club, every kind of paddling, for all ages and abilities.',
 }
 
 export default function PaddlesportsPage() {
@@ -21,7 +21,7 @@ export default function PaddlesportsPage() {
     <>
       <PageHero
         title="Paddlesports"
-        intro="One club, every kind of paddling — a friendly, safe atmosphere across watersports for all age groups."
+        intro="One club, every kind of paddling: a friendly, safe atmosphere across watersports for all age groups."
         image={IMAGES.anomaly}
         imageAlt="Kayakers paddling the rapid at Jackfield"
       />
@@ -31,7 +31,7 @@ export default function PaddlesportsPage() {
             <p>
               Telford Canoe Club supports participants in every type of paddlesport. Our ethos is
               to promote and assist a friendly, safe club atmosphere across many different areas
-              of watersports, for all age groups — from whitewater kayaking to standup
+              of watersports, for all age groups, from whitewater kayaking to standup
               paddleboarding, freestyle and beyond.
             </p>
             <p className="mt-4">
@@ -40,7 +40,7 @@ export default function PaddlesportsPage() {
               aim to stay current so members can experience the full variety.
             </p>
             <p className="mt-4 text-ink-muted">
-              At our core is whitewater kayaking — but if you want something more chilled out,
+              At our core is whitewater kayaking, but if you want something more chilled out,
               paddleboarding is a lovely way to spend a summer evening session or a weekend trip.
             </p>
           </div>
@@ -49,7 +49,7 @@ export default function PaddlesportsPage() {
               <h2 className="text-xl">Where we paddle</h2>
               <p className="mt-2 text-sm text-ink-muted">
                 Our own rapid at Jackfield in the Ironbridge gorge; the River Dee in North Wales;
-                manmade venues like Cardiff International White Water — and in the autumn and
+                manmade venues like Cardiff International White Water, and in the autumn and
                 winter season, trips to suitable rivers around the country, weather and water
                 levels depending.
               </p>
@@ -63,7 +63,7 @@ export default function PaddlesportsPage() {
       <Section
         tone="foam"
         title="Pick your discipline"
-        intro="Three core sports, each with its own page — every one covered by the same membership."
+        intro="Three core sports, each with its own page, every one covered by the same membership."
       >
         <FullGrid maxColumns={3}>
           {sports.map((s) => (
@@ -80,7 +80,7 @@ export default function PaddlesportsPage() {
       </Section>
       <CtaBand
         title="Ready to get on the water?"
-        intro="One membership covers every discipline — club boats and kit included while you learn."
+        intro="One membership covers every discipline, club boats and kit included while you learn."
         primary={{ label: 'Join the club', href: '/join' }}
         secondary={{ label: "See what's on", href: '/events' }}
       />

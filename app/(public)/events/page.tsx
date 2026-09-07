@@ -18,7 +18,7 @@ import { IMAGES } from '@/lib/site-data'
 export const metadata: Metadata = {
   title: 'Events',
   description:
-    'What’s on at Telford Canoe Club — club evening paddles, pool sessions, freestyle days, slaloms and trips.',
+    'What’s on at Telford Canoe Club: club evening paddles, pool sessions, freestyle days, slaloms and trips.',
 }
 
 export const revalidate = 900
@@ -33,7 +33,7 @@ export default async function EventsPage() {
     <>
       <PageHero
         title="Events"
-        intro="Club nights, pool sessions, freestyle days and trips — water levels permitting."
+        intro="Club nights, pool sessions, freestyle days and trips, water levels permitting."
         image={IMAGES.rapid}
         imageAlt="Paddlers on the water at a club session"
       />
@@ -49,7 +49,7 @@ export default async function EventsPage() {
               <EmptyState
                 icon={CalendarDays}
                 title="Nothing scheduled just now"
-                description="Check back soon — or join the club and hear about sessions first."
+                description="Check back soon, or join the club and hear about sessions first."
               />
             ) : (
               <FullGrid maxColumns={3}>

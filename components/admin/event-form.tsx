@@ -155,7 +155,7 @@ export function EventForm({
           <Field
             label="Summary"
             htmlFor="ev-summary"
-            helper="One or two sentences — what it is and who it's for. Shows on the cards."
+            helper="One or two sentences, what it is and who it's for. Shows on the cards."
           >
             <Textarea
               id="ev-summary"
@@ -250,7 +250,7 @@ export function EventForm({
       </div>
 
       <div className="grid gap-4 lg:col-span-5">
-        <Card title="Picture" intro="Landscape works best — it fills the card and the top of the event page.">
+        <Card title="Picture" intro="Landscape works best, it fills the card and the top of the event page.">
           {coverUrl ? (
             <div className="relative aspect-[3/2] overflow-hidden rounded-lg border border-stone">
               <Image src={coverUrl} alt="" fill unoptimized sizes="480px" className="object-cover" />
@@ -316,7 +316,7 @@ export function EventForm({
               />
               <Toggle
                 label="Current members only"
-                hint="Off lets anyone with an account confirm — useful for open days."
+                hint="Off lets anyone with an account confirm, useful for open days."
                 checked={form.membersOnlyBooking}
                 onCheckedChange={(v) => set('membersOnlyBooking', v)}
               />

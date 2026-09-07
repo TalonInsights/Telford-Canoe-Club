@@ -188,7 +188,7 @@ export default function UiGallery() {
           <Swatch name="warn" cls="bg-warn" hex="#8A5A12" />
         </Block>
 
-        <Block title="Button — variants and sizes (36 / 44 / 52)">
+        <Block title="Button, variants and sizes (36 / 44 / 52)">
           <Button size="sm">Save changes</Button>
           <Button>Save changes</Button>
           <Button size="lg">Save changes</Button>
@@ -204,7 +204,7 @@ export default function UiGallery() {
           </Button>
         </Block>
 
-        <Block title="Badge — status is word + colour + icon">
+        <Block title="Badge, status is word + colour + icon">
           <Badge variant="success">
             <Check /> Active
           </Badge>
@@ -219,7 +219,7 @@ export default function UiGallery() {
           <Badge variant="outline">2026</Badge>
         </Block>
 
-        <Block title="Input, textarea, select — 44px controls">
+        <Block title="Input, textarea, select, 44px controls">
           <div className="grid w-full max-w-sm gap-2">
             <label className="text-sm font-medium" htmlFor="ui-postcode">
               Postcode
@@ -244,9 +244,9 @@ export default function UiGallery() {
               <SelectValue placeholder="Choose a tier" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="adult">Adult — £25</SelectItem>
-              <SelectItem value="junior">Junior — £15</SelectItem>
-              <SelectItem value="family">Family — £40</SelectItem>
+              <SelectItem value="adult">Adult, £25</SelectItem>
+              <SelectItem value="junior">Junior, £15</SelectItem>
+              <SelectItem value="family">Family, £40</SelectItem>
             </SelectContent>
           </Select>
         </Block>
@@ -350,7 +350,7 @@ export default function UiGallery() {
             <AccordionItem value="a">
               <AccordionTrigger>Do I need my own kayak?</AccordionTrigger>
               <AccordionContent>
-                No — club boats and paddles are available for members at every session.
+                No, club boats and paddles are available for members at every session.
               </AccordionContent>
             </AccordionItem>
           </Accordion>
@@ -465,7 +465,7 @@ export default function UiGallery() {
             faqs={[
               {
                 question: 'Do I need my own kayak?',
-                answer: 'No — club boats and paddles are available for members at every session.',
+                answer: 'No, club boats and paddles are available for members at every session.',
               },
               {
                 question: 'When does membership run to?',
@@ -475,7 +475,7 @@ export default function UiGallery() {
           />
         </Block>
 
-        <Block title="CommitteeGrid — holder and vacant variants">
+        <Block title="CommitteeGrid, holder and vacant variants">
           <CommitteeGrid
             roles={[
               { roleTitle: 'Chair', holderName: 'Simon Wiles' },
@@ -486,7 +486,7 @@ export default function UiGallery() {
           />
         </Block>
 
-        <Block title="Stepper — register → tier → pay">
+        <Block title="Stepper, register → tier → pay">
           <Stepper steps={['Create account', 'Choose tier', 'Pay']} current={1} />
         </Block>
 
@@ -534,7 +534,7 @@ export default function UiGallery() {
             className="w-full"
           />
         </Block>
-        <Block title="EventCalendar — month grid, mobile list under 640px">
+        <Block title="EventCalendar, month grid, mobile list under 640px">
           <div className="w-full">
             <EventCalendar
               events={[
@@ -561,11 +561,11 @@ export default function UiGallery() {
           <DatePickerDemo />
         </Block>
 
-        <Block title="FileUpload — simulated 20MB image uploads">
+        <Block title="FileUpload, simulated 20MB image uploads">
           <FileUpload accept={['image/jpeg', 'image/png', 'image/webp']} upload={fakeUpload} />
         </Block>
 
-        <Block title="ImageGallery — lightbox + click-to-load video tile">
+        <Block title="ImageGallery, lightbox + click-to-load video tile">
           <div className="w-full">
             <ImageGallery
               items={[
@@ -585,7 +585,7 @@ export default function UiGallery() {
           </div>
         </Block>
 
-        <Block title="DataTable — sort, select, CSV export">
+        <Block title="DataTable, sort, select, CSV export">
           <div className="w-full">
             <DataTable
               columns={demoColumns}
@@ -620,7 +620,7 @@ export default function UiGallery() {
           />
         </Block>
 
-        <Block title="SignUpForm — junior fields appear from date of birth">
+        <Block title="SignUpForm, junior fields appear from date of birth">
           <SignUpForm onSubmit={async (v) => {
               toast.success(`Would register ${v.email}`)
             }} />

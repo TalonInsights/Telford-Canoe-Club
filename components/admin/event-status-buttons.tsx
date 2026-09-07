@@ -111,7 +111,7 @@ export function EventStatusButtons({
             <DialogTitle>Delete &ldquo;{title}&rdquo; for good?</DialogTitle>
             <DialogDescription>
               This removes the event and its confirmations permanently. If it&apos;s simply not
-              happening, cancel it instead — that keeps the record and tells people.
+              happening, cancel it instead, that keeps the record and tells people.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

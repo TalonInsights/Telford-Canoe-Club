@@ -23,7 +23,7 @@ export async function sendContactAction(input: z.infer<typeof contactSchema>): P
   const now = Date.now()
   while (hits.length && hits[0] < now - 60_000) hits.shift()
   if (hits.length >= 5) {
-    return { ok: false, message: 'Too many messages at once — wait a minute and try again' }
+    return { ok: false, message: 'Too many messages at once, wait a minute and try again' }
   }
   hits.push(now)
 
@@ -31,7 +31,7 @@ export async function sendContactAction(input: z.infer<typeof contactSchema>): P
     return {
       ok: false,
       message:
-        'The contact form isn’t switched on quite yet — email committee@telfordcanoeclub.co.uk directly and we’ll pick it up.',
+        'The contact form isn’t switched on quite yet, email committee@telfordcanoeclub.co.uk directly and we’ll pick it up.',
     }
   }
 
@@ -42,8 +42,8 @@ export async function sendContactAction(input: z.infer<typeof contactSchema>): P
     to: process.env.EMAIL_COMMITTEE ?? 'committee@telfordcanoeclub.co.uk',
     replyTo: parsed.data.email,
     subject: `Website contact from ${parsed.data.name}`,
-    text: `${parsed.data.message}\n\n— ${parsed.data.name} <${parsed.data.email}>`,
+    text: `${parsed.data.message}\n\nFrom: ${parsed.data.name} <${parsed.data.email}>`,
   })
-  if (error) return { ok: false, message: 'Sending failed — email committee@telfordcanoeclub.co.uk directly.' }
+  if (error) return { ok: false, message: 'Sending failed, email committee@telfordcanoeclub.co.uk directly.' }
   return { ok: true, message: 'The committee will come back to you as soon as they can.' }
 }

@@ -103,7 +103,7 @@ export function MarkRefundedButton({
         <DialogHeader>
           <DialogTitle>Mark {memberName}&apos;s membership refunded?</DialogTitle>
           <DialogDescription>
-            Record-keeping only — issue the actual refund by bank transfer, in cash, or from the
+            Record-keeping only, issue the actual refund by bank transfer, in cash, or from the
             payment provider&apos;s dashboard first. The membership stops counting as active.
           </DialogDescription>
         </DialogHeader>

@@ -40,7 +40,7 @@ function seedEvents(): EventRow[] {
       slug: 'club-evening-paddle',
       title: 'Club evening paddle',
       summary:
-        'Our regular summer evening session at Jackfield Rapids — water levels dependent, all welcome from improver upwards.',
+        'Our regular summer evening session at Jackfield Rapids, water levels dependent, all welcome from improver upwards.',
       category: 'club_night',
       location_name: 'Jackfield Rapids',
       location_address: 'The Lloyds, Jackfield, Ironbridge, Telford TF8 7HJ',
@@ -55,7 +55,7 @@ function seedEvents(): EventRow[] {
       id: 'seed-pool-session',
       slug: 'pool-session',
       title: 'Pool session',
-      summary: 'Indoor skills session — rolling practice and boat handling in warm water.',
+      summary: 'Indoor skills session, rolling practice and boat handling in warm water.',
       category: 'pool',
       location_name: 'Local pool',
       location_address: null,
@@ -71,7 +71,7 @@ function seedEvents(): EventRow[] {
       slug: 'freestyle-session',
       title: 'Freestyle session',
       summary:
-        'Playboating on the wave when levels allow — coaching support for new freestyle paddlers.',
+        'Playboating on the wave when levels allow, coaching support for new freestyle paddlers.',
       category: 'freestyle',
       location_name: 'Jackfield Rapids',
       location_address: 'The Lloyds, Jackfield, Ironbridge, Telford TF8 7HJ',

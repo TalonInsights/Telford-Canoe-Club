@@ -39,7 +39,7 @@ export default async function AuditPage() {
     <>
       <h1 className="text-2xl">Audit log</h1>
       <p className="mt-1 text-sm text-ink-muted">
-        Every consequential action, oldest to newest — written by the system, never edited.
+        Every consequential action, oldest to newest, written by the system, never edited.
       </p>
       <div className="mt-6 overflow-x-auto rounded-xl border border-stone bg-card">
         <Table>
@@ -60,7 +60,7 @@ export default async function AuditPage() {
                 <TableCell className="px-4 font-medium">{entry.action}</TableCell>
                 <TableCell className="px-4">{entry.entity}</TableCell>
                 <TableCell className="max-w-96 truncate px-4 text-micro text-ink-muted">
-                  {entry.after ? JSON.stringify(entry.after) : '—'}
+                  {entry.after ? JSON.stringify(entry.after) : 'None'}
                 </TableCell>
               </TableRow>
             ))}

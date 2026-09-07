@@ -12,7 +12,7 @@ import { IMAGES } from '@/lib/site-data'
 export const metadata: Metadata = {
   title: 'Contact',
   description:
-    'Get in touch with Telford Canoe Club — questions about joining, sessions, coaching or the Jackfield site.',
+    'Get in touch with Telford Canoe Club: questions about joining, sessions, coaching or the Jackfield site.',
 }
 
 const ADDRESS = 'Jackfield Rapids, The Lloyds, Jackfield, Ironbridge, Telford TF8 7HJ'
@@ -45,7 +45,7 @@ export default function ContactPage() {
     <>
       <PageHero
         title="Contact"
-        intro="Questions about joining, sessions, coaching or the site — the committee reads everything."
+        intro="Questions about joining, sessions, coaching or the site. The committee reads everything."
         image={IMAGES.sup}
         imageAlt="Paddleboarders on calm water"
       />
@@ -53,7 +53,7 @@ export default function ContactPage() {
         tone="white"
         kicker="Get in touch"
         title="Talk to the committee"
-        intro="Volunteers run the club, so allow a few days for a reply — but every message is read and answered."
+        intro="Volunteers run the club, so allow a few days for a reply, but every message is read and answered."
       >
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-stretch">
           <div className="lg:col-span-5">
@@ -80,7 +80,7 @@ export default function ContactPage() {
                   </a>
                 </Way>
                 <Way icon={Users} title="Better in person?">
-                  Come along to a club evening in season — someone will always talk paddling with
+                  Come along to a club evening in season, someone will always talk paddling with
                   you.{' '}
                   <Link
                     href="/events"
@@ -117,7 +117,7 @@ export default function ContactPage() {
       </Section>
       <CtaBand
         title="Rather see the river first?"
-        intro="No membership needed to come and say hello — club evenings run through the season at Jackfield, levels permitting."
+        intro="No membership needed to come and say hello. Club evenings run through the season at Jackfield, levels permitting."
         primary={{ label: 'Join the club', href: '/join' }}
         secondary={{ label: "See what's on", href: '/events' }}
       />

@@ -85,7 +85,7 @@ export default async function MembersDashboard() {
       </Card>
       <Card title="Documents" icon={FileText} href="/members/documents">
         <p>
-          Members-only files land here as the committee uploads them — policies live on the{' '}
+          Members-only files land here as the committee uploads them, policies live on the{' '}
           <Link href="/about/policies" className="font-medium text-river underline-offset-4 hover:underline">
             public policies page
           </Link>

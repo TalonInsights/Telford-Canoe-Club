@@ -134,7 +134,7 @@ export function AddMembershipForm({
             })}
             {matches.length === 0 && (
               <li className="rounded-lg border border-stone p-3 text-sm text-ink-muted">
-                No account matches — they can register at /join first.
+                No account matches, they can register at /join first.
               </li>
             )}
           </ul>
@@ -179,7 +179,7 @@ export function AddMembershipForm({
               <SelectContent>
                 <SelectItem value="manual_cash">Cash</SelectItem>
                 <SelectItem value="manual_bank">Bank transfer</SelectItem>
-                <SelectItem value="complimentary">Complimentary — no payment</SelectItem>
+                <SelectItem value="complimentary">Complimentary, no payment</SelectItem>
                 <SelectItem value="imported">Imported from the old site</SelectItem>
               </SelectContent>
             </Select>
@@ -204,7 +204,7 @@ export function AddMembershipForm({
           <div className="mt-4 rounded-lg border border-river/40 bg-foam p-4">
             <p className="text-sm font-medium">Everyone else at their address</p>
             <p className="mt-1 text-micro text-ink-muted">
-              Each person is their own record — a date of birth flags juniors, and each keeps their
+              Each person is their own record, a date of birth flags juniors, and each keeps their
               own emergency contact.
             </p>
             <div className="mt-3 grid gap-4">

@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og'
 
 import { OgBadge } from '@/components/site/brand-og'
 
-export const alt = 'Telford Canoe Club — whitewater, freestyle and paddleboarding on the Severn at Jackfield Rapids, Ironbridge'
+export const alt = 'Telford Canoe Club: whitewater, freestyle and paddleboarding on the Severn at Jackfield Rapids, Ironbridge'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
@@ -30,7 +30,7 @@ export default function OpenGraphImage() {
             Telford Canoe Club
           </div>
           <div style={{ marginTop: 24, fontSize: 30, lineHeight: 1.35, color: '#dce3e1' }}>
-            Whitewater, freestyle and paddleboarding on our own stretch of the Severn — Jackfield
+            Whitewater, freestyle and paddleboarding on our own stretch of the Severn. Jackfield
             Rapids, Ironbridge.
           </div>
           <div

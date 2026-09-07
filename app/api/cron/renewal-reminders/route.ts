@@ -89,7 +89,7 @@ export async function GET(request: Request) {
       subject: `Renew your Telford Canoe Club membership for ${next.label}`,
       text:
         `Hi ${p.first_name ?? 'there'},\n\n` +
-        `Your ${current.label} membership wraps up soon — renewing for ${next.label} takes two minutes ` +
+        `Your ${current.label} membership wraps up soon, renewing for ${next.label} takes two minutes ` +
         `(${tier} membership, ${formatMoneyGBP(priceByTier[tier])}).\n\n` +
         `Renew here: https://telford-canoe-club.vercel.app/welcome?renew=1\n` +
         `Prefer bank transfer or cash? The same page shows the treasurer route.\n\n` +

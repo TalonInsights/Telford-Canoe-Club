@@ -63,7 +63,7 @@ export function Footer() {
               <Wordmark />
             </Link>
             <p className="mt-4 max-w-[36ch] text-sm text-stone">
-              A members&apos; paddlesports club on its own stretch of the Severn — whitewater,
+              A members&apos; paddlesports club on its own stretch of the Severn: whitewater,
               freestyle and paddleboarding since the 1960s.
             </p>
             <address className="mt-3 text-sm text-stone not-italic">

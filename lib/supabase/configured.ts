@@ -12,5 +12,5 @@ export function isSupabaseConfigured(): boolean {
 }
 
 export const NOT_CONFIGURED_MESSAGE =
-  'The membership system is being connected — this will work very soon. ' +
+  'The membership system is being connected, this will work very soon. ' +
   'In the meantime, email committee@telfordcanoeclub.co.uk.'

@@ -55,7 +55,7 @@ export async function sendBookingEmail(input: {
       subject: `A place is yours: ${input.eventTitle}`,
       body:
         greeting +
-        `Good news — a place has freed up and you're now confirmed for ${input.eventTitle}.\nWhen: ${input.when}${where}\n\n` +
+        `Good news, a place has freed up and you're now confirmed for ${input.eventTitle}.\nWhen: ${input.when}${where}\n\n` +
         `Can't make it? Cancel from your bookings: ${site}/members/events` +
         signoff,
     },
@@ -71,7 +71,7 @@ export async function sendBookingEmail(input: {
       subject: `Cancelled: ${input.eventTitle}`,
       body:
         greeting +
-        `Sorry — ${input.eventTitle} (${input.when}) has been cancelled.\n\n` +
+        `Sorry, ${input.eventTitle} (${input.when}) has been cancelled.\n\n` +
         `Keep an eye on the events page, sessions come back around quickly: ${site}/events` +
         signoff,
     },

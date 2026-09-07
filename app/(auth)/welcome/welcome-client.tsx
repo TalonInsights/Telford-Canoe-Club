@@ -113,7 +113,7 @@ export function WelcomeClient({
             <p className="mt-2 text-sm text-ink-muted">{bankNote}</p>
             {onlineOn && (
               <p className="mt-2 text-sm text-ink-muted">
-                Changed your mind? You can still pay online from your membership page — it
+                Changed your mind? You can still pay online from your membership page, it
                 activates instantly.
               </p>
             )}
@@ -125,7 +125,7 @@ export function WelcomeClient({
           <>
             <fieldset className="mt-6">
               <legend className="text-sm font-medium">
-                Pick a tier — {(renewPeriod ? `${renewPeriod.label} membership` : yearLabel).toLowerCase()}
+                Pick a tier: {(renewPeriod ? `${renewPeriod.label} membership` : yearLabel).toLowerCase()}
               </legend>
               <div className="mt-3 grid gap-3 sm:grid-cols-3">
                 {tiers.map((tier) => {
@@ -159,7 +159,7 @@ export function WelcomeClient({
               <div className="mt-5 rounded-lg border border-river/40 bg-foam p-4">
                 <p className="text-sm font-medium">Who else is at your address?</p>
                 <p className="mt-1 text-micro text-ink-muted">
-                  You&apos;re included automatically. Add each person the membership covers — the
+                  You&apos;re included automatically. Add each person the membership covers, the
                   date of birth lets us flag juniors, and each person keeps their own emergency
                   contact.
                 </p>
@@ -250,7 +250,7 @@ export function WelcomeClient({
               <p className="mt-1 text-micro text-ink-muted">
                 {onlineOn
                   ? 'Online payment activates your membership instantly. The treasurer route stays open if you prefer it.'
-                  : 'No payment is taken online yet — the next step explains how to pay the treasurer.'}
+                  : 'No payment is taken online yet, the next step explains how to pay the treasurer.'}
               </p>
             </div>
           </>

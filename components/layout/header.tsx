@@ -198,7 +198,7 @@ function AccountMenu({ account }: { account: NonNullable<HeaderAccount> }) {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-60">
         <DropdownMenuLabel className="text-ink-muted">
-          {account.isCurrentMember ? 'Current member' : 'Account registered — no membership yet'}
+          {account.isCurrentMember ? 'Current member' : 'Account registered, no membership yet'}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {account.isCurrentMember ? (

@@ -20,7 +20,7 @@ export default function ForgotPasswordPage() {
       <h1 className="text-2xl">Forgotten password</h1>
       {sent ? (
         <p className="mt-3 text-sm text-ink-muted">
-          Check your email — the reset link is on its way. It expires after an hour.
+          Check your email, the reset link is on its way. It expires after an hour.
         </p>
       ) : (
         <form

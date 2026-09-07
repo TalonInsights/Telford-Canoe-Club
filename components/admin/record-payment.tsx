@@ -64,7 +64,7 @@ export function RecordPaymentButton({
               <SelectContent>
                 <SelectItem value="manual_bank">Bank transfer</SelectItem>
                 <SelectItem value="manual_cash">Cash</SelectItem>
-                <SelectItem value="complimentary">Complimentary — no payment</SelectItem>
+                <SelectItem value="complimentary">Complimentary, no payment</SelectItem>
               </SelectContent>
             </Select>
           </Field>

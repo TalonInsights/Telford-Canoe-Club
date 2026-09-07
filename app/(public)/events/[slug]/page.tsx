@@ -102,7 +102,7 @@ export default async function EventDetailPage({ params }: Params) {
                   <div>
                     <dt className="text-micro font-medium text-ink-muted">Conditions</dt>
                     <dd>
-                      Water levels dependent —{' '}
+                      Water levels dependent:{' '}
                       <Link
                         href="/venue/river-levels"
                         className="font-medium text-river underline-offset-4 hover:underline"

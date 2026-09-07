@@ -88,7 +88,7 @@ function RowActions({ row }: { row: AttendeeRow }) {
       } else toast.error(result.message)
     })
 
-  if (row.status === 'cancelled') return <span className="text-micro text-ink-muted">—</span>
+  if (row.status === 'cancelled') return null
 
   return (
     <div className="flex flex-wrap justify-end gap-1">
@@ -185,7 +185,7 @@ export function AttendeesTable({
       {
         accessorKey: 'phone',
         header: 'Phone',
-        cell: ({ getValue }) => getValue<string | null>() ?? '—',
+        cell: ({ getValue }) => getValue<string | null>() ?? 'None',
       },
       {
         accessorKey: 'status',

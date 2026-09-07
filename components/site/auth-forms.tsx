@@ -108,7 +108,7 @@ export function SignInForm({
             <Field
               label="Email"
               htmlFor="magic-email"
-              helper="We'll send a one-tap login link — no password needed."
+              helper="We'll send a one-tap login link, no password needed."
               error={magic.formState.errors.email?.message}
             >
               <Input
@@ -176,7 +176,7 @@ export function SignUpForm({ onSubmit }: { onSubmit: (values: SignUpValues) => P
       <Field
         label="Password"
         htmlFor="su-password"
-        helper="At least 10 characters — a short sentence works well."
+        helper="At least 10 characters, a short sentence works well."
         error={err('password')}
       >
         <Input id="su-password" type="password" autoComplete="new-password" aria-invalid={!!errors.password} {...form.register('password')} />
@@ -232,7 +232,7 @@ export function SignUpForm({ onSubmit }: { onSubmit: (values: SignUpValues) => P
         label="Paddle UK membership number"
         htmlFor="su-bc"
         optional
-        helper="Formerly British Canoeing — add it later if you don't know it."
+        helper="Formerly British Canoeing, add it later if you don't know it."
         error={err('bcNumber')}
       >
         <Input id="su-bc" aria-invalid={!!errors.bcNumber} {...form.register('bcNumber')} />
@@ -249,7 +249,7 @@ export function SignUpForm({ onSubmit }: { onSubmit: (values: SignUpValues) => P
         ).map(([name, label]) => (
           <div key={name} className="grid gap-1">
             {/* Controller (not bare form.watch) so the checkbox re-renders on
-                change — form.watch's value is a React Compiler stale-UI hazard
+                change, form.watch's value is a React Compiler stale-UI hazard
                 when read straight into a memoised child. */}
             <Controller
               control={form.control}

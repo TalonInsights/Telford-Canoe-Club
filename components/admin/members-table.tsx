@@ -83,20 +83,20 @@ export function MembersDirectoryTable({ rows }: { rows: DirectoryRow[] }) {
         header: 'Tier',
         cell: ({ getValue }) => {
           const t = getValue<string | null>()
-          return t ? t.charAt(0).toUpperCase() + t.slice(1) : '—'
+          return t ? t.charAt(0).toUpperCase() + t.slice(1) : 'None'
         },
       },
       {
         accessorKey: 'bc_membership_number',
         header: 'Paddle UK no.',
-        cell: ({ getValue }) => getValue<string | null>() ?? '—',
+        cell: ({ getValue }) => getValue<string | null>() ?? 'None',
       },
       {
         accessorKey: 'paid_at',
         header: 'Paid',
         cell: ({ getValue }) => {
           const v = getValue<string | null>()
-          return v ? formatDate(v) : '—'
+          return v ? formatDate(v) : 'Not yet'
         },
       },
       {

@@ -17,7 +17,7 @@ export default async function AdminEventsPage() {
         <div>
           <h1 className="text-2xl">Events</h1>
           <p className="mt-1 text-sm text-ink-muted">
-            Everything on the club calendar — publish, see who has confirmed, check people in.
+            Everything on the club calendar, publish, see who has confirmed, check people in.
           </p>
         </div>
         <Button asChild size="sm" variant="signal">

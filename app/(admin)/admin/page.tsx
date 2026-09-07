@@ -20,7 +20,7 @@ export default async function AdminOverviewPage() {
     <>
       <h1 className="text-2xl">Overview</h1>
       <p className="mt-1 text-sm text-ink-muted">
-        The membership picture at a glance — the answer to &quot;who has actually paid?&quot;
+        The membership picture at a glance, the answer to &quot;who has actually paid?&quot;
       </p>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -59,7 +59,7 @@ export default async function AdminOverviewPage() {
         </div>
         {pendingRows.length === 0 ? (
           <p className="mt-3 rounded-xl border border-stone bg-card p-5 text-sm text-ink-muted">
-            Nothing waiting — every requested membership has been dealt with.
+            Nothing waiting, every requested membership has been dealt with.
           </p>
         ) : (
           <ul className="mt-3 divide-y divide-stone overflow-hidden rounded-xl border border-stone bg-card">

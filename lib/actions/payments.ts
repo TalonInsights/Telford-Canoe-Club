@@ -46,7 +46,7 @@ export async function startOnlineCheckoutAction(input: {
 
   const settings = await getClubSettings()
   if (!isOnlinePaymentOn(settings.paymentProvider)) {
-    return { ok: false, message: 'Online payment is switched off — pay the treasurer directly.' }
+    return { ok: false, message: 'Online payment is switched off, pay the treasurer directly.' }
   }
 
   const supabase = await createClient()
@@ -68,7 +68,7 @@ export async function payPendingOnlineAction(membershipId: string): Promise<Chec
   if (!z.uuid().safeParse(membershipId).success) return { ok: false, message: 'Invalid membership' }
   const settings = await getClubSettings()
   if (!isOnlinePaymentOn(settings.paymentProvider)) {
-    return { ok: false, message: 'Online payment is switched off — pay the treasurer directly.' }
+    return { ok: false, message: 'Online payment is switched off, pay the treasurer directly.' }
   }
   return beginCheckoutFor(membershipId)
 }

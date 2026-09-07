@@ -16,7 +16,7 @@ import { IMAGES } from '@/lib/site-data'
 export const metadata: Metadata = {
   title: 'Join the club',
   description:
-    'Membership of Telford Canoe Club — adult, junior and family tiers, club boats and kit included, on our own stretch of the Severn.',
+    'Membership of Telford Canoe Club: adult, junior and family tiers, club boats and kit included, on our own stretch of the Severn.',
 }
 
 export const revalidate = 900
@@ -30,7 +30,7 @@ export default async function JoinPage() {
     <>
       <PageHero
         title="Join Telford Canoe Club"
-        intro="One membership, every discipline — and your own stretch of the Severn to paddle."
+        intro="One membership, every discipline, and your own stretch of the Severn to paddle."
         image={IMAGES.anomaly}
         imageAlt="Paddlers enjoying the water at Jackfield"
       />
@@ -74,7 +74,7 @@ export default async function JoinPage() {
           {[
             {
               title: 'Create your account',
-              body: 'Register with your details — under-18s add a parent or guardian. It takes about two minutes.',
+              body: 'Register with your details, under-18s add a parent or guardian. It takes about two minutes.',
             },
             {
               title: 'Choose your tier',
@@ -83,7 +83,7 @@ export default async function JoinPage() {
             onlineOn
               ? {
                   title: 'Pay your way',
-                  body: 'Pay online and your membership activates instantly — or pay the treasurer by bank transfer or cash and the committee confirms it as soon as it lands.',
+                  body: 'Pay online and your membership activates instantly, or pay the treasurer by bank transfer or cash and the committee confirms it as soon as it lands.',
                 }
               : {
                   title: 'Pay the treasurer',
@@ -107,7 +107,7 @@ export default async function JoinPage() {
             {
               question: 'Do I need my own kayak or board?',
               answer:
-                'No — club boats, paddles and buoyancy aids are available for members at sessions while you find your feet. Most people buy their own kit once they know what they like.',
+                'No, club boats, paddles and buoyancy aids are available for members at sessions while you find your feet. Most people buy their own kit once they know what they like.',
             },
             {
               question: 'What does membership include?',
@@ -117,28 +117,28 @@ export default async function JoinPage() {
             {
               question: 'How does the family membership work?',
               answer:
-                'Family membership covers members residing at the same address — list everyone when you choose the tier and the whole household is covered by one renewal.',
+                'Family membership covers members residing at the same address, list everyone when you choose the tier and the whole household is covered by one renewal.',
             },
             {
               question: 'Can under-18s join?',
               answer:
-                'Yes — juniors are a big part of the club. A parent or guardian goes on record during registration, and our safeguarding and welfare policy applies to everything we run.',
+                'Yes, juniors are a big part of the club. A parent or guardian goes on record during registration, and our safeguarding and welfare policy applies to everything we run.',
             },
             {
               question: 'What about Paddle UK membership?',
               answer:
-                'Club membership and Paddle UK membership are separate. If you hold Paddle UK membership, add the club on your JustGo profile and pop your number in your TCC profile — it genuinely helps the club with affiliation.',
+                'Club membership and Paddle UK membership are separate. If you hold Paddle UK membership, add the club on your JustGo profile and pop your number in your TCC profile, it genuinely helps the club with affiliation.',
             },
             onlineOn
               ? {
                   question: 'How do I pay?',
                   answer:
-                    'Two ways: pay online from your account and your membership activates instantly, or pay the treasurer by bank transfer or cash — the committee records it and your membership goes active.',
+                    'Two ways: pay online from your account and your membership activates instantly, or pay the treasurer by bank transfer or cash, the committee records it and your membership goes active.',
                 }
               : {
                   question: 'How do I pay right now?',
                   answer:
-                    'Card payment through the site is coming. Until it arrives: request your tier from your account, then pay the treasurer by bank transfer or cash — the committee records it and your membership goes active.',
+                    'Card payment through the site is coming. Until it arrives: request your tier from your account, then pay the treasurer by bank transfer or cash, the committee records it and your membership goes active.',
                 },
           ]}
         />

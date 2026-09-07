@@ -93,7 +93,7 @@ export function getFacilities(): Facility[] {
     {
       key: 'parking',
       title: 'Parking on site',
-      description: 'Drive in and unload by the water — the access road and parking were built for the club by army reserves.',
+      description: 'Drive in and unload by the water, the access road and parking were built for the club by army reserves.',
       confirmed: true,
     },
     {
@@ -129,14 +129,14 @@ export function getSportCards(): SportCard[] {
     {
       slug: 'freestyle-kayaking',
       title: 'Freestyle kayaking',
-      summary: 'Surfing, spinning and throwing ends — the playful side of whitewater, coached at club sessions.',
+      summary: 'Surfing, spinning and throwing ends, the playful side of whitewater, coached at club sessions.',
       image: IMAGES.freestyle,
       imageAlt: 'Freestyle kayaker mid-air at Holme Pierrepont',
     },
     {
       slug: 'paddleboarding',
       title: 'Paddleboarding',
-      summary: 'Calmer water on quieter days — stand-up paddling for everyone from first-timers up.',
+      summary: 'Calmer water on quieter days, stand-up paddling for everyone from first-timers up.',
       image: IMAGES.sup,
       imageAlt: 'Paddleboarders on flat water',
     },
@@ -167,7 +167,7 @@ export function getLatestPosts(_limit = 3): HomePost[] {
     {
       slug: 'tcc-committee',
       title: 'TCC committee',
-      excerpt: 'On keeping the committee viable, the roles that need filling — and thanks to Iain for his years of service.',
+      excerpt: 'On keeping the committee viable, the roles that need filling, and thanks to Iain for his years of service.',
       publishedAt: '2026-04-18',
       image: null,
       imageAlt: '',

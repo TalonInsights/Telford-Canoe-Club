@@ -18,7 +18,7 @@ export default async function NewEventPage() {
         <div>
           <h1 className="text-2xl">Add an event</h1>
           <p className="mt-1 text-sm text-ink-muted">
-            Title, time, place and a picture — publish when it&apos;s ready and members can confirm
+            Title, time, place and a picture, publish when it&apos;s ready and members can confirm
             they&apos;re coming.
           </p>
         </div>

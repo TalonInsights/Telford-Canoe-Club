@@ -19,7 +19,7 @@ function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className="flex flex-wrap justify-between gap-2 border-b border-stone py-2 text-sm last:border-b-0">
       <dt className="text-ink-muted">{label}</dt>
-      <dd className="font-medium">{value || '—'}</dd>
+      <dd className="font-medium">{value || 'Not recorded'}</dd>
     </div>
   )
 }
@@ -75,7 +75,7 @@ export default async function MemberRecordPage({ params }: { params: Promise<{ i
           <h2 className="text-lg">Memberships</h2>
           {memberships.length === 0 ? (
             <p className="mt-3 text-sm text-ink-muted">
-              No membership on record — they can request one from their account, or you can take
+              No membership on record, they can request one from their account, or you can take
               a payment and record it once the tier is requested.
             </p>
           ) : (

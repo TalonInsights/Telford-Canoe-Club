@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { requireRole } from '@/lib/auth/guards'
 import { signOutAction } from '@/lib/actions/auth'
 
-export const metadata: Metadata = { title: { default: 'Admin', template: '%s — TCC admin' } }
+export const metadata: Metadata = { title: { default: 'Admin', template: '%s · TCC admin' } }
 
 const links: RailLink[] = [
   { title: 'Overview', href: '/admin', icon: 'home' },
@@ -40,7 +40,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         ]}
         footer={
           <div className="grid gap-3">
-            {/* The way back out — the rail otherwise only knows admin pages. */}
+            {/* The way back out, the rail otherwise only knows admin pages. */}
             <nav aria-label="Leave admin" className="grid gap-0.5">
               <Link href="/members" className={exitLinkClass}>
                 <ArrowLeft aria-hidden="true" className="size-4 shrink-0" />

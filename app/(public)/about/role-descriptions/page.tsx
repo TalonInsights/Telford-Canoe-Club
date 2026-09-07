@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 export const metadata: Metadata = {
   title: 'Club role descriptions',
   description:
-    'What each committee role involves — Telford Canoe Club has adopted the Paddle UK standard role descriptions.',
+    'What each committee role involves. Telford Canoe Club has adopted the Paddle UK standard role descriptions.',
 }
 
 const UPLOADS = 'https://telfordcanoeclub.co.uk/wp-content/uploads/2026/05'
@@ -28,7 +28,7 @@ export default function RoleDescriptionsPage() {
     <>
       <PageHero
         title="Club role descriptions"
-        intro="What each role involves — the club has adopted the Paddle UK standard descriptions."
+        intro="What each role involves, the club has adopted the Paddle UK standard descriptions."
         crumbs={[{ title: 'About', href: '/about' }]}
       />
       <Section tone="white">
@@ -40,7 +40,7 @@ export default function RoleDescriptionsPage() {
             <h2 className="text-xl">Fancy one of these?</h2>
             <p className="mt-2 text-sm text-ink-muted">
               The club stays open because volunteers step up. If any of these roles looks like
-              you — or you&apos;d like to coach — the committee would love to hear from you.
+              you, or you&apos;d like to coach, the committee would love to hear from you.
             </p>
             <Button asChild variant="secondary" className="mt-4">
               <Link href="/contact">Get in touch</Link>

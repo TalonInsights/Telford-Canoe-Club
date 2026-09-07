@@ -65,7 +65,7 @@ export default function LayoutDemo() {
         tone="foam"
         spacing="tight"
         title="One card anatomy, three types, mismatched copy"
-        intro="SportCard, NewsCard, EventCard share the §3.4 anatomy — equal heights hold."
+        intro="SportCard, NewsCard, EventCard share the §3.4 anatomy, equal heights hold."
       >
         <FullGrid maxColumns={3}>
           <SportCard
@@ -99,7 +99,7 @@ export default function LayoutDemo() {
       <Section
         tone="deep"
         spacing="tight"
-        title="Split 7/5 — media right"
+        title="Split 7/5, media right"
         intro="Text 58%, 68ch inner measure, media fills the cell."
       >
         <Split75 side="right" media={<ImageFallback className="bg-river" />}>
@@ -111,7 +111,7 @@ export default function LayoutDemo() {
         </Split75>
       </Section>
 
-      <Section tone="foam" spacing="tight" title="Split 7/5 — media left (alternated)">
+      <Section tone="foam" spacing="tight" title="Split 7/5, media left (alternated)">
         <Split75 side="left" media={<ImageFallback />}>
           <h3>Freestyle and flat water too</h3>
           <p className="mt-2 text-ink-muted">
@@ -121,7 +121,7 @@ export default function LayoutDemo() {
         </Split75>
       </Section>
 
-      <Section tone="white" spacing="tight" title="Centred column — prose">
+      <Section tone="white" spacing="tight" title="Centred column, prose">
         <CentredColumn>
           <p>
             Long-form content sits in a 720px column so committee-written pages never stretch
@@ -131,7 +131,7 @@ export default function LayoutDemo() {
         </CentredColumn>
       </Section>
 
-      <Section tone="deep" spacing="tight" title="Empty state — section keeps its height">
+      <Section tone="deep" spacing="tight" title="Empty state, section keeps its height">
         <div className="flex min-h-[280px] items-center justify-center rounded-xl border border-river">
           <div className="p-6 text-center">
             <p className="font-medium">Nothing scheduled</p>

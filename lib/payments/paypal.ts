@@ -24,7 +24,7 @@ let cachedToken: { value: string; expiresAt: number } | null = null
 
 async function accessToken(): Promise<string> {
   if (!isPaypalConfigured()) {
-    throw new Error('PayPal is not configured — set PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET (D1)')
+    throw new Error('PayPal is not configured, set PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET (D1)')
   }
   if (cachedToken && cachedToken.expiresAt > Date.now() + 60_000) return cachedToken.value
   const creds = Buffer.from(
@@ -67,7 +67,7 @@ export const paypalProvider: PaymentProvider = {
         purchase_units: [
           {
             amount: { currency_code: 'GBP', value: (input.amountPence / 100).toFixed(2) },
-            description: `Telford Canoe Club ${input.tier} membership — ${input.periodLabel}`,
+            description: `Telford Canoe Club ${input.tier} membership, ${input.periodLabel}`,
             custom_id: `${input.userId}|${input.tier}|${input.periodId}`,
             invoice_id: `TCC-${input.periodLabel}-${input.userId.slice(0, 8)}`,
           },

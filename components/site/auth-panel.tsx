@@ -28,7 +28,7 @@ export function AuthPanel() {
       <div className="relative flex items-center gap-3 px-4 py-4 md:px-6 lg:hidden">
         <ClubBadge className="size-9" />
         <p className="text-sm text-stone">
-          Your own stretch of the Severn — one account for you or your whole household.
+          Your own stretch of the Severn. One account for you or your whole household.
         </p>
       </div>
 
@@ -40,7 +40,7 @@ export function AuthPanel() {
             Your own stretch of the Severn
           </p>
           <p className="mt-3 max-w-[40ch] text-stone">
-            One membership covers every discipline at Jackfield — and your account is where it
+            One membership covers every discipline at Jackfield, and your account is where it
             lives.
           </p>
         </div>

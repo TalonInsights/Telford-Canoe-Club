@@ -13,7 +13,7 @@ export default function RegisterPage() {
       <div className="rounded-xl border border-stone bg-card p-6 sm:p-8">
         <h1 className="text-2xl">Create your account</h1>
         <p className="mt-1 text-sm text-ink-muted">
-          Step 1 of joining the club — after this you&apos;ll choose a membership tier.
+          Step 1 of joining the club, after this you&apos;ll choose a membership tier.
         </p>
         <div className="mt-6">
           <RegisterClient />

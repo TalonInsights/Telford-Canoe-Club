@@ -67,7 +67,7 @@ export function SettingsForm({ initial }: { initial: SettingsInput }) {
               provider === 'simulated'
                 ? 'Test gateway: members can pay online, no money moves. For testing only.'
                 : provider === 'paypal'
-                  ? 'Real PayPal — needs the club PayPal credentials in the environment (D1). The simulated gateway shuts off automatically.'
+                  ? 'Real PayPal, needs the club PayPal credentials in the environment (D1). The simulated gateway shuts off automatically.'
                   : 'Members pay the treasurer by bank transfer or cash; the committee records it here.'
             }
           >
@@ -76,7 +76,7 @@ export function SettingsForm({ initial }: { initial: SettingsInput }) {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="off">Off — treasurer only</SelectItem>
+                <SelectItem value="off">Off, treasurer only</SelectItem>
                 <SelectItem value="simulated">Simulated gateway (testing)</SelectItem>
                 <SelectItem value="paypal">PayPal (live)</SelectItem>
               </SelectContent>
@@ -125,8 +125,8 @@ export function SettingsForm({ initial }: { initial: SettingsInput }) {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="open">Open — paddling as usual</SelectItem>
-                <SelectItem value="closed">Closed — show a notice</SelectItem>
+                <SelectItem value="open">Open, paddling as usual</SelectItem>
+                <SelectItem value="closed">Closed, show a notice</SelectItem>
               </SelectContent>
             </Select>
           </Field>
@@ -136,7 +136,7 @@ export function SettingsForm({ initial }: { initial: SettingsInput }) {
                 id="set-status-note"
                 value={siteStatusNote}
                 onChange={(e) => setSiteStatusNote(e.target.value)}
-                placeholder="e.g. River in flood — sessions off this week"
+                placeholder="e.g. River in flood, sessions off this week"
               />
             </Field>
           )}

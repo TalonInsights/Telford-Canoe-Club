@@ -16,7 +16,7 @@ export default async function AdminSettingsPage() {
       <div className="rounded-xl border border-stone bg-card p-6">
         <h1 className="text-2xl">Club settings</h1>
         <p className="mt-2 text-sm text-ink-muted">
-          The settings row isn&apos;t reachable — check the database connection.
+          The settings row isn&apos;t reachable, check the database connection.
         </p>
       </div>
     )
@@ -26,7 +26,7 @@ export default async function AdminSettingsPage() {
     <>
       <h1 className="text-2xl">Club settings</h1>
       <p className="mt-1 max-w-[68ch] text-sm text-ink-muted">
-        Prices, the membership-year label, the payment switch and the site banner — every save
+        Prices, the membership-year label, the payment switch and the site banner. Every save
         is written to the audit log.
       </p>
       <div className="mt-6">

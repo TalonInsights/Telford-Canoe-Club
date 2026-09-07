@@ -89,7 +89,7 @@ export function ClubBadge({
         </g>
       )}
 
-      {/* Scene — scaled into the inner disc when the lettering needs the band */}
+      {/* Scene, scaled into the inner disc when the lettering needs the band */}
       <g
         clipPath={`url(#${clipId})`}
         transform={detailed ? 'translate(50 50) scale(0.8) translate(-50 -50)' : undefined}
@@ -103,7 +103,7 @@ export function ClubBadge({
             strokeWidth="0.9"
           />
         )}
-        {/* The arch — outer and inner ribs, lattice between */}
+        {/* The arch, outer and inner ribs, lattice between */}
         <path d="M17 68 A33 33 0 0 1 83 68" strokeWidth="2.4" />
         <path d="M24 68 A26 26 0 0 1 76 68" strokeWidth="1.4" />
         {spokes && <path d={spokes} strokeWidth="0.9" />}
@@ -119,7 +119,7 @@ export function ClubBadge({
           strokeWidth="1.5"
           opacity="0.7"
         />
-        {/* Paddler — a solid silhouette so it reads at any size */}
+        {/* Paddler, a solid silhouette so it reads at any size */}
         <g fill="currentColor" stroke="none">
           <path d="M20 77 Q50 68 84 71.5 Q52 83 20 77 Z" />
           <path d="M45.5 58.5 h9 a3 3 0 0 1 3 3 v11 h-15 v-11 a3 3 0 0 1 3 -3 Z" />

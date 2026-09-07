@@ -57,7 +57,7 @@ export function CheckoutClient({
         </div>
         <h1 className="mt-2 text-2xl">Confirm your payment</h1>
         <p className="mt-1 text-sm text-ink-muted">
-          This is the club&apos;s <strong>test gateway</strong> — it behaves like the real card
+          This is the club&apos;s <strong>test gateway</strong>: it behaves like the real card
           flow, but no money moves and no card details are asked for.
         </p>
       </div>
@@ -94,7 +94,7 @@ export function CheckoutClient({
             <CircleAlert className="size-4" aria-hidden="true" /> Payment declined
           </p>
           <p className="mt-1 text-sm text-ink-muted">
-            {declined}. Nothing was taken — try again, or switch to paying the treasurer by bank
+            {declined}. Nothing was taken, try again, or switch to paying the treasurer by bank
             transfer.
           </p>
         </div>

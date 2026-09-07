@@ -31,7 +31,7 @@ export async function sendMembershipActivatedEmails(input: {
       resend.emails.send({
         from,
         to: input.memberEmail,
-        subject: `Your Telford Canoe Club membership is active — ${input.periodLabel}`,
+        subject: `Your Telford Canoe Club membership is active for ${input.periodLabel}`,
         text:
           `Hi ${input.memberName},\n\n` +
           `Your ${input.tierLabel.toLowerCase()} membership for ${input.periodLabel} is now active` +
@@ -51,7 +51,7 @@ export async function sendMembershipActivatedEmails(input: {
         to: process.env.EMAIL_COMMITTEE,
         subject: `Membership activated: ${input.memberName} (${input.tierLabel}, ${input.periodLabel})`,
         text:
-          `${input.memberName} — ${input.tierLabel}, ${input.periodLabel}, ${amount}, via ${input.method}.${ref}\n` +
+          `${input.memberName}, ${input.tierLabel}, ${input.periodLabel}, ${amount}, via ${input.method}.${ref}\n` +
           `Directory: https://telford-canoe-club.vercel.app/admin/members`,
       })
     )

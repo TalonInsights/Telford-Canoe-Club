@@ -114,7 +114,7 @@ export function EventCalendar({
         </div>
       </div>
 
-      {/* Month grid — ≥sm only */}
+      {/* Month grid, ≥sm only */}
       <div className="hidden overflow-hidden rounded-xl border border-stone bg-card sm:block">
         <div className="grid grid-cols-7 border-b border-stone bg-foam">
           {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => (
@@ -158,7 +158,7 @@ export function EventCalendar({
         </div>
       </div>
 
-      {/* Mobile list fallback — <sm */}
+      {/* Mobile list fallback, <sm */}
       <div className="sm:hidden">
         {monthEvents.length === 0 ? (
           <EmptyState

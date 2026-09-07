@@ -6,7 +6,7 @@ import { Section } from '@/components/layout/section'
 export const metadata: Metadata = {
   title: 'Privacy',
   description:
-    'How Telford Canoe Club handles your personal information on this website — what we collect, why, how long we keep it, and your rights.',
+    'How Telford Canoe Club handles your personal information on this website: what we collect, why, how long we keep it, and your rights.',
 }
 
 function Block({ heading, children }: { heading: string; children: React.ReactNode }) {
@@ -41,7 +41,7 @@ export default function PrivacyPage() {
           <Block heading="What we collect, and why">
             <p>
               When you create an account or join the club we ask for your name, email address,
-              date of birth, phone number, address, an emergency contact, and — for under-18s — a
+              date of birth, phone number, address, an emergency contact, and, for under-18s, a
               parent or guardian&apos;s details. We use this to run your membership, keep people
               safe on the water, and contact you about club activity. You can add your Paddle UK
               membership number so the club&apos;s affiliation records line up.
@@ -67,7 +67,7 @@ export default function PrivacyPage() {
             <p>
               To see which pages are useful we use Vercel Web Analytics, which counts page views
               without cookies and without storing anything on your device. It records the page,
-              the country and the type of browser, never who you are — visitors are not
+              the country and the type of browser, never who you are, visitors are not
               identified and the figures are only ever aggregated.
             </p>
           </Block>
@@ -81,7 +81,7 @@ export default function PrivacyPage() {
           <Block heading="Your rights">
             <p>
               You can see and edit your details any time from your profile. You can ask for an
-              export of the personal data we hold about you, or ask us to delete it — email the
+              export of the personal data we hold about you, or ask us to delete it, email the
               committee and it will be actioned, except where the club is obliged to keep a
               record.
             </p>

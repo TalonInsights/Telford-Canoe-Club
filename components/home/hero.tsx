@@ -56,7 +56,7 @@ export function Hero() {
           : {})}
       />
       {/* DR-09: the badge as a watermark fills the empty right two-thirds at
-          desktop — line art at 12% so the water still reads through it. */}
+          desktop, line art at 12% so the water still reads through it. */}
       <ClubBadge
         detailed
         className="pointer-events-none absolute right-[6%] bottom-[14%] hidden size-80 text-white/[0.12] lg:block xl:size-96"
@@ -72,7 +72,7 @@ export function Hero() {
           >
             That&apos;s what makes Telford Canoe Club different: our own gated site and our own
             rapid at Jackfield, in the Ironbridge gorge. Join, and this water is yours to
-            paddle — whitewater, freestyle and paddleboarding included.
+            paddle, whitewater, freestyle and paddleboarding included.
           </motion.p>
           <motion.div className="tcc-reveal-guarantee mt-7 flex flex-wrap gap-3" {...rise(0.15)}>
             <Button asChild variant="signal" size="lg">

@@ -13,7 +13,7 @@ export type ClubSettings = SiteSettings & {
 const seedFallback: ClubSettings = {
   ...getSiteSettings(),
   bankPaymentNote:
-    'Pay by bank transfer or cash to the treasurer — your membership is confirmed as soon as the committee records it.',
+    'Pay by bank transfer or cash to the treasurer, your membership is confirmed as soon as the committee records it.',
   paymentProvider: 'simulated',
 }
 
