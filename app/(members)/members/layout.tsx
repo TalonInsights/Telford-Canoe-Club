@@ -29,7 +29,13 @@ export default async function MembersLayout({ children }: { children: React.Reac
       >
         Skip to content
       </a>
-      <Header />
+      <Header
+        account={
+          session
+            ? { firstName: session.profile.first_name, isCurrentMember: session.isCurrentMember }
+            : null
+        }
+      />
       <main id="main" className="flex-1 bg-foam pb-20 lg:pb-0">
         <div className="mx-auto w-full max-w-[1100px] px-4 py-8 md:px-6">
           {!isSupabaseConfigured() ? (
