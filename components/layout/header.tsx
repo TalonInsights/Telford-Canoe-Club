@@ -65,20 +65,21 @@ function useDetectedAccount(initial: HeaderAccount | undefined): HeaderAccount |
 
   useEffect(() => {
     if (initial !== undefined) return
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-      setAccount(null)
-      return
-    }
     let cancelled = false
-    const supabase = createClient()
+    const configured = Boolean(
+      process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    )
+    const supabase = configured ? createClient() : null
 
     async function resolve() {
-      if (!hasAuthCookie()) {
+      // Never set state synchronously inside the effect (cascading-render rule).
+      await Promise.resolve()
+      if (!supabase || !hasAuthCookie()) {
         if (!cancelled) setAccount(null)
         return
       }
-      // Optimistic: show the signed-in slot at once, refine below.
-      if (!cancelled) setAccount({ firstName: null, isCurrentMember: true })
+      // getSession() reads the cookie locally — no network — so the slot
+      // swaps within a frame; the membership check refines the label after.
       const {
         data: { session },
       } = await supabase.auth.getSession()
@@ -87,30 +88,26 @@ function useDetectedAccount(initial: HeaderAccount | undefined): HeaderAccount |
         if (!cancelled) setAccount(null)
         return
       }
+      const metaName =
+        typeof user.user_metadata?.first_name === 'string' ? user.user_metadata.first_name : null
+      if (!cancelled) setAccount({ firstName: metaName, isCurrentMember: true })
       const [{ data: profile }, { data: current }] = await Promise.all([
         supabase.from('profiles').select('first_name').eq('user_id', user.id).maybeSingle(),
         supabase.rpc('is_current_member', { uid: user.id }),
       ])
       if (!cancelled) {
-        setAccount({
-          firstName:
-            profile?.first_name ??
-            (typeof user.user_metadata?.first_name === 'string' ? user.user_metadata.first_name : null),
-          isCurrentMember: Boolean(current),
-        })
+        setAccount({ firstName: profile?.first_name ?? metaName, isCurrentMember: Boolean(current) })
       }
     }
 
     void resolve()
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event) => {
+    const listener = supabase?.auth.onAuthStateChange((event) => {
       if (event === 'SIGNED_OUT') setAccount(null)
       if (event === 'SIGNED_IN') void resolve()
     })
     return () => {
       cancelled = true
-      subscription.unsubscribe()
+      listener?.data.subscription.unsubscribe()
     }
   }, [initial])
 
