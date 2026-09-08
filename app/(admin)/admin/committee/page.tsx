@@ -18,7 +18,8 @@ export default async function AdminCommitteePage() {
             <Link href="/about/committee" className="underline underline-offset-2">
               committee page
             </Link>{' '}
-            shows. Leave the holder blank to mark a role vacant.
+            shows. Leave the holder blank to mark a role vacant. Add a photo beside each name, a
+            square head-and-shoulders picture works best.
           </p>
         </div>
       </div>

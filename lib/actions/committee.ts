@@ -80,3 +80,57 @@ export async function deleteCommitteeRoleAction(id: string): Promise<ActionResul
   revalidatePath('/admin/committee')
   return { ok: true, message: 'Role removed' }
 }
+
+const photoSchema = z
+  .object({
+    id: z.uuid(),
+    photoPath: z.string().max(200).nullable(),
+  })
+  .refine(
+    (v) =>
+      v.photoPath === null ||
+      new RegExp(`^committee/${v.id}/photo-\d+\.[a-z0-9]{2,5}$`).test(v.photoPath),
+    { message: 'Unexpected photo path', path: ['photoPath'] }
+  )
+
+export type CommitteeRolePhotoInput = z.infer<typeof photoSchema>
+
+/**
+ * Set or clear the photo shown beside a committee name (0021). The file is
+ * already in `site-images`, uploaded from the browser under the committee
+ * member's own session (bucket policies 0016); this records which object the
+ * role shows and audits the change.
+ */
+export async function setCommitteeRolePhotoAction(
+  input: CommitteeRolePhotoInput
+): Promise<ActionResult> {
+  await requireRole('committee')
+  const parsed = photoSchema.safeParse(input)
+  if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message ?? 'Check the photo' }
+
+  const supabase = await createClient()
+  const { data: before } = await supabase
+    .from('committee_roles')
+    .select('photo_path')
+    .eq('id', parsed.data.id)
+    .maybeSingle()
+  if (!before) return { ok: false, message: 'Role not found' }
+
+  const { error } = await supabase
+    .from('committee_roles')
+    .update({ photo_path: parsed.data.photoPath })
+    .eq('id', parsed.data.id)
+  if (error) return { ok: false, message: error.message }
+
+  await supabase.rpc('audit', {
+    p_action: parsed.data.photoPath ? 'committee.photo_updated' : 'committee.photo_removed',
+    p_entity: 'committee_roles',
+    p_entity_id: parsed.data.id,
+    p_before: { photo_path: before.photo_path },
+    p_after: { photo_path: parsed.data.photoPath },
+  })
+
+  revalidatePath('/about/committee')
+  revalidatePath('/admin/committee')
+  return { ok: true, message: parsed.data.photoPath ? 'Photo saved' : 'Photo removed' }
+}

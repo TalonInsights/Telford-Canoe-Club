@@ -104,6 +104,7 @@ export type Database = {
           holder_user_id: string | null
           id: string
           is_vacant: boolean | null
+          photo_path: string | null
           role_title: string
           sort_order: number
           updated_at: string | null
@@ -116,6 +117,7 @@ export type Database = {
           holder_user_id?: string | null
           id?: string
           is_vacant?: boolean | null
+          photo_path?: string | null
           role_title: string
           sort_order?: number
           updated_at?: string | null
@@ -128,6 +130,7 @@ export type Database = {
           holder_user_id?: string | null
           id?: string
           is_vacant?: boolean | null
+          photo_path?: string | null
           role_title?: string
           sort_order?: number
           updated_at?: string | null

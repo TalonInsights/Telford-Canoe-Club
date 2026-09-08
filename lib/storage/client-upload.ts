@@ -1,6 +1,6 @@
 'use client'
 
-import { SITE_IMAGES_BUCKET } from '@/lib/events/images'
+import { SITE_IMAGES_BUCKET } from '@/lib/storage/site-images'
 import { createClient } from '@/lib/supabase/client'
 
 /**
@@ -15,4 +15,11 @@ export async function uploadSiteImage(path: string, file: File): Promise<string>
     .upload(path, file, { upsert: true, contentType: file.type, cacheControl: '31536000' })
   if (error) throw new Error(error.message)
   return path
+}
+
+/** Best-effort tidy-up of a picture a row no longer points at (committee delete policy, 0016). */
+export async function removeSiteImage(path: string): Promise<void> {
+  const supabase = createClient()
+  const { error } = await supabase.storage.from(SITE_IMAGES_BUCKET).remove([path])
+  if (error) throw new Error(error.message)
 }

@@ -10,14 +10,17 @@ delete from committee_roles;
 delete from events where slug in ('club-evening-paddle','pool-session','freestyle-session');
 delete from posts where slug in ('paddle-uk-club-membership','tcc-committee');
 
--- The real 2026 committee (from April), per the club's committee page.
+-- The real 2026 committee (from April), per the club's committee page; the
+-- two officer roles were added on the chairman's instruction (8 Sep 2026).
 insert into committee_roles (role_title, holder_display_name, sort_order, description) values
   ('Chairman', 'Simon Wiles', 1, 'Leads the committee and represents the club.'),
   ('Treasurer', 'Josh Smyth', 2, 'Club finances and membership payments.'),
   ('Secretary', 'Bek Farley-Brown', 3, 'Minutes, correspondence and club records.'),
   ('Membership secretary', 'Susanna Smyth', 4, 'The member register, renewals and Paddle UK affiliation.'),
-  ('Committee member', 'David Allen', 5, 'General committee duties and site management.'),
-  ('Freestyle champion', 'Simon Wyndham', 6, 'Freestyle coaching, workshops and the club''s freestyle programme.');
+  ('Safety officer', 'Simon Wiles', 5, 'Safety on and off the water: risk assessments, safety guidance and incident reporting.'),
+  ('Welfare officer', 'Simon Wiles', 6, 'Safeguarding and welfare for members of all ages, and the first point of contact for any concern.'),
+  ('Committee member', 'David Allen', 7, 'General committee duties and site management.'),
+  ('Freestyle champion', 'Simon Wyndham', 8, 'Freestyle coaching, workshops and the club''s freestyle programme.');
 
 insert into events (slug, title, summary, category, location_name, location_address,
                     starts_at, ends_at, visibility, status, water_level_dependent,

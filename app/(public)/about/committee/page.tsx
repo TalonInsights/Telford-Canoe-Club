@@ -6,6 +6,7 @@ import { Section } from '@/components/layout/section'
 import { CommitteeGrid } from '@/components/site/committee-grid'
 import { Button } from '@/components/ui/button'
 import { getCommitteeRoles } from '@/lib/queries/committee'
+import { siteImageUrl } from '@/lib/storage/site-images'
 
 export const metadata: Metadata = {
   title: 'Committee',
@@ -31,6 +32,7 @@ export default async function CommitteePage() {
             holderName: r.holder_display_name,
             description: r.description ?? undefined,
             contactEmail: r.contact_email,
+            photoUrl: siteImageUrl(r.photo_path),
           }))}
         />
       </Section>
