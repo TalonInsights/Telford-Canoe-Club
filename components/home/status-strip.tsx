@@ -1,12 +1,13 @@
 /**
- * HOME brief — status strip: four equal cells directly under the hero.
- * site status · EA river level (live, 15-min cache) · rapid today · next on
- * site. The strip never collapses: every cell renders in every state.
+ * HOME brief — status strip: equal cells directly under the hero.
+ * site status · EA river level (live, 15-min cache) · rapid today · EA bathing
+ * water quality (live, added 8 Sep 2026 on the chairman's instruction) · next
+ * on site. The strip never collapses: every cell renders in every state.
  * With settings.levelBands = null (D15 open) the "Rapid today" cell is a
  * neutral link, never a judgement about the water.
  */
 
-import { ArrowUpRight, CalendarDays, DoorOpen, Waves } from 'lucide-react'
+import { ArrowUpRight, CalendarDays, Droplets, DoorOpen, Waves } from 'lucide-react'
 import Link from 'next/link'
 
 import { Container } from '@/components/layout/container'
@@ -14,6 +15,7 @@ import { formatDateShort, formatTime } from '@/lib/format'
 import { getRiverLevel } from '@/lib/river-level'
 import { getClubSettings } from '@/lib/queries/settings'
 import { getUpcomingEvents } from '@/lib/queries/events'
+import { bathingWaterProfileUrl, describeWaterQuality, getWaterQuality } from '@/lib/water-quality'
 import { cn } from '@/lib/utils'
 
 function Cell({
@@ -24,6 +26,7 @@ function Cell({
   external,
   icon: Icon,
   tone = 'neutral',
+  className,
 }: {
   label: string
   value: string
@@ -31,7 +34,8 @@ function Cell({
   href?: string
   external?: boolean
   icon: React.ComponentType<{ className?: string }>
-  tone?: 'neutral' | 'success'
+  tone?: 'neutral' | 'success' | 'warn'
+  className?: string
 }) {
   const body = (
     <>
@@ -42,11 +46,18 @@ function Cell({
       <p
         className={cn(
           'mt-1 flex items-baseline gap-1.5 font-heading font-semibold',
-          tone === 'success' && 'text-success'
+          tone === 'success' && 'text-success',
+          tone === 'warn' && 'text-warn'
         )}
       >
-        {tone === 'success' && (
-          <span aria-hidden="true" className="size-2 translate-y-[-1px] rounded-full bg-success" />
+        {tone !== 'neutral' && (
+          <span
+            aria-hidden="true"
+            className={cn(
+              'size-2 translate-y-[-1px] rounded-full',
+              tone === 'success' ? 'bg-success' : 'bg-warn'
+            )}
+          />
         )}
         {value}
         {href && <ArrowUpRight aria-hidden="true" className="size-3.5 self-center text-river" />}
@@ -55,8 +66,13 @@ function Cell({
     </>
   )
 
-  const cellClass =
-    'flex min-h-[5.5rem] flex-col justify-center border-stone px-4 py-3 max-sm:border-b sm:border-r sm:last:border-r-0 max-sm:last:border-b-0'
+  // Tops aligned rather than centred: with five cells a wrapped value or
+  // detail is common, and centring each cell on its own height left the
+  // labels and readings sitting at five different heights.
+  const cellClass = cn(
+    'flex min-h-[5.5rem] flex-col justify-start border-stone px-4 py-3 max-sm:border-b sm:border-r sm:last:border-r-0 max-sm:last:border-b-0',
+    className
+  )
 
   if (!href) return <div className={cellClass}>{body}</div>
   return external ? (
@@ -71,17 +87,21 @@ function Cell({
 }
 
 export async function StatusStrip() {
-  const [settings, upcoming, level] = await Promise.all([
+  const [settings, upcoming, level, water] = await Promise.all([
     getClubSettings(),
     getUpcomingEvents(1),
     getRiverLevel(),
+    getWaterQuality(),
   ])
   const next = upcoming[0] ?? null
+  const quality = water ? describeWaterQuality(water) : null
 
   return (
     <div className="border-b border-stone bg-card">
       <Container className="max-md:px-0">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4">
+        {/* Five cells: two rows of two plus a full-width fifth between 640 and
+            1024px, so no row is ever left short (§3.4 orphan rule). */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5">
           <Cell
             icon={DoorOpen}
             label="Site status"
@@ -112,9 +132,29 @@ export async function StatusStrip() {
             icon={Waves}
             label="Rapid today"
             value="See river levels"
-            detail="What the gauge means for the water"
+            detail="What the gauge means"
             href="/venue/river-levels"
           />
+          {water && quality ? (
+            <Cell
+              icon={Droplets}
+              label="Water quality"
+              value={quality.value}
+              detail={quality.detail}
+              href={water.profileUrl}
+              external
+              tone={quality.warn ? 'warn' : 'neutral'}
+            />
+          ) : (
+            <Cell
+              icon={Droplets}
+              label="Water quality"
+              value="See the EA rating"
+              detail="Bathing water at Ironbridge"
+              href={bathingWaterProfileUrl()}
+              external
+            />
+          )}
           {next ? (
             <Cell
               icon={CalendarDays}
@@ -122,6 +162,7 @@ export async function StatusStrip() {
               value={next.title}
               detail={formatDateShort(next.starts_at)}
               href={`/events/${next.slug}`}
+              className="sm:max-lg:col-span-2"
             />
           ) : (
             <Cell
@@ -130,6 +171,7 @@ export async function StatusStrip() {
               value="Nothing scheduled"
               detail="See all events"
               href="/events"
+              className="sm:max-lg:col-span-2"
             />
           )}
         </div>
