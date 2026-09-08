@@ -15,12 +15,16 @@ const links: RailLink[] = [
   { title: 'Members', href: '/admin/members', icon: 'users' },
   { title: 'Add a membership', href: '/admin/members/new', icon: 'user-plus' },
   { title: 'Events', href: '/admin/events', icon: 'calendar' },
+  { title: 'Club shop', href: '/admin/shop', icon: 'bag' },
+  { title: 'Minutes', href: '/admin/minutes', icon: 'clipboard' },
+  { title: 'Documents', href: '/admin/documents', icon: 'file' },
   { title: 'Committee', href: '/admin/committee', icon: 'id' },
-  { title: 'Audit log', href: '/admin/audit', icon: 'clipboard' },
+  { title: 'Audit log', href: '/admin/audit', icon: 'history' },
   { title: 'Settings', href: '/admin/settings', icon: 'settings' },
 ]
 
-const tabBarLinks = [links[0], links[1], links[3], links[4], links[6]]
+// The five that earn a place on a phone: the everyday jobs.
+const tabBarLinks = [links[0], links[1], links[3], links[4], links[5]]
 
 const exitLinkClass =
   'flex min-h-9 items-center gap-2 rounded-lg px-2 text-sm text-stone transition-colors hover:bg-river/50 hover:text-white'
@@ -34,9 +38,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         title="TCC admin"
         rootHref="/admin"
         groups={[
-          { title: 'Club', links: links.slice(0, 4) },
-          { title: 'Records', links: links.slice(4, 6) },
-          { title: 'Setup', links: links.slice(6) },
+          { title: 'Club', links: links.slice(0, 5) },
+          { title: 'Records', links: links.slice(5, 9) },
+          { title: 'Setup', links: links.slice(9) },
         ]}
         footer={
           <div className="grid gap-3">

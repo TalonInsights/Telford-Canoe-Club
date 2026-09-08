@@ -699,6 +699,70 @@ export type Database = {
           },
         ]
       }
+      meeting_minutes: {
+        Row: {
+          attachment_name: string | null
+          attachment_path: string | null
+          body: Json
+          created_at: string
+          created_by: string | null
+          id: string
+          meeting_date: string
+          published_at: string | null
+          status: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          attachment_name?: string | null
+          attachment_path?: string | null
+          body?: Json
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          meeting_date: string
+          published_at?: string | null
+          status?: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          attachment_name?: string | null
+          attachment_path?: string | null
+          body?: Json
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          meeting_date?: string
+          published_at?: string | null
+          status?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meeting_minutes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "current_members"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "meeting_minutes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "membership_history"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "meeting_minutes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       membership_members: {
         Row: {
           created_at: string
@@ -908,6 +972,193 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
         ]
+      }
+      merch_order_items: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          product_id: string
+          product_name: string
+          quantity: number
+          size: string | null
+          unit_price_pence: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          product_id: string
+          product_name: string
+          quantity: number
+          size?: string | null
+          unit_price_pence: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          product_id?: string
+          product_name?: string
+          quantity?: number
+          size?: string | null
+          unit_price_pence?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "merch_order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "merch_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "merch_order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "merch_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      merch_orders: {
+        Row: {
+          capture_ref: string | null
+          committee_note: string | null
+          created_at: string
+          fulfilled_at: string | null
+          fulfilled_by: string | null
+          id: string
+          member_note: string | null
+          order_ref: string | null
+          paid_at: string | null
+          source: Database["public"]["Enums"]["payment_source"] | null
+          status: string
+          total_pence: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          capture_ref?: string | null
+          committee_note?: string | null
+          created_at?: string
+          fulfilled_at?: string | null
+          fulfilled_by?: string | null
+          id?: string
+          member_note?: string | null
+          order_ref?: string | null
+          paid_at?: string | null
+          source?: Database["public"]["Enums"]["payment_source"] | null
+          status?: string
+          total_pence?: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          capture_ref?: string | null
+          committee_note?: string | null
+          created_at?: string
+          fulfilled_at?: string | null
+          fulfilled_by?: string | null
+          id?: string
+          member_note?: string | null
+          order_ref?: string | null
+          paid_at?: string | null
+          source?: Database["public"]["Enums"]["payment_source"] | null
+          status?: string
+          total_pence?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "merch_orders_fulfilled_by_fkey"
+            columns: ["fulfilled_by"]
+            isOneToOne: false
+            referencedRelation: "current_members"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "merch_orders_fulfilled_by_fkey"
+            columns: ["fulfilled_by"]
+            isOneToOne: false
+            referencedRelation: "membership_history"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "merch_orders_fulfilled_by_fkey"
+            columns: ["fulfilled_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "merch_orders_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "current_members"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "merch_orders_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "membership_history"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "merch_orders_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      merch_products: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_path: string | null
+          is_active: boolean
+          name: string
+          price_pence: number
+          sizes: string[]
+          slug: string
+          sort_order: number
+          stock_note: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_path?: string | null
+          is_active?: boolean
+          name: string
+          price_pence: number
+          sizes?: string[]
+          slug: string
+          sort_order?: number
+          stock_note?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_path?: string | null
+          is_active?: boolean
+          name?: string
+          price_pence?: number
+          sizes?: string[]
+          slug?: string
+          sort_order?: number
+          stock_note?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       notices: {
         Row: {
@@ -1295,6 +1546,10 @@ export type Database = {
       }
     }
     Functions: {
+      abandon_merch_payment: {
+        Args: { p_order_ref: string }
+        Returns: undefined
+      }
       abandon_online_payment: {
         Args: { p_order_ref: string }
         Returns: undefined
@@ -1327,6 +1582,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      begin_merch_payment: {
+        Args: { p_order_id: string; p_order_ref: string }
+        Returns: undefined
+      }
       begin_online_payment: {
         Args: { p_membership_id: string; p_order_ref: string }
         Returns: undefined
@@ -1336,6 +1595,10 @@ export type Database = {
         Returns: Database["public"]["Enums"]["booking_status"]
       }
       cancel_booking: { Args: { p_booking_id: string }; Returns: Json }
+      complete_merch_payment: {
+        Args: { p_capture_ref: string; p_order_ref: string }
+        Returns: string
+      }
       complete_online_payment: {
         Args: { p_capture_ref: string; p_order_ref: string }
         Returns: string
@@ -1361,6 +1624,32 @@ export type Database = {
       membership_covers: {
         Args: { mid: string; uid: string }
         Returns: boolean
+      }
+      merch_add_to_basket: {
+        Args: { p_product_id: string; p_quantity?: number; p_size?: string }
+        Returns: string
+      }
+      merch_my_basket: { Args: never; Returns: string }
+      merch_order_is_mine: {
+        Args: { p_order_id: string; p_uid: string }
+        Returns: boolean
+      }
+      merch_recalculate_total: { Args: { p_order_id: string }; Returns: number }
+      merch_record_manual_payment: {
+        Args: {
+          p_note?: string
+          p_order_id: string
+          p_source: Database["public"]["Enums"]["payment_source"]
+        }
+        Returns: string
+      }
+      merch_set_item_quantity: {
+        Args: { p_item_id: string; p_quantity: number }
+        Returns: number
+      }
+      merch_set_order_status: {
+        Args: { p_note?: string; p_order_id: string; p_status: string }
+        Returns: string
       }
       request_membership: {
         Args: {

@@ -13,10 +13,16 @@ const links: RailLink[] = [
   { title: 'Overview', href: '/members', icon: 'home' },
   { title: 'Membership', href: '/members/membership', icon: 'id' },
   { title: 'Events', href: '/members/events', icon: 'calendar' },
+  { title: 'Shop', href: '/members/shop', icon: 'bag' },
   { title: 'Documents', href: '/members/documents', icon: 'file' },
+  { title: 'Minutes', href: '/members/minutes', icon: 'clipboard' },
   { title: 'Notices', href: '/members/notices', icon: 'megaphone' },
   { title: 'Profile', href: '/members/profile', icon: 'user' },
 ]
+
+// The bottom bar on a phone holds five; minutes and notices live one tap
+// deeper, from the documents page and the overview.
+const tabBarLinks = [links[0], links[1], links[2], links[3], links[4]]
 
 export default async function MembersLayout({ children }: { children: React.ReactNode }) {
   const session = await getSession()
@@ -92,7 +98,7 @@ export default async function MembersLayout({ children }: { children: React.Reac
           )}
         </div>
       </main>
-      {session && <BottomTabBar links={links.slice(0, 5)} rootHref="/members" />}
+      {session && <BottomTabBar links={tabBarLinks} rootHref="/members" />}
       <Footer />
     </>
   )

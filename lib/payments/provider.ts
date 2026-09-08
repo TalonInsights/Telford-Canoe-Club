@@ -22,6 +22,19 @@ export type CreateOrderInput = {
   amountPence: number
 }
 
+/**
+ * A shop order (8 Sep 2026). Kept separate from the membership input rather
+ * than generalised into one shape: the two carry genuinely different
+ * references, land in different tables, and must never be mistaken for one
+ * another by a gateway callback.
+ */
+export type CreateMerchOrderInput = {
+  orderId: string
+  userId: string
+  amountPence: number
+  description: string
+}
+
 export type CreatedOrder = { orderRef: string; approveUrl: string }
 
 export type CaptureResult =
@@ -31,6 +44,7 @@ export type CaptureResult =
 export interface PaymentProvider {
   readonly mode: 'simulated' | 'paypal'
   createOrder(input: CreateOrderInput): Promise<CreatedOrder>
+  createMerchOrder(input: CreateMerchOrderInput): Promise<CreatedOrder>
   captureOrder(
     orderRef: string,
     opts?: { simulateOutcome?: 'completed' | 'declined' }

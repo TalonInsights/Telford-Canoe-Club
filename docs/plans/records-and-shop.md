@@ -65,3 +65,59 @@ for membership, at the database, not in the UI.
 ## Order of work
 
 Filled in below as each step lands; migrations are numbered from 0022.
+
+## What was built
+
+**Migrations (applied live 8 Sep 2026, types regenerated).**
+`0022_minutes_and_committee_documents.sql` — `meeting_minutes`, a widened
+`documents` category list, and the private `documents-committee` bucket.
+`0023_merch.sql` — `merch_products`, `merch_orders`, `merch_order_items`, the
+basket and payment functions, and the beanie and hoodie as seed items.
+
+**Minutes.** `lib/minutes/blocks.ts` (block model + the club's agenda
+template), `lib/queries/minutes.ts`, `lib/actions/minutes.ts`,
+`components/admin/minutes-editor.tsx`,
+`components/admin/minutes-status-buttons.tsx`,
+`components/site/minutes-view.tsx`, `/admin/minutes{,/new,/[id]}`,
+`/members/minutes{,/[id]}`.
+
+**Documents.** `lib/storage/documents.ts` (bucket per visibility, categories,
+paths), `lib/queries/documents.ts` (batched signed URLs),
+`lib/actions/documents.ts`, `components/admin/document-manager.tsx`,
+`/admin/documents`, and a rebuilt `/members/documents`.
+
+**Shop.** `lib/merch/labels.ts`, `lib/queries/merch.ts`, `lib/actions/merch.ts`,
+`components/members/shop-client.tsx`, `components/admin/merch-orders.tsx`,
+`components/admin/merch-products-editor.tsx`, `/members/shop{,/orders}`,
+`/admin/shop`, `/checkout/shop/[orderRef]`, and a `createMerchOrder` method on
+both payment providers.
+
+## Proved on the live database, 8 Sep 2026
+
+Impersonation note: the subquery form of `set_config` that Phase 5 used does
+**not** apply row-level security to a plain select, because a subquery in the
+target list is evaluated before the role switch takes hold. It silently reports
+success. The form that works is a real transaction:
+`begin; set local role authenticated; select set_config('request.jwt.claims', …, true); <query>; rollback;`
+
+| Check | Result |
+| --- | --- |
+| Member reading committee documents | 0 rows |
+| Member reading the committee storage bucket | 0 objects |
+| Member reading a draft set of minutes | 0 rows |
+| Member reading published minutes | 1 row |
+| Committee reading everything | 5 documents, 2 of them committee-only |
+| Anonymous visitor | 1 public document, 0 minutes, 0 orders |
+| Basket maths, 2 hoodies + 1 beanie | £72.00 |
+| Hoodie with no size, or a size that does not exist | refused |
+| Quantity of 999 | refused |
+| Capture by somebody who does not own the order | "order not found" |
+| Capture replayed with the same reference | same order id, no double charge |
+| Second, different capture on a paid order | refused |
+| Capture while the club is in PayPal mode | refused at the database |
+| Starting a payment while online payment is off | refused at the database |
+| Member trying to mark their own order handed over | "committee only" |
+
+Test artefacts were removed afterwards, along with the three `rls-*` harness
+documents left over from Phase 1, which would otherwise have appeared as junk
+in the new screens while the chairman is testing.

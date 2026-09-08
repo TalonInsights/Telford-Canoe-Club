@@ -19,6 +19,14 @@ export const simulatedProvider: PaymentProvider = {
     return { orderRef, approveUrl: `/checkout/${orderRef}` }
   },
 
+  // A separate prefix and a separate approval page: a shop reference is looked
+  // up in a different table, and a collision between the two order spaces
+  // would fail silently rather than loudly.
+  async createMerchOrder() {
+    const orderRef = `SIMSHOP-${randomBytes(8).toString('hex').toUpperCase()}`
+    return { orderRef, approveUrl: `/checkout/shop/${orderRef}` }
+  },
+
   async captureOrder(orderRef, opts) {
     if (opts?.simulateOutcome === 'declined') {
       return { status: 'declined', reason: 'Simulated decline (test gateway)' }

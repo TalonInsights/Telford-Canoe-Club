@@ -95,6 +95,46 @@ export const paypalProvider: PaymentProvider = {
     return { orderRef: json.id, approveUrl: approve }
   },
 
+  /**
+   * The shop's twin of createOrder. `custom_id` is prefixed `merch|` so a
+   * webhook can tell a shop capture from a membership one: the existing
+   * webhook assumes every capture is a membership, which is logged as a
+   * cross-phase defect in STATUS and must be fixed before D1 goes live.
+   */
+  async createMerchOrder(input) {
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://telford-canoe-club.vercel.app'
+    const res = await paypalFetch('/v2/checkout/orders', {
+      method: 'POST',
+      body: JSON.stringify({
+        intent: 'CAPTURE',
+        purchase_units: [
+          {
+            amount: { currency_code: 'GBP', value: (input.amountPence / 100).toFixed(2) },
+            description: input.description.slice(0, 127),
+            custom_id: `merch|${input.orderId}`,
+            invoice_id: `TCCSHOP-${input.orderId.slice(0, 8)}-${Date.now().toString(36)}`,
+          },
+        ],
+        payment_source: {
+          paypal: {
+            experience_context: {
+              brand_name: 'Telford Canoe Club',
+              user_action: 'PAY_NOW',
+              return_url: `${siteUrl}/members/shop/orders`,
+              cancel_url: `${siteUrl}/members/shop`,
+            },
+          },
+        },
+      }),
+    })
+    if (!res.ok) throw new Error(`PayPal create order failed (${res.status})`)
+    const json = (await res.json()) as { id: string; links?: { rel: string; href: string }[] }
+    const approve =
+      json.links?.find((l) => l.rel === 'payer-action' || l.rel === 'approve')?.href ?? null
+    if (!approve) throw new Error('PayPal order created but no approval link returned')
+    return { orderRef: json.id, approveUrl: approve }
+  },
+
   async captureOrder(orderRef) {
     const res = await paypalFetch(`/v2/checkout/orders/${orderRef}/capture`, {
       method: 'POST',

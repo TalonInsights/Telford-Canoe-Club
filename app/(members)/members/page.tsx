@@ -1,11 +1,15 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { CalendarDays, FileText, IdCard, Megaphone } from 'lucide-react'
+import { CalendarDays, ClipboardList, FileText, IdCard, Megaphone, ShoppingBag } from 'lucide-react'
 
 import { requireCurrentMember } from '@/lib/auth/guards'
 import { formatDateTimeRange } from '@/lib/format'
 import { getUpcomingEvents } from '@/lib/queries/events'
 import { getMemberNotices, getMyBookings, getMyMemberships } from '@/lib/queries/members'
+import { getPublishedMinutes } from '@/lib/queries/minutes'
+import { getMyOrders } from '@/lib/queries/merch'
+import { merchMemberStatusLabel } from '@/lib/merch/labels'
+import { formatDate } from '@/lib/format'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
@@ -30,12 +34,14 @@ function Card({ title, icon: Icon, href, children }: { title: string; icon: Reac
 
 export default async function MembersDashboard() {
   // The guard and the data run together — the auth lookup is shared per request.
-  const [, memberships, bookings, notices, events] = await Promise.all([
+  const [, memberships, bookings, notices, events, minutes, orders] = await Promise.all([
     requireCurrentMember(),
     getMyMemberships(),
     getMyBookings(),
     getMemberNotices(),
     getUpcomingEvents(3),
+    getPublishedMinutes(),
+    getMyOrders(),
   ])
   const active = memberships.find((m) => m.status === 'active')
 
@@ -81,6 +87,30 @@ export default async function MembersDashboard() {
               </li>
             ))}
           </ul>
+        )}
+      </Card>
+      <Card title="Meeting minutes" icon={ClipboardList} href="/members/minutes">
+        {minutes.length > 0 ? (
+          <p>
+            Latest:{' '}
+            <span className="font-medium text-ink">{minutes[0].title}</span>,{' '}
+            {formatDate(minutes[0].meeting_date)}. {minutes.length} published in all.
+          </p>
+        ) : (
+          <p>The committee publishes minutes here after each meeting.</p>
+        )}
+      </Card>
+      <Card title="Club shop" icon={ShoppingBag} href="/members/shop">
+        {orders.length > 0 ? (
+          <p>
+            Your last order:{' '}
+            <span className="font-medium text-ink">
+              {merchMemberStatusLabel(orders[0].status).toLowerCase()}
+            </span>
+            , placed {formatDate(orders[0].created_at)}.
+          </p>
+        ) : (
+          <p>Club beanies and hoodies, ordered here and handed over at the club.</p>
         )}
       </Card>
       <Card title="Documents" icon={FileText} href="/members/documents">

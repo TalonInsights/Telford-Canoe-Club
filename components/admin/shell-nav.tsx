@@ -15,10 +15,12 @@ import {
   ChevronDown,
   ClipboardList,
   FileText,
+  History,
   Home,
   IdCard,
   Megaphone,
   Settings2,
+  ShoppingBag,
   UserRound,
   UserRoundPlus,
   Users,
@@ -44,6 +46,8 @@ const ICONS: Record<string, LucideIcon> = {
   users: Users,
   'user-plus': UserRoundPlus,
   clipboard: ClipboardList,
+  history: History,
+  bag: ShoppingBag,
   settings: Settings2,
 }
 
