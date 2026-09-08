@@ -14,7 +14,8 @@
  */
 export type LastGoodStore<T> = {
   remember: (value: T) => T
-  recall: () => T | null
+  /** Pass a tighter age to ask for something recent rather than merely usable. */
+  recall: (maxAgeMs?: number) => T | null
 }
 
 export function lastGoodStore<T>(maxAgeMs: number): LastGoodStore<T> {
@@ -24,9 +25,9 @@ export function lastGoodStore<T>(maxAgeMs: number): LastGoodStore<T> {
       entry = { at: Date.now(), value }
       return value
     },
-    recall(): T | null {
+    recall(within: number = maxAgeMs): T | null {
       if (!entry) return null
-      return Date.now() - entry.at <= maxAgeMs ? entry.value : null
+      return Date.now() - entry.at <= Math.min(within, maxAgeMs) ? entry.value : null
     },
   }
 }

@@ -1,5 +1,7 @@
 import 'server-only'
 
+import { after } from 'next/server'
+
 import { lastGoodStore } from '@/lib/last-good'
 
 /**
@@ -44,12 +46,21 @@ const API = 'https://environment.data.gov.uk/flood-monitoring'
 const REVALIDATE = 600 // 10 minutes (client order 8 Sep 2026); the gauge publishes every 15
 
 /**
- * Long enough to ride out the EA's usual slow spell, short enough that no
- * page render is held hostage. Measured 8 Sep 2026: this API answered in
- * anywhere from 4 to 26 seconds, so a timeout is a when, not an if, and the
- * last-known-good reading below is what actually keeps the cell populated.
+ * Measured 8 Sep 2026: this API answered in anywhere from 4 to 26 seconds, and
+ * once not at all inside 40. No timeout that a visitor would tolerate is long
+ * enough to rely on, so the work is split in two.
+ *
+ * The render path gets a short leash and a fallback. The refresh that actually
+ * has to reach the EA runs in `after()`, once the response is already on its
+ * way, where taking half a minute costs nobody anything. Both share one cache
+ * entry, so the slow background call is what repopulates the fast path for
+ * every later visitor.
  */
-const TIMEOUT_MS = 8000
+const RENDER_TIMEOUT_MS = 6000
+const BACKGROUND_TIMEOUT_MS = 30000
+
+/** How recent an in-memory reading must be before we skip the network entirely. */
+const MEMO_FRESH_MS = 10 * 60 * 1000
 
 /** 15-minute readings, so 13 covers the last three hours. */
 const WINDOW_READINGS = 13
@@ -83,12 +94,17 @@ type EAReading = {
   measure?: string
 }
 
-async function eaFetch<T>(path: string): Promise<T | null> {
+/**
+ * One cache entry per URL whichever timeout is in play: the abort signal is not
+ * part of the cache key, so a background call with a long leash refreshes the
+ * very entry the next render reads instantly.
+ */
+async function eaFetch<T>(path: string, timeoutMs: number): Promise<T | null> {
   try {
     const res = await fetch(`${API}${path}`, {
       next: { revalidate: REVALIDATE },
       headers: { accept: 'application/json' },
-      signal: AbortSignal.timeout(TIMEOUT_MS),
+      signal: AbortSignal.timeout(timeoutMs),
     })
     if (!res.ok) return null
     return (await res.json()) as T
@@ -103,7 +119,7 @@ type ResolvedStation = { ref: string; label?: string; riverName?: string }
  * The station to read. The default costs nothing: we already know which gauge
  * this is. Only a configured name search pays for a lookup.
  */
-async function resolveStation(): Promise<ResolvedStation | null> {
+async function resolveStation(timeoutMs: number): Promise<ResolvedStation | null> {
   const ref = process.env.EA_STATION_REF?.trim()
   if (ref) return { ref }
 
@@ -111,7 +127,8 @@ async function resolveStation(): Promise<ResolvedStation | null> {
   if (!search) return DEFAULT_STATION
 
   const data = await eaFetch<{ items?: EAStation[] }>(
-    `/id/stations?search=${encodeURIComponent(search)}&parameter=level`
+    `/id/stations?search=${encodeURIComponent(search)}&parameter=level`,
+    timeoutMs
   )
   const station =
     data?.items?.find((s) => s.riverName === 'River Severn') ?? data?.items?.[0] ?? null
@@ -119,26 +136,28 @@ async function resolveStation(): Promise<ResolvedStation | null> {
   return { ref: station.notation, label: station.label, riverName: station.riverName }
 }
 
-export async function getRiverLevel(): Promise<RiverLevel | null> {
-  const station = await resolveStation()
-  if (!station) return lastGood.recall()
+async function readLevel(timeoutMs: number): Promise<RiverLevel | null> {
+  const station = await resolveStation(timeoutMs)
+  if (!station) return null
 
   // The readings feed carries no station name, so when we don't already have
   // one the station document is fetched alongside rather than before it: one
   // round trip of latency instead of two.
   const [readings, doc] = await Promise.all([
     eaFetch<{ items?: EAReading[] }>(
-      `/id/stations/${encodeURIComponent(station.ref)}/readings?_sorted&_limit=${WINDOW_READINGS}&parameter=level`
+      `/id/stations/${encodeURIComponent(station.ref)}/readings?_sorted&_limit=${WINDOW_READINGS}&parameter=level`,
+      timeoutMs
     ),
     station.label
       ? Promise.resolve(null)
       : eaFetch<{ items?: EAStation | EAStation[] }>(
-          `/id/stations/${encodeURIComponent(station.ref)}`
+          `/id/stations/${encodeURIComponent(station.ref)}`,
+          timeoutMs
         ),
   ])
 
   const latest = readings?.items?.[0]
-  if (typeof latest?.value !== 'number' || !latest.dateTime) return lastGood.recall()
+  if (typeof latest?.value !== 'number' || !latest.dateTime) return null
 
   const described = Array.isArray(doc?.items) ? doc?.items?.[0] : doc?.items
 
@@ -159,7 +178,9 @@ export async function getRiverLevel(): Promise<RiverLevel | null> {
   const windowHours = windowMs >= 3_600_000 ? windowMs / 3_600_000 : null
   const changeMetres = windowHours && oldest ? latest.value - oldest.value : null
 
-  return lastGood.remember({
+  // Remembering is the caller's job, so there is one place that decides what
+  // counts as the latest good reading.
+  return {
     stationName: station.label ?? described?.label ?? DEFAULT_STATION.label,
     riverName: station.riverName ?? described?.riverName ?? DEFAULT_STATION.riverName,
     levelMetres: latest.value,
@@ -175,7 +196,40 @@ export async function getRiverLevel(): Promise<RiverLevel | null> {
             : 'falling',
     changeMetres,
     windowHours,
-  })
+  }
+}
+
+/**
+ * Kick the slow fetch off after the response has gone out. It refreshes the
+ * shared cache entry the next render will read, so the cost of a sluggish EA
+ * lands on nobody's page load. Outside a request (a script, a test) `after`
+ * throws, and there is simply nothing to schedule.
+ */
+function refreshInBackground(): void {
+  try {
+    after(async () => {
+      const fresh = await readLevel(BACKGROUND_TIMEOUT_MS)
+      if (fresh) lastGood.remember(fresh)
+    })
+  } catch {
+    // Not in a request scope: skip it.
+  }
+}
+
+export async function getRiverLevel(): Promise<RiverLevel | null> {
+  // 1. Something recent in this instance: no network at all.
+  const recent = lastGood.recall(MEMO_FRESH_MS)
+  if (recent) return recent
+
+  // 2. Otherwise ask, but only briefly. A warm cache entry answers instantly;
+  //    a cold one against a slow API gives up rather than holding the page.
+  const level = await readLevel(RENDER_TIMEOUT_MS)
+  if (level) return lastGood.remember(level)
+
+  // 3. It timed out. Refresh properly in the background and show the last
+  //    reading we have, which carries its own timestamp on screen.
+  refreshInBackground()
+  return lastGood.recall()
 }
 
 /**
