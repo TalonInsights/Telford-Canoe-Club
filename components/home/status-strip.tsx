@@ -7,12 +7,21 @@
  * neutral link, never a judgement about the water.
  */
 
-import { ArrowUpRight, CalendarDays, Droplets, DoorOpen, Waves } from 'lucide-react'
+import {
+  ArrowUpRight,
+  CalendarDays,
+  Droplets,
+  DoorOpen,
+  Minus,
+  TrendingDown,
+  TrendingUp,
+  Waves,
+} from 'lucide-react'
 import Link from 'next/link'
 
 import { Container } from '@/components/layout/container'
 import { formatDateShort, formatTime } from '@/lib/format'
-import { getRiverLevel } from '@/lib/river-level'
+import { describeRiverTrend, getRiverLevel, type RiverTrend } from '@/lib/river-level'
 import { getClubSettings } from '@/lib/queries/settings'
 import { getUpcomingEvents } from '@/lib/queries/events'
 import { bathingWaterProfileUrl, describeWaterQuality, getWaterQuality } from '@/lib/water-quality'
@@ -86,6 +95,12 @@ function Cell({
   )
 }
 
+const trendIcons: Record<RiverTrend, React.ComponentType<{ className?: string }>> = {
+  rising: TrendingUp,
+  falling: TrendingDown,
+  steady: Minus,
+}
+
 export async function StatusStrip() {
   const [settings, upcoming, level, water] = await Promise.all([
     getClubSettings(),
@@ -95,6 +110,7 @@ export async function StatusStrip() {
   ])
   const next = upcoming[0] ?? null
   const quality = water ? describeWaterQuality(water) : null
+  const movement = level ? describeRiverTrend(level) : null
 
   return (
     <div className="border-b border-stone bg-card">
@@ -128,13 +144,23 @@ export async function StatusStrip() {
               external
             />
           )}
-          <Cell
-            icon={Waves}
-            label="Rapid today"
-            value="See river levels"
-            detail="What the gauge means"
-            href="/venue/river-levels"
-          />
+          {movement ? (
+            <Cell
+              icon={trendIcons[movement.trend]}
+              label="Rapid today"
+              value={movement.value}
+              detail={movement.detail}
+              href="/venue/river-levels"
+            />
+          ) : (
+            <Cell
+              icon={Waves}
+              label="Rapid today"
+              value="See river levels"
+              detail="What the gauge means"
+              href="/venue/river-levels"
+            />
+          )}
           {water && quality ? (
             <Cell
               icon={Droplets}

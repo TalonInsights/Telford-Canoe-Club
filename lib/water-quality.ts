@@ -1,5 +1,7 @@
 import 'server-only'
 
+import { lastGoodStore } from '@/lib/last-good'
+
 /**
  * Environment Agency bathing water quality (open data, OGLv3) for the club's
  * own stretch: "River Severn at Ironbridge", designated in 2024, sampling
@@ -33,7 +35,16 @@ export type WaterQuality = {
 }
 
 const API = 'https://environment.data.gov.uk'
-const REVALIDATE = 900 // 15 minutes, matching the river gauge
+const REVALIDATE = 600 // 10 minutes, matching the river gauge (client order 8 Sep 2026)
+
+/**
+ * This endpoint answers in well under a second, unlike its flood-monitoring
+ * neighbour, so the timeout can stay tight. The cushion below covers the bad
+ * day rather than the normal one.
+ */
+const TIMEOUT_MS = 6000
+
+const lastGood = lastGoodStore<WaterQuality>(6 * 60 * 60 * 1000)
 
 type LangValue = { _value?: string }
 type Named = { _about?: string; name?: LangValue }
@@ -83,30 +94,30 @@ export async function getWaterQuality(): Promise<WaterQuality | null> {
     const res = await fetch(`${API}/doc/bathing-water/${encodeURIComponent(id)}.json`, {
       next: { revalidate: REVALIDATE },
       headers: { accept: 'application/json' },
-      signal: AbortSignal.timeout(4000),
+      signal: AbortSignal.timeout(TIMEOUT_MS),
     })
-    if (!res.ok) return null
+    if (!res.ok) return lastGood.recall()
     doc = (await res.json()) as BathingWaterDoc
   } catch {
-    return null
+    return lastGood.recall()
   }
 
   const topic = doc?.result?.primaryTopic
   const siteName = topic?.name?._value
-  if (!siteName) return null
+  if (!siteName) return lastGood.recall()
 
   const assessment = topic?.latestComplianceAssessment
   const prediction = topic?.latestRiskPrediction
   const live = isLive(prediction?.expiresAt?._value)
 
-  return {
+  return lastGood.remember({
     siteName,
     classification: assessment?.complianceClassification?.name?._value ?? null,
     classificationYear: assessment?._about?.match(/year\/(\d{4})/)?.[1] ?? null,
     riskLevel: live ? readRiskLevel(prediction?.riskLevel) : null,
     riskNote: live ? (prediction?.comment?._value ?? null) : null,
     profileUrl,
-  }
+  })
 }
 
 /**
