@@ -65,7 +65,11 @@ export default async function EventsPage() {
                     when={formatDateTimeRange(e.starts_at, e.ends_at)}
                     location={e.location_name ?? undefined}
                     status={
-                      e.water_level_dependent ? (
+                      // A notice says so before anything else: it is the one
+                      // thing that changes what the card means.
+                      e.kind === 'notice_only' ? (
+                        <Badge variant="warn">On site, not a club session</Badge>
+                      ) : e.water_level_dependent ? (
                         <Badge variant="outline">Water levels dependent</Badge>
                       ) : e.booking_enabled ? (
                         <Badge variant="outline">Confirm your place</Badge>

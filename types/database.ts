@@ -60,10 +60,14 @@ export type Database = {
           price_adult_pence: number
           price_family_pence: number
           price_junior_pence: number
+          shop_closed_note: string | null
+          shop_open: boolean
           show_unconfirmed: boolean
           site_status: string
           site_status_note: string | null
           updated_at: string | null
+          webcam_note: string | null
+          webcam_url: string | null
         }
         Insert: {
           bank_payment_note?: string
@@ -74,10 +78,14 @@ export type Database = {
           price_adult_pence?: number
           price_family_pence?: number
           price_junior_pence?: number
+          shop_closed_note?: string | null
+          shop_open?: boolean
           show_unconfirmed?: boolean
           site_status?: string
           site_status_note?: string | null
           updated_at?: string | null
+          webcam_note?: string | null
+          webcam_url?: string | null
         }
         Update: {
           bank_payment_note?: string
@@ -88,10 +96,14 @@ export type Database = {
           price_adult_pence?: number
           price_family_pence?: number
           price_junior_pence?: number
+          shop_closed_note?: string | null
+          shop_open?: boolean
           show_unconfirmed?: boolean
           site_status?: string
           site_status_note?: string | null
           updated_at?: string | null
+          webcam_note?: string | null
+          webcam_url?: string | null
         }
         Relationships: []
       }
@@ -539,11 +551,13 @@ export type Database = {
           created_at: string
           ends_at: string | null
           id: string
+          kind: string
           location_address: string | null
           location_lat: number | null
           location_lng: number | null
           location_name: string | null
           members_only_booking: boolean
+          on_site_note: string | null
           organiser_user_id: string | null
           recurrence_rule: string | null
           slug: string
@@ -570,11 +584,13 @@ export type Database = {
           created_at?: string
           ends_at?: string | null
           id?: string
+          kind?: string
           location_address?: string | null
           location_lat?: number | null
           location_lng?: number | null
           location_name?: string | null
           members_only_booking?: boolean
+          on_site_note?: string | null
           organiser_user_id?: string | null
           recurrence_rule?: string | null
           slug: string
@@ -601,11 +617,13 @@ export type Database = {
           created_at?: string
           ends_at?: string | null
           id?: string
+          kind?: string
           location_address?: string | null
           location_lat?: number | null
           location_lng?: number | null
           location_name?: string | null
           members_only_booking?: boolean
+          on_site_note?: string | null
           organiser_user_id?: string | null
           recurrence_rule?: string | null
           slug?: string
@@ -1454,6 +1472,39 @@ export type Database = {
           town?: string | null
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      river_level_bands: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          label: string
+          max_cm: number | null
+          min_cm: number | null
+          sort_order: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          label: string
+          max_cm?: number | null
+          min_cm?: number | null
+          sort_order?: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          label?: string
+          max_cm?: number | null
+          min_cm?: number | null
+          sort_order?: number
+          updated_at?: string | null
         }
         Relationships: []
       }

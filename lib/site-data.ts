@@ -50,6 +50,8 @@ export type HomeEvent = {
   summary: string | null
   /** Resolved URL (storage or bundled placeholder) — see lib/events/images.ts. */
   image: string | null
+  /** 'notice_only' means something on site that members are told about, not invited to. */
+  kind: string
 }
 
 export type HomePost = {

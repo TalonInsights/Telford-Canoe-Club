@@ -3,8 +3,10 @@
  * site status · EA river level (live, 15-min cache) · rapid today · EA bathing
  * water quality (live, added 8 Sep 2026 on the chairman's instruction) · next
  * on site. The strip never collapses: every cell renders in every state.
- * With settings.levelBands = null (D15 open) the "Rapid today" cell is a
- * neutral link, never a judgement about the water.
+ * "Rapid today" reads the committee's own guidance bands (0024) against the
+ * live reading, so it says what the level means in the club's words. With no
+ * band matching it falls back to the movement, and then to a plain link: it
+ * never invents a judgement about the water.
  */
 
 import {
@@ -22,6 +24,8 @@ import Link from 'next/link'
 import { Container } from '@/components/layout/container'
 import { formatDateShort, formatTime } from '@/lib/format'
 import { describeRiverTrend, getRiverLevel, type RiverTrend } from '@/lib/river-level'
+import { getRiverBands } from '@/lib/queries/river-bands'
+import { matchBand, metresToCm } from '@/lib/river/bands'
 import { getClubSettings } from '@/lib/queries/settings'
 import { getUpcomingEvents } from '@/lib/queries/events'
 import { bathingWaterProfileUrl, describeWaterQuality, getWaterQuality } from '@/lib/water-quality'
@@ -102,15 +106,20 @@ const trendIcons: Record<RiverTrend, React.ComponentType<{ className?: string }>
 }
 
 export async function StatusStrip() {
-  const [settings, upcoming, level, water] = await Promise.all([
+  const [settings, upcoming, level, water, bands] = await Promise.all([
     getClubSettings(),
     getUpcomingEvents(1),
     getRiverLevel(),
     getWaterQuality(),
+    getRiverBands(),
   ])
   const next = upcoming[0] ?? null
   const quality = water ? describeWaterQuality(water) : null
   const movement = level ? describeRiverTrend(level) : null
+  // The committee's own guidance, matched to the live reading. When they have
+  // set bands this cell says what the level means; until then it reports the
+  // movement and lets the river levels page do the explaining.
+  const band = level ? matchBand(bands, metresToCm(level.levelMetres)) : null
 
   return (
     <div className="border-b border-stone bg-card">
@@ -144,7 +153,19 @@ export async function StatusStrip() {
               external
             />
           )}
-          {movement ? (
+          {band ? (
+            <Cell
+              icon={movement ? trendIcons[movement.trend] : Waves}
+              label="Rapid today"
+              value={band.label}
+              detail={
+                movement
+                  ? `${metresToCm(level!.levelMetres)} cm, ${movement.value.toLowerCase()}`
+                  : `${metresToCm(level!.levelMetres)} cm at Buildwas`
+              }
+              href="/venue/river-levels"
+            />
+          ) : movement ? (
             <Cell
               icon={trendIcons[movement.trend]}
               label="Rapid today"

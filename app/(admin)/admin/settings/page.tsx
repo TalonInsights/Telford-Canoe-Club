@@ -41,6 +41,10 @@ export default async function AdminSettingsPage() {
             bankPaymentNote: data.bank_payment_note,
             showUnconfirmed: data.show_unconfirmed,
             paymentProvider: (data.payment_provider ?? 'off') as 'off' | 'simulated' | 'paypal',
+            shopOpen: data.shop_open ?? true,
+            shopClosedNote: data.shop_closed_note ?? '',
+            webcamUrl: data.webcam_url ?? '',
+            webcamNote: data.webcam_note ?? '',
           }}
         />
       </div>

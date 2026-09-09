@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ShoppingBag } from 'lucide-react'
+import { ShoppingBag, Store } from 'lucide-react'
 
 import { ShopClient } from '@/components/members/shop-client'
 import { Button } from '@/components/ui/button'
@@ -35,7 +35,23 @@ export default async function MemberShopPage() {
       </div>
 
       <div className="mt-6">
-        {products.length === 0 ? (
+        {!settings.shopOpen ? (
+          // The switch is enforced in the database too (0025), so this is the
+          // polite face of a rule the basket itself would refuse anyway.
+          <EmptyState
+            icon={Store}
+            title="The shop is closed just now"
+            description={
+              settings.shopClosedNote ??
+              'The club runs kit orders a couple of times a year. Watch the notices for the next one.'
+            }
+            action={
+              <Button asChild variant="secondary">
+                <Link href="/members/shop/orders">My past orders</Link>
+              </Button>
+            }
+          />
+        ) : products.length === 0 ? (
           <EmptyState
             icon={ShoppingBag}
             title="Nothing in the shop yet"

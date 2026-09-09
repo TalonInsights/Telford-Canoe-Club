@@ -18,6 +18,11 @@ const isoDate = z
 const eventSchema = z
   .object({
     id: z.uuid(),
+    // A notice-only event tells members something is happening on site that
+    // they are not being invited to. It can never be bookable, and 0024 holds
+    // that rule with a check constraint as well.
+    kind: z.enum(['bookable', 'notice_only']).default('bookable'),
+    onSiteNote: z.string().trim().max(300).optional(),
     title: z.string().trim().min(3, 'Give the event a title').max(120),
     slug: z
       .string()
@@ -91,7 +96,10 @@ export async function saveEventAction(
     .eq('id', v.id)
     .maybeSingle()
 
+  const noticeOnly = v.kind === 'notice_only'
   const row = {
+    kind: v.kind,
+    on_site_note: v.onSiteNote || null,
     title: v.title,
     slug: v.slug,
     category: v.category,
@@ -105,13 +113,18 @@ export async function saveEventAction(
     water_level_dependent: v.waterLevelDependent,
     cost_pence: v.costPence,
     cost_note: v.costNote || null,
-    booking_enabled: v.bookingEnabled,
-    capacity: v.bookingEnabled ? v.capacity : null,
+    booking_enabled: noticeOnly ? false : v.bookingEnabled,
+    capacity: !noticeOnly && v.bookingEnabled ? v.capacity : null,
     allow_waitlist: v.allowWaitlist,
     members_only_booking: v.membersOnlyBooking,
-    booking_opens_at: v.bookingEnabled && v.bookingOpensAt ? new Date(v.bookingOpensAt).toISOString() : null,
+    booking_opens_at:
+      !noticeOnly && v.bookingEnabled && v.bookingOpensAt
+        ? new Date(v.bookingOpensAt).toISOString()
+        : null,
     booking_closes_at:
-      v.bookingEnabled && v.bookingClosesAt ? new Date(v.bookingClosesAt).toISOString() : null,
+      !noticeOnly && v.bookingEnabled && v.bookingClosesAt
+        ? new Date(v.bookingClosesAt).toISOString()
+        : null,
     cover_image_path: v.coverImagePath,
   }
 

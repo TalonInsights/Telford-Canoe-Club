@@ -1,23 +1,35 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ExternalLink, Waves } from 'lucide-react'
+import { Camera, ExternalLink, Waves } from 'lucide-react'
 
 import { PageHero } from '@/components/layout/page-hero'
 import { Section } from '@/components/layout/section'
 import { Button } from '@/components/ui/button'
 import { formatDateShort, formatTime } from '@/lib/format'
+import { getClubSettings } from '@/lib/queries/settings'
+import { getRiverBands } from '@/lib/queries/river-bands'
 import { getRiverLevel } from '@/lib/river-level'
+import { bandRangeLabel, matchBand, metresToCm } from '@/lib/river/bands'
+import { cn } from '@/lib/utils'
 
 export const metadata: Metadata = {
   title: 'River levels',
   description:
-    'Live Severn level for Jackfield Rapids from the Environment Agency gauge at Buildwas, and how to read it before you paddle.',
+    'Live Severn level for Jackfield Rapids from the Environment Agency gauge at Buildwas, what the level means for the rapid, and an upstream webcam.',
 }
 
 export const revalidate = 900
 
 export default async function RiverLevelsPage() {
-  const level = await getRiverLevel()
+  const [level, bands, settings] = await Promise.all([
+    getRiverLevel(),
+    getRiverBands(),
+    getClubSettings(),
+  ])
+
+  const cm = level ? metresToCm(level.levelMetres) : null
+  const current = cm === null ? null : matchBand(bands, cm)
+
   return (
     <>
       <PageHero
@@ -32,12 +44,38 @@ export default async function RiverLevelsPage() {
               <Waves className="size-3.5" aria-hidden="true" />
               {level ? `River Severn at ${level.stationName}` : 'River Severn, nearest gauge'}
             </p>
-            {level ? (
+
+            {level && cm !== null ? (
               <>
-                <p className="mt-1 font-heading text-5xl font-semibold tabular-nums">
-                  {level.levelMetres.toFixed(2)} m
+                {/* The club's word for it leads, because that is the thing a
+                    paddler is actually asking. The number backs it up. */}
+                {current && (
+                  <p className="mt-2 font-heading text-4xl font-semibold text-river">
+                    {current.label}
+                  </p>
+                )}
+                <p
+                  className={cn(
+                    'font-heading font-semibold tabular-nums',
+                    current ? 'mt-1 text-2xl' : 'mt-1 text-5xl'
+                  )}
+                >
+                  {cm} cm
+                  <span className="ml-2 text-base font-normal text-ink-muted">
+                    ({level.levelMetres.toFixed(2)} m)
+                  </span>
                 </p>
-                <p className="mt-1 text-micro text-ink-muted">
+                {current?.description && (
+                  <p className="mx-auto mt-2 max-w-[46ch] text-sm text-ink-muted">
+                    {current.description}
+                  </p>
+                )}
+                {!current && bands.length > 0 && (
+                  <p className="mx-auto mt-2 max-w-[46ch] text-sm text-warn">
+                    This reading sits outside the club&apos;s guidance bands. Ask before you travel.
+                  </p>
+                )}
+                <p className="mt-2 text-micro text-ink-muted">
                   Environment Agency reading, {formatDateShort(level.readingTime)}{' '}
                   {formatTime(level.readingTime)}, updates through the day
                 </p>
@@ -45,6 +83,7 @@ export default async function RiverLevelsPage() {
             ) : (
               <p className="mt-1 font-heading text-2xl font-semibold">Level unavailable right now</p>
             )}
+
             <Button asChild variant="secondary" className="mt-4">
               <a
                 href={level?.stationUrl ?? 'https://check-for-flooding.service.gov.uk/station/2134'}
@@ -57,21 +96,74 @@ export default async function RiverLevelsPage() {
             </Button>
           </div>
 
+          {bands.length > 0 && (
+            <div className="mt-10">
+              <h2 className="text-xl">What the level means</h2>
+              <p className="mt-1 text-sm text-ink-muted">
+                The committee&apos;s guidance for Jackfield, in centimetres on the Buildwas gauge.
+              </p>
+              <ul className="mt-4 grid gap-2">
+                {bands.map((band) => {
+                  const isNow = current?.id === band.id
+                  return (
+                    <li
+                      key={band.id}
+                      className={cn(
+                        'flex flex-wrap items-baseline gap-x-4 gap-y-1 rounded-xl border p-4',
+                        isNow ? 'border-river bg-foam' : 'border-stone bg-card'
+                      )}
+                    >
+                      <span className="w-32 shrink-0 text-sm font-medium tabular-nums text-ink-muted">
+                        {bandRangeLabel(band)}
+                      </span>
+                      <span className="font-heading font-semibold">{band.label}</span>
+                      {isNow && (
+                        <span className="rounded-full bg-river px-2 py-0.5 text-micro font-medium text-white">
+                          Now
+                        </span>
+                      )}
+                      {band.description && (
+                        <span className="w-full text-sm text-ink-muted">{band.description}</span>
+                      )}
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+          )}
+
+          {settings.webcamUrl && (
+            <div className="mt-10 rounded-xl border border-stone bg-card p-5">
+              <h2 className="flex items-center gap-2 text-xl">
+                <Camera aria-hidden="true" className="size-5 text-river" />
+                See the water
+              </h2>
+              <p className="mt-2 text-sm text-ink-muted">{settings.webcamNote}</p>
+              <Button asChild variant="secondary" className="mt-3">
+                <a href={settings.webcamUrl} target="_blank" rel="noopener noreferrer">
+                  Open the Atcham webcam
+                  <ExternalLink aria-hidden="true" />
+                </a>
+              </Button>
+              <p className="mt-2 text-micro text-ink-muted">
+                Opens on Farson Digital Watercams, who run the camera.
+              </p>
+            </div>
+          )}
+
           <div className="mt-10 space-y-3 text-ink-muted">
             <h2 className="text-xl text-ink">Reading the gauge</h2>
             <p>
               The nearest Environment Agency gauge is at Buildwas, a few miles upstream of
-              Jackfield, what passes the gauge reaches the rapid shortly after. Low water
-              exposes the rocks and slows the wave down; more flow builds the features and pushes
-              harder. The Severn responds slowly to rain, so a wet day rarely changes the level
-              instantly, but upstream reservoir releases (like the Clywedog) can add a useful
-              top-up.
+              Jackfield, what passes the gauge reaches the rapid shortly after. Low water exposes
+              the rocks and slows the wave down; more flow builds the features and pushes harder.
+              The Severn responds slowly to rain, so a wet day rarely changes the level instantly,
+              but upstream reservoir releases (like the Clywedog) can add a useful top-up.
             </p>
             <p>
-              The committee will publish guidance bands for the rapid here once they&apos;re
-              agreed. Until then: if you&apos;re unsure whether it&apos;s a good level for your
-              ability, ask on a club night before committing, and remember the site is used by
-              competent paddlers at their own risk.
+              Bands are guidance from the committee, not a promise. If you are unsure whether it is
+              a good level for your ability, ask on a club night before committing, and remember the
+              site is used by competent paddlers at their own risk.
             </p>
           </div>
 

@@ -33,6 +33,7 @@ export default async function HomePage() {
     location: e.location_name,
     summary: e.summary,
     image: eventImageUrl(e.cover_image_path),
+    kind: e.kind,
   }))
 
   return (

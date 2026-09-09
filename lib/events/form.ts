@@ -8,7 +8,11 @@ import { eventDetailsText, type EventCategory } from './labels'
  * and stored in pence. Shared by the server page (row → form) and the client
  * form (form → action input), so it carries no React and no directive.
  */
+export type EventKind = 'bookable' | 'notice_only'
+
 export type EventFormValues = {
+  kind: EventKind
+  onSiteNote: string
   title: string
   slug: string
   category: EventCategory
@@ -33,6 +37,8 @@ export type EventFormValues = {
 
 export type EventInput = {
   id: string
+  kind: EventKind
+  onSiteNote?: string
   title: string
   slug: string
   category: EventCategory
@@ -57,6 +63,8 @@ export type EventInput = {
 
 export function emptyEventForm(): EventFormValues {
   return {
+    kind: 'bookable',
+    onSiteNote: '',
     title: '',
     slug: '',
     category: 'club_night',
@@ -82,6 +90,8 @@ export function emptyEventForm(): EventFormValues {
 
 export function eventRowToForm(row: Tables<'events'>): EventFormValues {
   return {
+    kind: row.kind === 'notice_only' ? 'notice_only' : 'bookable',
+    onSiteNote: row.on_site_note ?? '',
     title: row.title,
     slug: row.slug,
     category: row.category as EventCategory,
@@ -107,8 +117,11 @@ export function eventRowToForm(row: Tables<'events'>): EventFormValues {
 
 export function formToInput(id: string, f: EventFormValues): EventInput {
   const capacity = f.capacity.trim() === '' ? null : Number(f.capacity)
+  const noticeOnly = f.kind === 'notice_only'
   return {
     id,
+    kind: f.kind,
+    onSiteNote: f.onSiteNote || undefined,
     title: f.title,
     slug: f.slug,
     category: f.category,
@@ -122,8 +135,8 @@ export function formToInput(id: string, f: EventFormValues): EventInput {
     waterLevelDependent: f.waterLevelDependent,
     costPence: Math.round((Number(f.costPounds) || 0) * 100),
     costNote: f.costNote || undefined,
-    bookingEnabled: f.bookingEnabled,
-    capacity: Number.isFinite(capacity) ? capacity : null,
+    bookingEnabled: noticeOnly ? false : f.bookingEnabled,
+    capacity: noticeOnly ? null : Number.isFinite(capacity) ? capacity : null,
     allowWaitlist: f.allowWaitlist,
     membersOnlyBooking: f.membersOnlyBooking,
     bookingOpensAt: f.bookingOpensAt ? f.bookingOpensAt.toISOString() : null,

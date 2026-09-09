@@ -8,6 +8,10 @@ import { getSiteSettings, type SiteSettings } from '@/lib/site-data'
 export type ClubSettings = SiteSettings & {
   bankPaymentNote: string
   paymentProvider: PaymentMode
+  shopOpen: boolean
+  shopClosedNote: string | null
+  webcamUrl: string | null
+  webcamNote: string | null
 }
 
 const seedFallback: ClubSettings = {
@@ -15,6 +19,11 @@ const seedFallback: ClubSettings = {
   bankPaymentNote:
     'Pay by bank transfer or cash to the treasurer, your membership is confirmed as soon as the committee records it.',
   paymentProvider: 'simulated',
+  shopOpen: true,
+  shopClosedNote: null,
+  webcamUrl: 'https://www.farsondigitalwatercams.com/locations/atcham',
+  webcamNote:
+    'Atcham is about 10 miles upstream, so it shows what is coming rather than the level at the club.',
 }
 
 /** Per-request cached: the home page alone reads this from three components. */
@@ -36,5 +45,9 @@ export const getClubSettings = cache(async (): Promise<ClubSettings> => {
     ],
     bankPaymentNote: data.bank_payment_note,
     paymentProvider: (data.payment_provider ?? 'off') as PaymentMode,
+    shopOpen: data.shop_open ?? true,
+    shopClosedNote: data.shop_closed_note,
+    webcamUrl: data.webcam_url,
+    webcamNote: data.webcam_note,
   }
 })

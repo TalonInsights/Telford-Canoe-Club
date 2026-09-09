@@ -22,6 +22,7 @@ import Link from 'next/link'
 import { FullGrid, Split75 } from '@/components/layout/grids'
 import { Section } from '@/components/layout/section'
 import { EventCard, NewsCard, SportCard } from '@/components/site/cards'
+import { Badge } from '@/components/ui/badge'
 import { CtaBand } from '@/components/site/cta-band'
 import { FeatureCard } from '@/components/site/feature-card'
 import { eventCategoryLabel } from '@/lib/events/labels'
@@ -240,6 +241,11 @@ export function WhatsOn({ events }: { events: HomeEvent[] }) {
               category={eventCategoryLabel[e.category] ?? 'Event'}
               when={formatDateTimeRange(e.startsAt, e.endsAt)}
               location={e.location ?? undefined}
+              status={
+                e.kind === 'notice_only' ? (
+                  <Badge variant="warn">On site, not a club session</Badge>
+                ) : undefined
+              }
             />
           ))}
         </FullGrid>

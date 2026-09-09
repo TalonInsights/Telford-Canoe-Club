@@ -30,6 +30,8 @@ function seedEvents(): EventRow[] {
     members_only_booking: true,
     organiser_user_id: null,
     recurrence_rule: null,
+    kind: 'bookable',
+    on_site_note: null,
     status: 'published',
     visibility: 'public' as const,
   }

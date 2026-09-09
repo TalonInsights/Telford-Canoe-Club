@@ -33,6 +33,10 @@ export function SettingsForm({ initial }: { initial: SettingsInput }) {
   const [bankNote, setBankNote] = useState(initial.bankPaymentNote)
   const [showUnconfirmed, setShowUnconfirmed] = useState(initial.showUnconfirmed)
   const [provider, setProvider] = useState(initial.paymentProvider)
+  const [shopOpen, setShopOpen] = useState(initial.shopOpen)
+  const [shopClosedNote, setShopClosedNote] = useState(initial.shopClosedNote ?? '')
+  const [webcamUrl, setWebcamUrl] = useState(initial.webcamUrl ?? '')
+  const [webcamNote, setWebcamNote] = useState(initial.webcamNote ?? '')
 
   const save = () =>
     startTransition(async () => {
@@ -46,6 +50,10 @@ export function SettingsForm({ initial }: { initial: SettingsInput }) {
         bankPaymentNote: bankNote,
         showUnconfirmed,
         paymentProvider: provider,
+        shopOpen,
+        shopClosedNote: shopClosedNote || undefined,
+        webcamUrl: webcamUrl || undefined,
+        webcamNote: webcamNote || undefined,
       })
       if (result.ok) {
         toast.success(result.message ?? 'Saved')
@@ -153,6 +161,66 @@ export function SettingsForm({ initial }: { initial: SettingsInput }) {
               aria-label="Show unconfirmed details"
             />
           </div>
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-stone bg-card p-5">
+        <h2 className="text-lg">Club shop</h2>
+        <p className="mt-1 text-sm text-ink-muted">
+          The club sells kit a couple of times a year. Closing the shop hides every item and
+          refuses new orders, including from a page somebody left open. Orders already placed are
+          unaffected.
+        </p>
+        <div className="mt-4 grid gap-4">
+          <div className="flex items-center justify-between gap-4 rounded-lg border border-stone p-3">
+            <div>
+              <p className="text-sm font-medium">Shop open</p>
+              <p className="text-micro text-ink-muted">
+                Off means members see a note instead of the kit.
+              </p>
+            </div>
+            <Switch checked={shopOpen} onCheckedChange={setShopOpen} aria-label="Shop open" />
+          </div>
+          {!shopOpen && (
+            <Field label="What members see while it is closed" htmlFor="set-shop-note" optional>
+              <Input
+                id="set-shop-note"
+                value={shopClosedNote}
+                onChange={(e) => setShopClosedNote(e.target.value)}
+                placeholder="e.g. the next kit order goes in during November"
+              />
+            </Field>
+          )}
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-stone bg-card p-5">
+        <h2 className="text-lg">River webcam</h2>
+        <p className="mt-1 text-sm text-ink-muted">
+          Shown on the river levels page as a link, never embedded, since the camera belongs to
+          somebody else.
+        </p>
+        <div className="mt-4 grid gap-4">
+          <Field label="Webcam address" htmlFor="set-webcam-url" optional helper="Leave empty to hide the link entirely.">
+            <Input
+              id="set-webcam-url"
+              value={webcamUrl}
+              onChange={(e) => setWebcamUrl(e.target.value)}
+              placeholder="https://www.farsondigitalwatercams.com/locations/atcham"
+            />
+          </Field>
+          <Field
+            label="The caveat that goes with it"
+            htmlFor="set-webcam-note"
+            optional
+            helper="Say how far upstream it is, so nobody mistakes it for the level at the club."
+          >
+            <Input
+              id="set-webcam-note"
+              value={webcamNote}
+              onChange={(e) => setWebcamNote(e.target.value)}
+            />
+          </Field>
         </div>
       </section>
 

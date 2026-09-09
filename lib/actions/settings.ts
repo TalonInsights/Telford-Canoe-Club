@@ -17,6 +17,10 @@ const settingsSchema = z.object({
   bankPaymentNote: z.string().trim().min(10).max(500),
   showUnconfirmed: z.boolean(),
   paymentProvider: z.enum(['off', 'simulated', 'paypal']),
+  shopOpen: z.boolean(),
+  shopClosedNote: z.string().trim().max(300).optional(),
+  webcamUrl: z.union([z.url(), z.literal('')]).optional(),
+  webcamNote: z.string().trim().max(300).optional(),
 })
 
 export type SettingsInput = z.infer<typeof settingsSchema>
@@ -44,6 +48,10 @@ export async function updateSettingsAction(input: SettingsInput): Promise<Action
     bank_payment_note: parsed.data.bankPaymentNote,
     show_unconfirmed: parsed.data.showUnconfirmed,
     payment_provider: parsed.data.paymentProvider,
+    shop_open: parsed.data.shopOpen,
+    shop_closed_note: parsed.data.shopClosedNote || null,
+    webcam_url: parsed.data.webcamUrl || null,
+    webcam_note: parsed.data.webcamNote || null,
   }
   const { error } = await supabase.from('club_settings').update(next).eq('id', true)
   if (error) return { ok: false, message: error.message }
@@ -58,7 +66,7 @@ export async function updateSettingsAction(input: SettingsInput): Promise<Action
     p_after: JSON.parse(JSON.stringify(changed)),
   })
 
-  for (const path of ['/', '/join', '/welcome', '/members/membership', '/admin/settings']) {
+  for (const path of ['/', '/join', '/welcome', '/members/membership', '/members/shop', '/venue/river-levels', '/admin/settings']) {
     revalidatePath(path)
   }
   return { ok: true, message: 'Settings saved' }

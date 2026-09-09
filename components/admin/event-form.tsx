@@ -21,6 +21,7 @@ import { eventCoverPath, eventImageUrl } from '@/lib/events/images'
 import { eventCategories, eventCategoryLabel, slugify, type EventCategory } from '@/lib/events/labels'
 import type { EventRow } from '@/lib/queries/events'
 import { uploadSiteImage } from '@/lib/storage/client-upload'
+import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { DateTimePicker } from '@/components/ui/date-picker'
 import { FileUpload } from '@/components/ui/file-upload'
@@ -112,6 +113,59 @@ export function EventForm({
   return (
     <div className="grid gap-4 lg:grid-cols-12 lg:items-start">
       <div className="grid gap-4 lg:col-span-7">
+        <Card
+          title="What this is"
+          intro="Most events are things members can put their name down for. A notice is the other kind: something happening on site that members are not invited to, but should know about."
+        >
+          <div className="grid gap-2 sm:grid-cols-2">
+            {(
+              [
+                {
+                  value: 'bookable' as const,
+                  title: 'Club event',
+                  body: 'Members can say they are coming.',
+                },
+                {
+                  value: 'notice_only' as const,
+                  title: 'Notice only',
+                  body: 'Scout camp, fire service training. No sign-up anywhere.',
+                },
+              ]
+            ).map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                aria-pressed={form.kind === option.value}
+                onClick={() => set('kind', option.value)}
+                className={cn(
+                  'rounded-lg border p-3 text-left transition-colors',
+                  form.kind === option.value
+                    ? 'border-river bg-foam'
+                    : 'border-stone hover:border-river'
+                )}
+              >
+                <span className="block font-medium">{option.title}</span>
+                <span className="mt-0.5 block text-micro text-ink-muted">{option.body}</span>
+              </button>
+            ))}
+          </div>
+          {form.kind === 'notice_only' && (
+            <Field
+              label="Who is on site"
+              htmlFor="ev-onsite"
+              optional
+              helper="So nobody arrives and is surprised. Shown on the event."
+            >
+              <Input
+                id="ev-onsite"
+                value={form.onSiteNote}
+                onChange={(e) => set('onSiteNote', e.target.value)}
+                placeholder="e.g. Shropshire Fire and Rescue, water rescue training"
+              />
+            </Field>
+          )}
+        </Card>
+
         <Card title="The basics" intro="The title and summary appear on every event card across the site.">
           <Field label="Title" htmlFor="ev-title">
             <Input
@@ -282,6 +336,14 @@ export function EventForm({
           )}
         </Card>
 
+        {form.kind === 'notice_only' ? (
+          <Card title="Attendance">
+            <p className="text-sm text-ink-muted">
+              Nothing to set. A notice carries no sign-up, so members see the details and nothing
+              to press.
+            </p>
+          </Card>
+        ) : (
         <Card title="Attendance">
           <Toggle
             label="Members confirm attendance"
@@ -329,6 +391,7 @@ export function EventForm({
             </>
           )}
         </Card>
+        )}
 
         <section className="rounded-xl border border-stone bg-card p-5">
           {mode === 'create' ? (

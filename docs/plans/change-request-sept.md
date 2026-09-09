@@ -10,10 +10,10 @@ whole rather than eight half-built things landing together.
 
 | # | Item | Migration | Status |
 | --- | --- | --- | --- |
-| 3 | River level bands, admin managed | 0024 | |
-| 4 | Farson webcam link at Atcham | 0024 | |
-| 6 | Shop item visibility + shop open/closed | 0024 | |
-| 7 | Notice-only events | 0024 | |
+| 3 | River level bands, admin managed | 0024 |Done |
+| 4 | Farson webcam link at Atcham | 0024 |Done |
+| 6 | Shop item visibility + shop open/closed | 0024 |Done |
+| 7 | Notice-only events | 0024 |Done |
 | 5 | Editable page content blocks | 0025 | |
 | 8 | Member check-in | 0026 | |
 | 1 | Membership types as records | 0027 | |

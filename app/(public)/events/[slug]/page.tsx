@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { CalendarDays, MapPin, Tag, Waves } from 'lucide-react'
+import { CalendarDays, Info, MapPin, Tag, Waves } from 'lucide-react'
 
 import { BookingPanel } from '@/components/site/booking-panel'
 import { PageHero } from '@/components/layout/page-hero'
@@ -44,6 +44,9 @@ export default async function EventDetailPage({ params }: Params) {
     event.booking_enabled ? getEventAttendance(event.id) : Promise.resolve(null),
   ])
   const details = eventDetailsParagraphs(event.body)
+  // A notice is something happening on site that members are told about but
+  // not invited to, so nothing on this page may offer a place.
+  const noticeOnly = event.kind === 'notice_only'
 
   return (
     <>
@@ -61,6 +64,19 @@ export default async function EventDetailPage({ params }: Params) {
               <Badge variant="signal" className="mb-4">
                 Cancelled
               </Badge>
+            )}
+            {noticeOnly && (
+              <div className="mb-4 rounded-xl border border-warn/30 bg-card p-4">
+                <p className="flex items-center gap-2 font-medium text-warn">
+                  <Info aria-hidden="true" className="size-4" />
+                  On site, not a club session
+                </p>
+                <p className="mt-1 text-sm text-ink-muted">
+                  This is happening at Jackfield but it is not a club event and there is nothing to
+                  sign up for. The site stays open as usual.
+                  {event.on_site_note ? ` Expect: ${event.on_site_note}.` : ''}
+                </p>
+              </div>
             )}
             <dl className="space-y-3">
               <div className="flex items-start gap-2.5">
@@ -149,6 +165,15 @@ export default async function EventDetailPage({ params }: Params) {
             </div>
           </div>
           <div className="lg:col-span-5">
+            {noticeOnly ? (
+              <aside className="rounded-xl border border-stone bg-foam p-5">
+                <h2 className="text-lg">Nothing to book</h2>
+                <p className="mt-2 text-sm text-ink-muted">
+                  This entry is here so you know what is going on at the site that day. If you were
+                  planning to paddle, you still can.
+                </p>
+              </aside>
+            ) : (
             <BookingPanel
               event={{
                 id: event.id,
@@ -164,6 +189,7 @@ export default async function EventDetailPage({ params }: Params) {
               myBooking={myBooking}
               attendance={attendance}
             />
+            )}
           </div>
         </div>
       </Section>
