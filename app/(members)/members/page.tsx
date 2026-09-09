@@ -1,12 +1,14 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { CalendarDays, ClipboardList, FileText, IdCard, Megaphone, ShoppingBag } from 'lucide-react'
+import { CalendarDays, ClipboardList, FileText, IdCard, Megaphone, ShoppingBag, Users } from 'lucide-react'
 
 import { requireCurrentMember } from '@/lib/auth/guards'
 import { formatDateTimeRange } from '@/lib/format'
 import { getUpcomingEvents } from '@/lib/queries/events'
 import { getMemberNotices, getMyBookings, getMyMemberships } from '@/lib/queries/members'
 import { getPublishedMinutes } from '@/lib/queries/minutes'
+import { getClubSettings } from '@/lib/queries/settings'
+import { getUpcomingCheckins } from '@/lib/queries/checkins'
 import { getMyOrders } from '@/lib/queries/merch'
 import { merchMemberStatusLabel } from '@/lib/merch/labels'
 import { formatDate } from '@/lib/format'
@@ -43,6 +45,8 @@ export default async function MembersDashboard() {
     getPublishedMinutes(),
     getMyOrders(),
   ])
+  const settings = await getClubSettings()
+  const checkins = settings.checkinsEnabled ? await getUpcomingCheckins() : []
   const active = memberships.find((m) => m.status === 'active')
 
   return (
@@ -89,6 +93,20 @@ export default async function MembersDashboard() {
           </ul>
         )}
       </Card>
+      {settings.checkinsEnabled && (
+        <Card title="Who is on site" icon={Users} href="/members/on-site">
+          {checkins.length > 0 ? (
+            <p>
+              {checkins.length === 1
+                ? 'One member has said they will be down'
+                : `${checkins.length} members have said they will be down`}{' '}
+              in the next week.
+            </p>
+          ) : (
+            <p>Say when you will be at Jackfield, and see who else is planning to be there.</p>
+          )}
+        </Card>
+      )}
       <Card title="Meeting minutes" icon={ClipboardList} href="/members/minutes">
         {minutes.length > 0 ? (
           <p>

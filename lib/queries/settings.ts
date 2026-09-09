@@ -12,6 +12,7 @@ export type ClubSettings = SiteSettings & {
   shopClosedNote: string | null
   webcamUrl: string | null
   webcamNote: string | null
+  checkinsEnabled: boolean
 }
 
 const seedFallback: ClubSettings = {
@@ -24,6 +25,7 @@ const seedFallback: ClubSettings = {
   webcamUrl: 'https://www.farsondigitalwatercams.com/locations/atcham',
   webcamNote:
     'Atcham is about 10 miles upstream, so it shows what is coming rather than the level at the club.',
+  checkinsEnabled: false,
 }
 
 /** Per-request cached: the home page alone reads this from three components. */
@@ -49,5 +51,6 @@ export const getClubSettings = cache(async (): Promise<ClubSettings> => {
     shopClosedNote: data.shop_closed_note,
     webcamUrl: data.webcam_url,
     webcamNote: data.webcam_note,
+    checkinsEnabled: data.checkins_enabled ?? false,
   }
 })

@@ -71,6 +71,22 @@ export default function PrivacyPage() {
               identified and the figures are only ever aggregated.
             </p>
           </Block>
+          <Block heading="Telling other members you will be on site">
+            <p>
+              The members area can include a board where you say you will be at Jackfield at a
+              given time, so other members can choose to come down too. It is optional in every
+              sense: nothing appears there unless you deliberately post it, and posting is the only
+              way an entry is created.
+            </p>
+            <p>
+              What other members see is your first name, the first letter of your surname, the
+              times you gave and any note you added. Only logged-in current members can see it. It
+              is never public, never indexed by search engines, and nobody is notified when you
+              post. You can remove your entry at any moment, entries disappear from the board once
+              the session has passed, and they are deleted within a day, so no record of where you
+              have been is kept. Accounts belonging to under-18s cannot post there at all.
+            </p>
+          </Block>
           <Block heading="Who we share it with">
             <p>
               Nobody, beyond the services that run this site: our hosting and database providers

@@ -53,6 +53,7 @@ export type Database = {
       club_settings: {
         Row: {
           bank_payment_note: string
+          checkins_enabled: boolean
           created_at: string
           id: boolean
           membership_year_label: string
@@ -71,6 +72,7 @@ export type Database = {
         }
         Insert: {
           bank_payment_note?: string
+          checkins_enabled?: boolean
           created_at?: string
           id?: boolean
           membership_year_label?: string
@@ -89,6 +91,7 @@ export type Database = {
         }
         Update: {
           bank_payment_note?: string
+          checkins_enabled?: boolean
           created_at?: string
           id?: boolean
           membership_year_label?: string
@@ -775,6 +778,55 @@ export type Database = {
           {
             foreignKeyName: "meeting_minutes_created_by_fkey"
             columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      member_checkins: {
+        Row: {
+          created_at: string
+          ends_at: string
+          id: string
+          note: string | null
+          starts_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at: string
+          id?: string
+          note?: string | null
+          starts_at: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string
+          id?: string
+          note?: string | null
+          starts_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_checkins_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "current_members"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "member_checkins_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "membership_history"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "member_checkins_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["user_id"]
@@ -1702,6 +1754,11 @@ export type Database = {
         Args: { p_note?: string; p_order_id: string; p_status: string }
         Returns: string
       }
+      post_checkin: {
+        Args: { p_ends_at: string; p_note?: string; p_starts_at: string }
+        Returns: string
+      }
+      purge_expired_checkins: { Args: never; Returns: number }
       request_membership: {
         Args: {
           p_family?: Json

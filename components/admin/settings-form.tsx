@@ -37,6 +37,7 @@ export function SettingsForm({ initial }: { initial: SettingsInput }) {
   const [shopClosedNote, setShopClosedNote] = useState(initial.shopClosedNote ?? '')
   const [webcamUrl, setWebcamUrl] = useState(initial.webcamUrl ?? '')
   const [webcamNote, setWebcamNote] = useState(initial.webcamNote ?? '')
+  const [checkinsEnabled, setCheckinsEnabled] = useState(initial.checkinsEnabled)
 
   const save = () =>
     startTransition(async () => {
@@ -54,6 +55,7 @@ export function SettingsForm({ initial }: { initial: SettingsInput }) {
         shopClosedNote: shopClosedNote || undefined,
         webcamUrl: webcamUrl || undefined,
         webcamNote: webcamNote || undefined,
+        checkinsEnabled,
       })
       if (result.ok) {
         toast.success(result.message ?? 'Saved')
@@ -191,6 +193,35 @@ export function SettingsForm({ initial }: { initial: SettingsInput }) {
               />
             </Field>
           )}
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-stone bg-card p-5">
+        <h2 className="text-lg">Who is on site</h2>
+        <p className="mt-1 text-sm text-ink-muted">
+          Lets a member say they will be at Jackfield at a given time so others can join them.
+          Off until the committee has agreed to it: it shows one member&apos;s name and whereabouts
+          to another, so it is the committee&apos;s decision, not ours.
+        </p>
+        <div className="mt-4 grid gap-3">
+          <div className="flex items-center justify-between gap-4 rounded-lg border border-stone p-3">
+            <div>
+              <p className="text-sm font-medium">Allow check-ins</p>
+              <p className="text-micro text-ink-muted">
+                Current members only, first name and last initial, deleted a day after the session.
+                Under-18 accounts are excluded.
+              </p>
+            </div>
+            <Switch
+              checked={checkinsEnabled}
+              onCheckedChange={setCheckinsEnabled}
+              aria-label="Allow check-ins"
+            />
+          </div>
+          <p className="text-micro text-ink-muted">
+            Before switching this on, agree with the committee who should see it, how names appear
+            and how long entries are kept, and check the privacy page still matches.
+          </p>
         </div>
       </section>
 

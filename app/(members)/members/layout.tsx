@@ -6,6 +6,7 @@ import { Header } from '@/components/layout/header'
 import { MembersSubnav } from '@/components/members/subnav'
 import { Button } from '@/components/ui/button'
 import { getSession, roleAtLeast } from '@/lib/auth/guards'
+import { getClubSettings } from '@/lib/queries/settings'
 import { signOutAction } from '@/lib/actions/auth'
 import { isSupabaseConfigured, NOT_CONFIGURED_MESSAGE } from '@/lib/supabase/configured'
 
@@ -22,10 +23,15 @@ const links: RailLink[] = [
 
 // The bottom bar on a phone holds five; minutes and notices live one tap
 // deeper, from the documents page and the overview.
-const tabBarLinks = [links[0], links[1], links[2], links[3], links[4]]
 
 export default async function MembersLayout({ children }: { children: React.ReactNode }) {
-  const session = await getSession()
+  const [session, settings] = await Promise.all([getSession(), getClubSettings()])
+
+  // "Who is on site" appears only while the committee has it switched on, so
+  // a feature the club has not agreed to does not advertise itself.
+  const navLinks = settings.checkinsEnabled
+    ? [...links.slice(0, 3), { title: 'On site', href: '/members/on-site', icon: 'users' }, ...links.slice(3)]
+    : links
 
   return (
     <>
@@ -92,13 +98,13 @@ export default async function MembersLayout({ children }: { children: React.Reac
                   </Button>
                 </form>
               </div>
-              <MembersSubnav links={links.map(({ title, href }) => ({ title, href }))} />
+              <MembersSubnav links={navLinks.map(({ title, href }) => ({ title, href }))} />
               <div className="mt-6">{children}</div>
             </>
           )}
         </div>
       </main>
-      {session && <BottomTabBar links={tabBarLinks} rootHref="/members" />}
+      {session && <BottomTabBar links={navLinks.slice(0, 5)} rootHref="/members" />}
       <Footer />
     </>
   )

@@ -45,6 +45,7 @@ export default async function AdminSettingsPage() {
             shopClosedNote: data.shop_closed_note ?? '',
             webcamUrl: data.webcam_url ?? '',
             webcamNote: data.webcam_note ?? '',
+            checkinsEnabled: data.checkins_enabled ?? false,
           }}
         />
       </div>
