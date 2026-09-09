@@ -18,13 +18,13 @@ import { Stepper } from '@/components/ui/stepper'
 import { formatMoneyGBP } from '@/lib/format'
 import { cn } from '@/lib/utils'
 
-type Tier = { name: string; pricePence: number }
-type TierKey = 'adult' | 'junior' | 'family'
-
-const tierKeyByName: Record<string, TierKey> = {
-  Adult: 'adult',
-  Junior: 'junior',
-  Family: 'family',
+type Tier = {
+  id: string
+  name: string
+  pricePence: number
+  description: string | null
+  durationMonths: number | null
+  coversFamily: boolean
 }
 
 const emptyMember = (): FamilyMemberInput => ({
@@ -48,7 +48,7 @@ export function WelcomeClient({
   renewPeriod: { id: string; label: string } | null
 }) {
   const router = useRouter()
-  const [selected, setSelected] = useState<TierKey | null>(null)
+  const [selected, setSelected] = useState<string | null>(null)
   const [family, setFamily] = useState<FamilyMemberInput[]>([emptyMember()])
   const [step, setStep] = useState(1)
   const [pending, startTransition] = useTransition()
@@ -56,8 +56,9 @@ export function WelcomeClient({
   const [confirmed, setConfirmed] = useState(false)
 
   const onlineOn = isOnlinePaymentOn(paymentProvider)
-  const selectedTier = tiers.find((t) => tierKeyByName[t.name] === selected)
-  const familyMembers = () => (selected === 'family' ? family.filter((m) => m.name.trim()) : [])
+  const selectedTier = tiers.find((t) => t.id === selected)
+  const familyMembers = () =>
+    selectedTier?.coversFamily ? family.filter((m) => m.name.trim()) : []
   const setMember = (i: number, patch: Partial<FamilyMemberInput>) =>
     setFamily((fs) => fs.map((f, j) => (j === i ? { ...f, ...patch } : f)))
 
@@ -66,7 +67,7 @@ export function WelcomeClient({
       if (!selected) return
       setBusy('online')
       const result = await startOnlineCheckoutAction({
-        tier: selected,
+        typeId: selected,
         family: familyMembers(),
         periodId: renewPeriod?.id,
       })
@@ -83,7 +84,7 @@ export function WelcomeClient({
       if (!selected) return
       setBusy('manual')
       const result = await requestMembershipAction({
-        tier: selected,
+        typeId: selected,
         family: familyMembers(),
         periodId: renewPeriod?.id,
       })
@@ -127,15 +128,14 @@ export function WelcomeClient({
               <legend className="text-sm font-medium">
                 Pick a tier: {(renewPeriod ? `${renewPeriod.label} membership` : yearLabel).toLowerCase()}
               </legend>
-              <div className="mt-3 grid gap-3 sm:grid-cols-3">
+              <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {tiers.map((tier) => {
-                  const key = tierKeyByName[tier.name] ?? 'adult'
-                  const active = selected === key
+                  const active = selected === tier.id
                   return (
                     <button
-                      key={tier.name}
+                      key={tier.id}
                       type="button"
-                      onClick={() => setSelected(key)}
+                      onClick={() => setSelected(tier.id)}
                       aria-pressed={active}
                       className={cn(
                         'rounded-xl border p-4 text-left transition-colors',
@@ -147,7 +147,10 @@ export function WelcomeClient({
                         {formatMoneyGBP(tier.pricePence)}
                       </span>
                       <span className="block text-micro text-ink-muted">
-                        {key === 'family' ? 'Everyone at one address' : key === 'junior' ? 'Under 18' : 'Aged 18 and over'}
+                        {tier.description ??
+                          (tier.durationMonths === null
+                            ? 'Runs to the end of the membership year'
+                            : `${tier.durationMonths} months from the day you pay`)}
                       </span>
                     </button>
                   )
@@ -155,7 +158,7 @@ export function WelcomeClient({
               </div>
             </fieldset>
 
-            {selected === 'family' && (
+            {selectedTier?.coversFamily && (
               <div className="mt-5 rounded-lg border border-river/40 bg-foam p-4">
                 <p className="text-sm font-medium">Who else is at your address?</p>
                 <p className="mt-1 text-micro text-ink-muted">

@@ -22,6 +22,7 @@ const links: RailLink[] = [
   { title: 'River levels', href: '/admin/river-levels', icon: 'waves' },
   { title: 'Committee', href: '/admin/committee', icon: 'id' },
   { title: 'Audit log', href: '/admin/audit', icon: 'history' },
+  { title: 'Memberships on sale', href: '/admin/membership-types', icon: 'id' },
   { title: 'Settings', href: '/admin/settings', icon: 'settings' },
 ]
 

@@ -19,7 +19,7 @@ export type CheckoutResult =
 const tierLabel: Record<string, string> = { adult: 'Adult', junior: 'Junior', family: 'Family' }
 
 const startSchema = z.object({
-  tier: z.enum(['adult', 'junior', 'family']),
+  typeId: z.uuid(),
   family: z.array(familyMemberSchema).max(12).default([]),
   periodId: z.uuid().optional(),
 })
@@ -30,7 +30,7 @@ const startSchema = z.object({
  * (begin_online_payment) and hands back the gateway approval URL.
  */
 export async function startOnlineCheckoutAction(input: {
-  tier: 'adult' | 'junior' | 'family'
+  typeId: string
   family?: FamilyMemberInput[]
   periodId?: string
 }): Promise<CheckoutResult> {
@@ -38,11 +38,11 @@ export async function startOnlineCheckoutAction(input: {
   const session = await getSession()
   if (!session) return { ok: false, message: 'Log in first, then choose your membership.' }
   const parsed = startSchema.safeParse({
-    tier: input.tier,
+    typeId: input.typeId,
     family: input.family ?? [],
     periodId: input.periodId,
   })
-  if (!parsed.success) return { ok: false, message: 'Choose a valid membership tier' }
+  if (!parsed.success) return { ok: false, message: 'Choose a membership' }
 
   const settings = await getClubSettings()
   if (!isOnlinePaymentOn(settings.paymentProvider)) {
@@ -50,8 +50,10 @@ export async function startOnlineCheckoutAction(input: {
   }
 
   const supabase = await createClient()
-  const { data: membershipId, error } = await supabase.rpc('request_membership', {
-    p_tier: parsed.data.tier,
+  // The price and the duration come from the type record inside the database,
+  // never from anything the browser sent.
+  const { data: membershipId, error } = await supabase.rpc('request_membership_type', {
+    p_type_id: parsed.data.typeId,
     p_family: familyPayload(parsed.data.family),
     ...(parsed.data.periodId ? { p_period_id: parsed.data.periodId } : {}),
   })
@@ -170,7 +172,7 @@ export async function captureOnlineOrderAction(
   // Receipt + committee heads-up (skipped silently until the Resend key exists)
   const { data: m } = await supabase
     .from('memberships')
-    .select('tier, amount_pence, paypal_capture_id, membership_periods(label)')
+    .select('tier, amount_pence, paypal_capture_id, membership_periods(label), membership_types(name)')
     .eq('id', membershipId)
     .maybeSingle()
   if (m) {
@@ -178,7 +180,8 @@ export async function captureOnlineOrderAction(
     await sendMembershipActivatedEmails({
       memberEmail: session.email,
       memberName: `${session.profile.first_name ?? ''} ${session.profile.last_name ?? ''}`.trim(),
-      tierLabel: tierLabel[m.tier] ?? m.tier,
+      tierLabel:
+        (m.membership_types as { name?: string } | null)?.name ?? tierLabel[m.tier] ?? m.tier,
       periodLabel,
       amountPence: m.amount_pence,
       method: settings.paymentProvider === 'simulated' ? 'card (simulated)' : 'card',

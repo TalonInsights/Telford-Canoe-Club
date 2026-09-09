@@ -27,9 +27,12 @@ export function SettingsForm({ initial }: { initial: SettingsInput }) {
   const [siteStatus, setSiteStatus] = useState(initial.siteStatus)
   const [siteStatusNote, setSiteStatusNote] = useState(initial.siteStatusNote ?? '')
   const [yearLabel, setYearLabel] = useState(initial.membershipYearLabel)
-  const [adult, setAdult] = useState(toPounds(initial.priceAdultPence))
-  const [junior, setJunior] = useState(toPounds(initial.priceJuniorPence))
-  const [family, setFamily] = useState(toPounds(initial.priceFamilyPence))
+  // Carried through untouched: prices are edited in the membership catalogue
+  // now, but the old columns are still written back as they were rather than
+  // being blanked by a save from this screen.
+  const adult = toPounds(initial.priceAdultPence)
+  const junior = toPounds(initial.priceJuniorPence)
+  const family = toPounds(initial.priceFamilyPence)
   const [bankNote, setBankNote] = useState(initial.bankPaymentNote)
   const [showUnconfirmed, setShowUnconfirmed] = useState(initial.showUnconfirmed)
   const [provider, setProvider] = useState(initial.paymentProvider)
@@ -92,17 +95,11 @@ export function SettingsForm({ initial }: { initial: SettingsInput }) {
               </SelectContent>
             </Select>
           </Field>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <Field label="Adult (£)" htmlFor="set-adult">
-              <Input id="set-adult" inputMode="decimal" value={adult} onChange={(e) => setAdult(e.target.value)} />
-            </Field>
-            <Field label="Junior (£)" htmlFor="set-junior">
-              <Input id="set-junior" inputMode="decimal" value={junior} onChange={(e) => setJunior(e.target.value)} />
-            </Field>
-            <Field label="Family (£)" htmlFor="set-family">
-              <Input id="set-family" inputMode="decimal" value={family} onChange={(e) => setFamily(e.target.value)} />
-            </Field>
-          </div>
+          <p className="rounded-lg border border-stone bg-foam p-3 text-sm text-ink-muted">
+            Prices moved. What the club charges, and how long each membership lasts, is now
+            managed under <span className="font-medium text-ink">Memberships on sale</span>, so you
+            can add something like a half year without a developer.
+          </p>
           <Field
             label="Bank payment instructions"
             htmlFor="set-bank"

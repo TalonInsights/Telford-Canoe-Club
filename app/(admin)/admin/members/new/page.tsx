@@ -1,14 +1,14 @@
 import type { Metadata } from 'next'
 
 import { AddMembershipForm } from '@/components/admin/add-membership-form'
-import { getClubSettings } from '@/lib/queries/settings'
+import { getMembershipTypes } from '@/lib/queries/membership-types'
 import { createClient } from '@/lib/supabase/server'
 
 export const metadata: Metadata = { title: 'Add a membership' }
 
 export default async function AdminAddMembershipPage() {
   const supabase = await createClient()
-  const [{ data: profiles }, { data: periods }, settings] = await Promise.all([
+  const [{ data: profiles }, { data: periods }, types] = await Promise.all([
     supabase
       .from('profiles')
       .select('user_id, first_name, last_name, email, role')
@@ -18,7 +18,7 @@ export default async function AdminAddMembershipPage() {
       .from('membership_periods')
       .select('id, label, is_current')
       .order('starts_on', { ascending: false }),
-    getClubSettings(),
+    getMembershipTypes(),
   ])
 
   return (
@@ -38,11 +38,12 @@ export default async function AdminAddMembershipPage() {
             role: p.role,
           }))}
           periods={(periods ?? []).map((p) => ({ id: p.id, label: p.label, isCurrent: p.is_current }))}
-          prices={{
-            adult: settings.tiers[0]?.pricePence ?? 2500,
-            junior: settings.tiers[1]?.pricePence ?? 1500,
-            family: settings.tiers[2]?.pricePence ?? 4000,
-          }}
+          types={types.map((t) => ({
+            id: t.id,
+            name: t.name,
+            pricePence: t.pricePence,
+            coversFamily: t.coversFamily,
+          }))}
         />
       </div>
     </>

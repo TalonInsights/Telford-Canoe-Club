@@ -999,11 +999,58 @@ export type Database = {
         }
         Relationships: []
       }
+      membership_types: {
+        Row: {
+          covers_family: boolean
+          created_at: string
+          description: string | null
+          duration_months: number | null
+          id: string
+          is_active: boolean
+          legacy_tier: Database["public"]["Enums"]["membership_tier"]
+          name: string
+          price_pence: number
+          slug: string
+          sort_order: number
+          updated_at: string | null
+        }
+        Insert: {
+          covers_family?: boolean
+          created_at?: string
+          description?: string | null
+          duration_months?: number | null
+          id?: string
+          is_active?: boolean
+          legacy_tier?: Database["public"]["Enums"]["membership_tier"]
+          name: string
+          price_pence: number
+          slug: string
+          sort_order?: number
+          updated_at?: string | null
+        }
+        Update: {
+          covers_family?: boolean
+          created_at?: string
+          description?: string | null
+          duration_months?: number | null
+          id?: string
+          is_active?: boolean
+          legacy_tier?: Database["public"]["Enums"]["membership_tier"]
+          name?: string
+          price_pence?: number
+          slug?: string
+          sort_order?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       memberships: {
         Row: {
           amount_pence: number
           created_at: string
+          ends_on: string | null
           id: string
+          membership_type_id: string | null
           notes: string | null
           paid_at: string | null
           paypal_capture_id: string | null
@@ -1019,7 +1066,9 @@ export type Database = {
         Insert: {
           amount_pence: number
           created_at?: string
+          ends_on?: string | null
           id?: string
+          membership_type_id?: string | null
           notes?: string | null
           paid_at?: string | null
           paypal_capture_id?: string | null
@@ -1035,7 +1084,9 @@ export type Database = {
         Update: {
           amount_pence?: number
           created_at?: string
+          ends_on?: string | null
           id?: string
+          membership_type_id?: string | null
           notes?: string | null
           paid_at?: string | null
           paypal_capture_id?: string | null
@@ -1049,6 +1100,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "memberships_membership_type_id_fkey"
+            columns: ["membership_type_id"]
+            isOneToOne: false
+            referencedRelation: "membership_types"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "memberships_period_id_fkey"
             columns: ["period_id"]
@@ -1734,6 +1792,19 @@ export type Database = {
         }
         Returns: string
       }
+      admin_create_membership_type: {
+        Args: {
+          p_activate?: boolean
+          p_amount_pence?: number
+          p_family?: Json
+          p_note?: string
+          p_period_id?: string
+          p_source: Database["public"]["Enums"]["payment_source"]
+          p_type_id: string
+          p_user_id: string
+        }
+        Returns: string
+      }
       admin_extend_membership: {
         Args: { p_membership_id: string; p_note?: string }
         Returns: string
@@ -1829,6 +1900,10 @@ export type Database = {
           p_period_id?: string
           p_tier: Database["public"]["Enums"]["membership_tier"]
         }
+        Returns: string
+      }
+      request_membership_type: {
+        Args: { p_family?: Json; p_period_id?: string; p_type_id: string }
         Returns: string
       }
       run_expiry_sweep: { Args: never; Returns: Json }

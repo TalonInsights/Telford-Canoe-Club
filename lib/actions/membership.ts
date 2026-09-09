@@ -18,17 +18,16 @@ const sourceLabel: Record<string, string> = {
   imported: 'imported record',
 }
 
-const tierSchema = z.enum(['adult', 'junior', 'family'])
 
 const requestSchema = z.object({
-  tier: tierSchema,
+  typeId: z.uuid(),
   family: z.array(familyMemberSchema).max(12).default([]),
   periodId: z.uuid().optional(),
 })
 
 /** Self-service: creates/updates a PENDING membership; committee activates on payment. */
 export async function requestMembershipAction(input: {
-  tier: 'adult' | 'junior' | 'family'
+  typeId: string
   family?: FamilyMemberInput[]
   /** Renewal: request NEXT period while this year's membership is active. */
   periodId?: string
@@ -37,15 +36,15 @@ export async function requestMembershipAction(input: {
   const session = await getSession()
   if (!session) return { ok: false, message: 'Log in first, then choose your membership.' }
   const parsed = requestSchema.safeParse({
-    tier: input.tier,
+    typeId: input.typeId,
     family: input.family ?? [],
     periodId: input.periodId,
   })
-  if (!parsed.success) return { ok: false, message: 'Choose a valid membership tier' }
+  if (!parsed.success) return { ok: false, message: 'Choose a membership' }
 
   const supabase = await createClient()
-  const { error } = await supabase.rpc('request_membership', {
-    p_tier: parsed.data.tier,
+  const { error } = await supabase.rpc('request_membership_type', {
+    p_type_id: parsed.data.typeId,
     p_family: familyPayload(parsed.data.family),
     ...(parsed.data.periodId ? { p_period_id: parsed.data.periodId } : {}),
   })
@@ -233,7 +232,7 @@ export async function extendMembershipAction(
 
 const adminCreateSchema = z.object({
   userId: z.uuid(),
-  tier: tierSchema,
+  typeId: z.uuid(),
   periodId: z.uuid(),
   source: z.enum(['manual_bank', 'manual_cash', 'complimentary', 'imported']),
   amountPence: z.number().int().min(0).max(100_000).optional(),
@@ -245,7 +244,7 @@ const adminCreateSchema = z.object({
 /** P9-07 — grant a membership to an existing account (walk-up cash, imports). */
 export async function adminCreateMembershipAction(input: {
   userId: string
-  tier: 'adult' | 'junior' | 'family'
+  typeId: string
   periodId: string
   source: 'manual_bank' | 'manual_cash' | 'complimentary' | 'imported'
   amountPence?: number
@@ -262,9 +261,9 @@ export async function adminCreateMembershipAction(input: {
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message ?? 'Check the form' }
 
   const supabase = await createClient()
-  const { error } = await supabase.rpc('admin_create_membership', {
+  const { error } = await supabase.rpc('admin_create_membership_type', {
     p_user_id: parsed.data.userId,
-    p_tier: parsed.data.tier,
+    p_type_id: parsed.data.typeId,
     p_period_id: parsed.data.periodId,
     p_source: parsed.data.source,
     ...(parsed.data.amountPence !== undefined ? { p_amount_pence: parsed.data.amountPence } : {}),

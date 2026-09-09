@@ -23,7 +23,6 @@ import { cn } from '@/lib/utils'
 
 type Person = { userId: string; name: string; email: string; role: string }
 type Period = { id: string; label: string; isCurrent: boolean }
-type TierKey = 'adult' | 'junior' | 'family'
 type Source = 'manual_cash' | 'manual_bank' | 'complimentary' | 'imported'
 
 const emptyMember = (): FamilyMemberInput => ({
@@ -36,16 +35,16 @@ const emptyMember = (): FamilyMemberInput => ({
 export function AddMembershipForm({
   people,
   periods,
-  prices,
+  types,
 }: {
   people: Person[]
   periods: Period[]
-  prices: Record<TierKey, number>
+  types: { id: string; name: string; pricePence: number; coversFamily: boolean }[]
 }) {
   const router = useRouter()
   const [query, setQuery] = useState('')
   const [userId, setUserId] = useState<string | null>(null)
-  const [tier, setTier] = useState<TierKey>('adult')
+  const [typeId, setTypeId] = useState<string>(types[0]?.id ?? '')
   const [periodId, setPeriodId] = useState(periods.find((p) => p.isCurrent)?.id ?? periods[0]?.id ?? '')
   const [source, setSource] = useState<Source>('manual_cash')
   const [amount, setAmount] = useState<string>('')
@@ -65,7 +64,8 @@ export function AddMembershipForm({
   }, [people, query])
 
   const selected = people.find((p) => p.userId === userId) ?? null
-  const defaultAmount = source === 'complimentary' ? 0 : prices[tier]
+  const selectedType = types.find((t) => t.id === typeId)
+  const defaultAmount = source === 'complimentary' ? 0 : (selectedType?.pricePence ?? 0)
   const amountPence = amount.trim() === '' ? defaultAmount : Math.round((Number(amount) || 0) * 100)
 
   const submit = () =>
@@ -73,13 +73,13 @@ export function AddMembershipForm({
       if (!userId || !periodId) return
       const result = await adminCreateMembershipAction({
         userId,
-        tier,
+        typeId,
         periodId,
         source,
         amountPence: amount.trim() === '' && source !== 'complimentary' ? undefined : amountPence,
         activate,
         note: note || undefined,
-        family: tier === 'family' ? family.filter((m) => m.name.trim()) : [],
+        family: selectedType?.coversFamily ? family.filter((m) => m.name.trim()) : [],
       })
       if (result.ok) {
         toast.success(result.message ?? 'Membership created')
@@ -144,15 +144,17 @@ export function AddMembershipForm({
       <section className="rounded-xl border border-stone bg-card p-5">
         <h2 className="text-lg">The membership</h2>
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
-          <Field label="Tier" htmlFor="am-tier">
-            <Select value={tier} onValueChange={(v) => setTier(v as TierKey)}>
-              <SelectTrigger id="am-tier" className="w-full">
+          <Field label="Membership" htmlFor="am-type">
+            <Select value={typeId} onValueChange={setTypeId}>
+              <SelectTrigger id="am-type" className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="adult">Adult</SelectItem>
-                <SelectItem value="junior">Junior</SelectItem>
-                <SelectItem value="family">Family</SelectItem>
+                {types.map((t) => (
+                  <SelectItem key={t.id} value={t.id}>
+                    {t.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </Field>
@@ -200,7 +202,7 @@ export function AddMembershipForm({
           </Field>
         </div>
 
-        {tier === 'family' && (
+        {selectedType?.coversFamily && (
           <div className="mt-4 rounded-lg border border-river/40 bg-foam p-4">
             <p className="text-sm font-medium">Everyone else at their address</p>
             <p className="mt-1 text-micro text-ink-muted">

@@ -34,17 +34,30 @@ export const getClubSettings = cache(async (): Promise<ClubSettings> => {
   const supabase = await createClient()
   const { data } = await supabase.from('club_settings').select('*').maybeSingle()
   if (!data) return seedFallback
+
+  // Prices live in the membership catalogue now (0028). The three columns on
+  // club_settings are left alone as the record of what they were when types
+  // were seeded from them, but nothing reads them any more.
+  const { data: types } = await supabase
+    .from('membership_types')
+    .select('name, price_pence')
+    .eq('is_active', true)
+    .order('sort_order', { ascending: true })
+
   return {
     siteStatus: data.site_status as 'open' | 'closed',
     siteStatusNote: data.site_status_note,
     membershipYearLabel: data.membership_year_label,
     showUnconfirmed: data.show_unconfirmed,
     levelBands: null,
-    tiers: [
-      { name: 'Adult', pricePence: data.price_adult_pence },
-      { name: 'Junior', pricePence: data.price_junior_pence },
-      { name: 'Family', pricePence: data.price_family_pence },
-    ],
+    tiers:
+      types && types.length > 0
+        ? types.map((t) => ({ name: t.name, pricePence: t.price_pence }))
+        : [
+            { name: 'Adult', pricePence: data.price_adult_pence },
+            { name: 'Junior', pricePence: data.price_junior_pence },
+            { name: 'Family', pricePence: data.price_family_pence },
+          ],
     bankPaymentNote: data.bank_payment_note,
     paymentProvider: (data.payment_provider ?? 'off') as PaymentMode,
     shopOpen: data.shop_open ?? true,

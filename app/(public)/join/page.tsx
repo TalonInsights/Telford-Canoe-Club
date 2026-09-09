@@ -11,6 +11,7 @@ import { PricingTiers } from '@/components/site/pricing-tiers'
 import { Button } from '@/components/ui/button'
 import { isOnlinePaymentOn } from '@/lib/payments/mode'
 import { getClubSettings } from '@/lib/queries/settings'
+import { durationLabel, getMembershipTypes } from '@/lib/queries/membership-types'
 import { IMAGES } from '@/lib/site-data'
 
 export const metadata: Metadata = {
@@ -22,8 +23,10 @@ export const metadata: Metadata = {
 export const revalidate = 900
 
 export default async function JoinPage() {
-  const settings = await getClubSettings()
-  const [adult, junior, family] = settings.tiers
+  // Read from the catalogue, never positionally: a new type the club adds
+  // appears here on its own, and switching one off simply removes a card
+  // rather than throwing on `undefined`.
+  const [settings, types] = await Promise.all([getClubSettings(), getMembershipTypes()])
   const onlineOn = isOnlinePaymentOn(settings.paymentProvider)
 
   return (
@@ -41,32 +44,19 @@ export default async function JoinPage() {
       >
         <PricingTiers
           yearNote={settings.membershipYearLabel}
-          tiers={[
-            {
-              name: 'Single adult',
-              pricePence: adult.pricePence,
-              description: 'For paddlers aged 18 and over.',
-              features: ['All club sessions', 'Club boats and kit while you learn', 'Members-only area and notices'],
-              href: '/register?tier=adult',
-              cta: 'Join as an adult',
-            },
-            {
-              name: 'Single junior',
-              pricePence: junior.pricePence,
-              description: 'Under-18 membership, with a parent or guardian on record.',
-              features: ['All junior-friendly sessions', 'Club boats and kit', 'Freestyle and coaching pathways'],
-              href: '/register?tier=junior',
-              cta: 'Join as a junior',
-            },
-            {
-              name: 'Family',
-              pricePence: family.pricePence,
-              description: 'For members residing at the same address.',
-              features: ['Everyone at your address covered', 'One renewal for the household', 'Best value for families'],
-              href: '/register?tier=family',
-              cta: 'Join as a family',
-            },
-          ]}
+          tiers={types.map((type) => ({
+            name: type.name,
+            pricePence: type.pricePence,
+            description: type.description ?? durationLabel(type),
+            features: [
+              durationLabel(type),
+              type.coversFamily ? 'Everyone at your address covered' : 'All club sessions',
+              'Club boats and kit while you find your feet',
+              'Members-only area and notices',
+            ],
+            href: '/register',
+            cta: `Join: ${type.name.toLowerCase()}`,
+          }))}
         />
       </Section>
       <Section tone="foam" title="How joining works">
