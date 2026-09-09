@@ -6,6 +6,8 @@ import { PageHero } from '@/components/layout/page-hero'
 import { Section } from '@/components/layout/section'
 import { Button } from '@/components/ui/button'
 import { formatDateShort, formatTime } from '@/lib/format'
+import { BlocksView } from '@/components/site/blocks-view'
+import { getContentBlock } from '@/lib/queries/content'
 import { getClubSettings } from '@/lib/queries/settings'
 import { getRiverBands } from '@/lib/queries/river-bands'
 import { getRiverLevel } from '@/lib/river-level'
@@ -21,10 +23,11 @@ export const metadata: Metadata = {
 export const revalidate = 900
 
 export default async function RiverLevelsPage() {
-  const [level, bands, settings] = await Promise.all([
+  const [level, bands, settings, guidance] = await Promise.all([
     getRiverLevel(),
     getRiverBands(),
     getClubSettings(),
+    getContentBlock('river.guidance'),
   ])
 
   const cm = level ? metresToCm(level.levelMetres) : null
@@ -151,21 +154,14 @@ export default async function RiverLevelsPage() {
             </div>
           )}
 
-          <div className="mt-10 space-y-3 text-ink-muted">
-            <h2 className="text-xl text-ink">Reading the gauge</h2>
-            <p>
-              The nearest Environment Agency gauge is at Buildwas, a few miles upstream of
-              Jackfield, what passes the gauge reaches the rapid shortly after. Low water exposes
-              the rocks and slows the wave down; more flow builds the features and pushes harder.
-              The Severn responds slowly to rain, so a wet day rarely changes the level instantly,
-              but upstream reservoir releases (like the Clywedog) can add a useful top-up.
-            </p>
-            <p>
-              Bands are guidance from the committee, not a promise. If you are unsure whether it is
-              a good level for your ability, ask on a club night before committing, and remember the
-              site is used by competent paddlers at their own risk.
-            </p>
-          </div>
+          {guidance.length > 0 && (
+            <div className="mt-10">
+              <h2 className="text-xl">Reading the gauge</h2>
+              <div className="mt-2">
+                <BlocksView body={guidance} />
+              </div>
+            </div>
+          )}
 
           <div className="mt-10 flex flex-wrap gap-3">
             <Button asChild variant="secondary">

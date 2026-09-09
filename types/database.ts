@@ -174,6 +174,70 @@ export type Database = {
           },
         ]
       }
+      content_blocks: {
+        Row: {
+          body: Json
+          created_at: string
+          draft_body: Json | null
+          help: string | null
+          key: string
+          location: string
+          published_at: string | null
+          sort_order: number
+          title: string
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          body?: Json
+          created_at?: string
+          draft_body?: Json | null
+          help?: string | null
+          key: string
+          location: string
+          published_at?: string | null
+          sort_order?: number
+          title: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          body?: Json
+          created_at?: string
+          draft_body?: Json | null
+          help?: string | null
+          key?: string
+          location?: string
+          published_at?: string | null
+          sort_order?: number
+          title?: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_blocks_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "current_members"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "content_blocks_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "membership_history"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "content_blocks_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       documents: {
         Row: {
           category: string

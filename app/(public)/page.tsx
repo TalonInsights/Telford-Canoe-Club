@@ -11,6 +11,9 @@ import {
   WhatsOn,
 } from '@/components/home/sections'
 import { StatusStrip } from '@/components/home/status-strip'
+import { BlocksView } from '@/components/site/blocks-view'
+import { Container } from '@/components/layout/container'
+import { getContentBlock } from '@/lib/queries/content'
 import { eventImageUrl } from '@/lib/events/images'
 import { getUpcomingEvents } from '@/lib/queries/events'
 import { getClubSettings } from '@/lib/queries/settings'
@@ -22,6 +25,7 @@ export const revalidate = 900
 export default async function HomePage() {
   const [settings, rawEvents] = await Promise.all([getClubSettings(), getUpcomingEvents(3)])
   const facilities = getFacilities()
+  const notice = await getContentBlock('home.notice')
   const sports = getSportCards()
   const posts = getLatestPosts(3)
   const events = rawEvents.map((e) => ({
@@ -40,6 +44,13 @@ export default async function HomePage() {
     <>
       <Hero />
       <StatusStrip />
+      {notice.length > 0 && (
+        <div className="border-b border-stone bg-foam">
+          <Container className="py-6">
+            <BlocksView body={notice} tone="ink" />
+          </Container>
+        </div>
+      )}
       <Anomaly />
       <InsideTheGate facilities={facilities} settings={settings} />
       <TheRapid />

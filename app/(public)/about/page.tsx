@@ -9,6 +9,8 @@ import { CtaBand } from '@/components/site/cta-band'
 import { Timeline } from '@/components/site/timeline'
 import { Button } from '@/components/ui/button'
 import { IMAGES } from '@/lib/site-data'
+import { BlocksView } from '@/components/site/blocks-view'
+import { getContentBlock } from '@/lib/queries/content'
 
 export const metadata: Metadata = {
   title: 'About the club',
@@ -16,7 +18,9 @@ export const metadata: Metadata = {
     'Telford Canoe Club is a forward-thinking paddlesports club on the River Severn: qualified coaches, permanent facilities at Jackfield Rapids, and sixty years of history.',
 }
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const intro = await getContentBlock('about.intro')
+
   return (
     <>
       <PageHero
@@ -38,26 +42,13 @@ export default function AboutPage() {
             />
           }
         >
-          <p>
-            Telford Canoe Club is a forward-thinking paddlesports club based in Telford. We run on
-            an ethos of encouraging paddlesports, whitewater kayaking and canoeing, freestyle,
-            standup paddleboarding and more, to the widest possible range of participants. Our
-            view is simple: there&apos;s nothing more mentally stimulating than time on the water
-            in a natural environment, developing new skills and enjoying the outdoors.
-          </p>
-          <p className="mt-4">
-            Whether you&apos;re aiming to push yourself on white water, throw the latest freestyle
-            tricks, or just want a relaxing paddle along a river or lake, the club can cater to
-            you. Run by experienced, qualified coaches and guides, we&apos;ll take you safely from
-            beginner onwards in an enthusiastic, safe and encouraging environment.
-          </p>
-          <p className="mt-4 text-ink-muted">
-            With permanent facilities and parking right next to the Severn&apos;s Jackfield
-            rapids, we run regular club nights and social BBQs through the long summer evenings,
-            weekend trips to the River Dee and venues like Cardiff International White Water, and
-            when the autumn rains open up the UK whitewater season, trips to rivers around the
-            country, weather and water levels depending.
-          </p>
+          {intro.length > 0 ? (
+            <BlocksView body={intro} tone="ink" />
+          ) : (
+            <p className="text-ink-muted">
+              The committee has not written this section yet.
+            </p>
+          )}
         </Split75>
       </Section>
       <Section

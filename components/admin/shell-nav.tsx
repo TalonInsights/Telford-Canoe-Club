@@ -19,11 +19,13 @@ import {
   Home,
   IdCard,
   Megaphone,
+  PencilLine,
   Settings2,
   ShoppingBag,
   UserRound,
   UserRoundPlus,
   Users,
+  Waves,
   type LucideIcon,
 } from 'lucide-react'
 import { useState } from 'react'
@@ -48,6 +50,8 @@ const ICONS: Record<string, LucideIcon> = {
   clipboard: ClipboardList,
   history: History,
   bag: ShoppingBag,
+  pencil: PencilLine,
+  waves: Waves,
   settings: Settings2,
 }
 

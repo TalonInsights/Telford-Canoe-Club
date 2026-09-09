@@ -14,7 +14,7 @@ whole rather than eight half-built things landing together.
 | 4 | Farson webcam link at Atcham | 0024 |Done |
 | 6 | Shop item visibility + shop open/closed | 0024 |Done |
 | 7 | Notice-only events | 0024 |Done |
-| 5 | Editable page content blocks | 0025 | |
+| 5 | Editable page content blocks | 0027 |Done |
 | 8 | Member check-in | 0026 |Done, switched off |
 | 1 | Membership types as records | 0027 | |
 | 2 | Member email with segments | 0028 | |
