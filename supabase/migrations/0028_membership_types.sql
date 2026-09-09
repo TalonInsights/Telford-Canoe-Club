@@ -58,11 +58,11 @@ create policy membership_types_admin_write on membership_types
 insert into membership_types (slug, name, description, price_pence, duration_months, covers_family, legacy_tier, sort_order)
 select * from (values
   ('adult', 'Single adult', 'For paddlers aged 18 and over.',
-   (select price_adult_pence from club_settings where id), null, false, 'adult'::membership_tier, 1),
+   (select price_adult_pence from club_settings where id), null::int, false, 'adult'::membership_tier, 1),
   ('junior', 'Junior', 'For paddlers under 18. A parent or guardian completes the details.',
-   (select price_junior_pence from club_settings where id), null, false, 'junior'::membership_tier, 2),
+   (select price_junior_pence from club_settings where id), null::int, false, 'junior'::membership_tier, 2),
   ('family', 'Family', 'Everyone at one address, whatever they paddle.',
-   (select price_family_pence from club_settings where id), null, true, 'family'::membership_tier, 3)
+   (select price_family_pence from club_settings where id), null::int, true, 'family'::membership_tier, 3)
 ) as seed(slug, name, description, price_pence, duration_months, covers_family, legacy_tier, sort_order)
 where not exists (select 1 from membership_types);
 
