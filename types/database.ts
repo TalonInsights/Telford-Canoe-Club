@@ -334,6 +334,7 @@ export type Database = {
           resend_batch_ids: string[] | null
           scheduled_for: string | null
           segment_id: string | null
+          segment_key: string | null
           segment_snapshot: Json | null
           sent_at: string | null
           sent_by: string | null
@@ -350,6 +351,7 @@ export type Database = {
           resend_batch_ids?: string[] | null
           scheduled_for?: string | null
           segment_id?: string | null
+          segment_key?: string | null
           segment_snapshot?: Json | null
           sent_at?: string | null
           sent_by?: string | null
@@ -366,6 +368,7 @@ export type Database = {
           resend_batch_ids?: string[] | null
           scheduled_for?: string | null
           segment_id?: string | null
+          segment_key?: string | null
           segment_snapshot?: Json | null
           sent_at?: string | null
           sent_by?: string | null
@@ -1592,6 +1595,7 @@ export type Database = {
           postcode: string | null
           role: Database["public"]["Enums"]["app_role"]
           town: string | null
+          unsubscribe_token: string
           updated_at: string | null
           user_id: string
         }
@@ -1618,6 +1622,7 @@ export type Database = {
           postcode?: string | null
           role?: Database["public"]["Enums"]["app_role"]
           town?: string | null
+          unsubscribe_token?: string
           updated_at?: string | null
           user_id: string
         }
@@ -1644,6 +1649,7 @@ export type Database = {
           postcode?: string | null
           role?: Database["public"]["Enums"]["app_role"]
           town?: string | null
+          unsubscribe_token?: string
           updated_at?: string | null
           user_id?: string
         }
@@ -1841,6 +1847,14 @@ export type Database = {
         Args: { p_capture_ref: string; p_order_ref: string }
         Returns: string
       }
+      email_segment_recipients: {
+        Args: { p_segment: string }
+        Returns: {
+          email: string
+          first_name: string
+          user_id: string
+        }[]
+      }
       event_attendance: {
         Args: { p_event_id: string }
         Returns: {
@@ -1914,6 +1928,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      unsubscribe_by_token: { Args: { p_token: string }; Returns: Json }
     }
     Enums: {
       app_role: "registered" | "member" | "committee" | "admin"

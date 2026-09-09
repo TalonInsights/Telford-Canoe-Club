@@ -17,7 +17,7 @@ whole rather than eight half-built things landing together.
 | 5 | Editable page content blocks | 0027 |Done |
 | 8 | Member check-in | 0026 |Done, switched off |
 | 1 | Membership types as records | 0028 |Done |
-| 2 | Member email with segments | 0028 | |
+| 2 | Member email with segments | 0029 |Done |
 
 ## Decisions taken before writing code
 
