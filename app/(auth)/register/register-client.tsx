@@ -7,6 +7,12 @@ import { toast } from 'sonner'
 import { signUpAction } from '@/lib/actions/auth'
 import { SignUpForm } from '@/components/site/auth-forms'
 
+/**
+ * Where a new account goes next depends on whether it is usable straight away.
+ * The action reports that from what the auth service actually did, so this
+ * screen is correct whether or not the club has email confirmation switched
+ * on, and never tells somebody to check an inbox that will stay empty.
+ */
 export function RegisterClient() {
   const router = useRouter()
   const [done, setDone] = useState<string | null>(null)
@@ -24,12 +30,17 @@ export function RegisterClient() {
     <SignUpForm
       onSubmit={async (values) => {
         const result = await signUpAction(values)
-        if (result.ok) {
-          setDone(result.message ?? 'Check your email to verify your account.')
-          toast.success('Account created')
-          router.prefetch('/welcome')
-        } else {
+        if (!result.ok) {
           toast.error(result.message)
+          return
+        }
+        toast.success('Account created')
+        if (result.signedIn) {
+          // Already signed in, so carry straight on to choosing a membership.
+          router.push('/welcome')
+          router.refresh()
+        } else {
+          setDone(result.message ?? 'Check your email to verify your account.')
         }
       }}
     />

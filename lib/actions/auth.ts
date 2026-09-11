@@ -19,7 +19,18 @@ function siteUrl(): string {
   return process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3030'
 }
 
-export async function signUpAction(values: SignUpValues): Promise<ActionResult> {
+/**
+ * Whether the new account is usable immediately, or is waiting on an email.
+ *
+ * This is read from what GoTrue actually returns rather than hard-coded:
+ * `signUp` hands back a session when the project auto-confirms, and null when
+ * it wants the address verified first. So when the club's email is properly
+ * set up and confirmation goes back on, this flow follows it with no code
+ * change, and the copy stops promising something that does not happen.
+ */
+export type SignUpResult = ActionResult & { signedIn?: boolean }
+
+export async function signUpAction(values: SignUpValues): Promise<SignUpResult> {
   if (!isSupabaseConfigured()) return { ok: false, message: NOT_CONFIGURED_MESSAGE }
   const parsed = signUpSchema.safeParse(values)
   if (!parsed.success) return { ok: false, message: 'Check the form and try again' }
@@ -55,10 +66,13 @@ export async function signUpAction(values: SignUpValues): Promise<ActionResult> 
       .eq('user_id', data.user.id)
   }
 
+  const signedIn = Boolean(data.session)
   return {
     ok: true,
-    message:
-      'Account created, check your email and tap the verification link, then come back and log in.',
+    signedIn,
+    message: signedIn
+      ? 'Account created and you are signed in.'
+      : 'Account created, check your email and tap the verification link, then come back and log in.',
   }
 }
 
