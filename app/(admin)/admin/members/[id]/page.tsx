@@ -5,9 +5,11 @@ import { notFound } from 'next/navigation'
 import { CancelMembershipButton } from '@/components/admin/cancel-membership'
 import { ExtendMembershipButton, MarkRefundedButton } from '@/components/admin/membership-tools'
 import { RecordPaymentButton } from '@/components/admin/record-payment'
+import { RoleControl } from '@/components/admin/role-control'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { requireRole } from '@/lib/auth/guards'
+import { requireRole, roleAtLeast } from '@/lib/auth/guards'
+import { roleLabels } from '@/lib/auth/roles'
 import { formatDate, formatMoneyGBP } from '@/lib/format'
 import { getMemberDetail } from '@/lib/queries/admin'
 
@@ -25,11 +27,12 @@ function Row({ label, value }: { label: string; value: React.ReactNode }) {
 }
 
 export default async function MemberRecordPage({ params }: { params: Promise<{ id: string }> }) {
-  await requireRole('committee')
+  const session = await requireRole('committee')
   const { id } = await params
   const detail = await getMemberDetail(id)
   if (!detail) notFound()
   const { profile, memberships, bookings } = detail
+  const canSetRoles = roleAtLeast(session.profile.role, 'admin')
 
   return (
     <>
@@ -66,7 +69,7 @@ export default async function MemberRecordPage({ params }: { params: Promise<{ i
               label="Parent or guardian"
               value={[profile.guardian_name, profile.guardian_phone].filter(Boolean).join(' · ')}
             />
-            <Row label="Site role" value={profile.role} />
+            <Row label="Site role" value={roleLabels[profile.role]} />
             <Row label="Club news emails" value={profile.email_opt_in ? 'Opted in' : 'Opted out'} />
           </dl>
         </section>
@@ -151,6 +154,15 @@ export default async function MemberRecordPage({ params }: { params: Promise<{ i
             </ul>
           )}
         </section>
+
+        {canSetRoles && (
+          <RoleControl
+            userId={profile.user_id}
+            memberName={`${profile.first_name} ${profile.last_name}`.trim()}
+            currentRole={profile.role}
+            isSelf={profile.user_id === session.userId}
+          />
+        )}
 
         <section className="rounded-xl border border-stone bg-card p-5 lg:col-span-2">
           <h2 className="text-lg">Recent bookings</h2>

@@ -9,12 +9,20 @@ import { DataTable, exportCsv, selectionColumn } from '@/components/admin/data-t
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
+import { roleLabels, type AppRole } from '@/lib/auth/roles'
 import { formatDate } from '@/lib/format'
 import type { DirectoryRow } from '@/lib/queries/admin'
 import { cn } from '@/lib/utils'
 
 type StatusFilter = 'all' | 'active' | 'pending' | 'none'
 type TierFilter = 'all' | 'adult' | 'junior' | 'family'
+
+/** Only the roles that grant something worth spotting in a long list. */
+function RoleBadge({ role }: { role: string }) {
+  if (role === 'admin') return <Badge variant="signal">Admin</Badge>
+  if (role === 'committee') return <Badge variant="success">Committee</Badge>
+  return <span className="text-ink-muted">{roleLabels[role as AppRole] ?? role}</span>
+}
 
 function StatusBadge({ status }: { status: string }) {
   if (status === 'active')
@@ -42,6 +50,7 @@ export function MembersDirectoryTable({ rows }: { rows: DirectoryRow[] }) {
   const router = useRouter()
   const [status, setStatus] = useState<StatusFilter>('all')
   const [tier, setTier] = useState<TierFilter>('all')
+  const [runsTheClub, setRunsTheClub] = useState(false)
   const [search, setSearch] = useState('')
 
   const filtered = useMemo(() => {
@@ -49,10 +58,11 @@ export function MembersDirectoryTable({ rows }: { rows: DirectoryRow[] }) {
     return rows.filter((r) => {
       if (status !== 'all' && r.membership_status !== status) return false
       if (tier !== 'all' && r.tier !== tier) return false
+      if (runsTheClub && r.role !== 'committee' && r.role !== 'admin') return false
       if (q && !`${r.first_name} ${r.last_name} ${r.email}`.toLowerCase().includes(q)) return false
       return true
     })
-  }, [rows, status, tier, search])
+  }, [rows, status, tier, runsTheClub, search])
 
   const columns: ColumnDef<DirectoryRow>[] = useMemo(
     () => [
@@ -85,6 +95,11 @@ export function MembersDirectoryTable({ rows }: { rows: DirectoryRow[] }) {
           const t = getValue<string | null>()
           return t ? t.charAt(0).toUpperCase() + t.slice(1) : 'None'
         },
+      },
+      {
+        accessorKey: 'role',
+        header: 'Site role',
+        cell: ({ getValue }) => <RoleBadge role={getValue<string>()} />,
       },
       {
         accessorKey: 'bc_membership_number',
@@ -137,7 +152,7 @@ export function MembersDirectoryTable({ rows }: { rows: DirectoryRow[] }) {
     <DataTable<DirectoryRow>
       columns={columns}
       data={filtered}
-      countLabel={(n) => `${n} ${n === 1 ? 'person' : 'people'}${status !== 'all' || tier !== 'all' || search ? ' (filtered)' : ''}`}
+      countLabel={(n) => `${n} ${n === 1 ? 'person' : 'people'}${status !== 'all' || tier !== 'all' || runsTheClub || search ? ' (filtered)' : ''}`}
       onRowClick={(r) => router.push(`/admin/members/${r.user_id}`)}
       filters={
         <div className="flex flex-wrap items-center gap-2">
@@ -157,13 +172,16 @@ export function MembersDirectoryTable({ rows }: { rows: DirectoryRow[] }) {
           {chip('Adult', tier === 'adult', () => setTier(tier === 'adult' ? 'all' : 'adult'))}
           {chip('Junior', tier === 'junior', () => setTier(tier === 'junior' ? 'all' : 'junior'))}
           {chip('Family', tier === 'family', () => setTier(tier === 'family' ? 'all' : 'family'))}
-          {(status !== 'all' || tier !== 'all' || search) && (
+          <span aria-hidden="true" className="mx-1 h-5 w-px bg-stone" />
+          {chip('Runs the club', runsTheClub, () => setRunsTheClub(!runsTheClub))}
+          {(status !== 'all' || tier !== 'all' || runsTheClub || search) && (
             <Button
               variant="ghost"
               size="sm"
               onClick={() => {
                 setStatus('all')
                 setTier('all')
+                setRunsTheClub(false)
                 setSearch('')
               }}
             >
