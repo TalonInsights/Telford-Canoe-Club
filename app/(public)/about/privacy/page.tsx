@@ -51,6 +51,24 @@ export default function PrivacyPage() {
               tell who is a current member. This site never sees or stores card details.
             </p>
           </Block>
+          <Block heading="Keeping track of changes to your record">
+            <p>
+              You can edit your own details from your profile, and the committee can correct a
+              member&apos;s record when asked. Either way the site keeps a note of it, so the club
+              can see who changed what and when, and so a mistake can be found and put right.
+            </p>
+            <p>
+              That note records the date, who made the change and which fields were touched. For
+              your name, date of birth, Paddle UK number and whether you want club news it also
+              keeps the old value, because that is what makes a wrong change reversible.{' '}
+              <strong className="font-medium text-ink">
+                It does not copy your address, phone number, emergency contact or guardian details
+                into that record
+              </strong>{' '}
+              — only the fact that they changed. Only admins can read it, and nobody, including
+              them, can edit or delete an entry.
+            </p>
+          </Block>
           <Block heading="How long we keep it">
             <p>
               Membership records are kept for up to five years after your last membership ends,

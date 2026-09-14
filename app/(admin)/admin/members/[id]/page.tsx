@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { History } from 'lucide-react'
 
 import { CancelMembershipButton } from '@/components/admin/cancel-membership'
+import { MemberEditor } from '@/components/admin/member-editor'
 import { ExtendMembershipButton, MarkRefundedButton } from '@/components/admin/membership-tools'
 import { RecordPaymentButton } from '@/components/admin/record-payment'
 import { RoleControl } from '@/components/admin/role-control'
@@ -16,15 +18,6 @@ import { getMemberDetail } from '@/lib/queries/admin'
 export const metadata: Metadata = { title: 'Member record' }
 
 const tierLabel: Record<string, string> = { adult: 'Adult', junior: 'Junior', family: 'Family' }
-
-function Row({ label, value }: { label: string; value: React.ReactNode }) {
-  return (
-    <div className="flex flex-wrap justify-between gap-2 border-b border-stone py-2 text-sm last:border-b-0">
-      <dt className="text-ink-muted">{label}</dt>
-      <dd className="font-medium">{value || 'Not recorded'}</dd>
-    </div>
-  )
-}
 
 export default async function MemberRecordPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await requireRole('committee')
@@ -43,36 +36,42 @@ export default async function MemberRecordPage({ params }: { params: Promise<{ i
           </h1>
           <p className="text-sm text-ink-muted">{profile.email}</p>
         </div>
-        <Button asChild variant="outline" size="sm">
-          <Link href="/admin/members">Back to members</Link>
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          {canSetRoles && (
+            <Button asChild variant="outline" size="sm">
+              <Link href={`/admin/audit?person=${profile.user_id}`}>
+                <History aria-hidden="true" /> Their change log
+              </Link>
+            </Button>
+          )}
+          <Button asChild variant="outline" size="sm">
+            <Link href="/admin/members">Back to members</Link>
+          </Button>
+        </div>
       </div>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
-        <section className="rounded-xl border border-stone bg-card p-5">
-          <h2 className="text-lg">Profile</h2>
-          <dl className="mt-3">
-            <Row label="Phone" value={profile.phone} />
-            <Row
-              label="Address"
-              value={[profile.address_line1, profile.address_line2, profile.town, profile.postcode]
-                .filter(Boolean)
-                .join(', ')}
-            />
-            <Row label="Date of birth" value={profile.date_of_birth ? formatDate(profile.date_of_birth) : null} />
-            <Row label="Paddle UK number" value={profile.bc_membership_number} />
-            <Row
-              label="Emergency contact"
-              value={[profile.emergency_contact_name, profile.emergency_contact_phone].filter(Boolean).join(' · ')}
-            />
-            <Row
-              label="Parent or guardian"
-              value={[profile.guardian_name, profile.guardian_phone].filter(Boolean).join(' · ')}
-            />
-            <Row label="Site role" value={roleLabels[profile.role]} />
-            <Row label="Club news emails" value={profile.email_opt_in ? 'Opted in' : 'Opted out'} />
-          </dl>
-        </section>
+        <MemberEditor
+          userId={profile.user_id}
+          email={profile.email}
+          role={roleLabels[profile.role]}
+          initial={{
+            firstName: profile.first_name ?? '',
+            lastName: profile.last_name ?? '',
+            dateOfBirth: profile.date_of_birth ?? '',
+            phone: profile.phone ?? '',
+            addressLine1: profile.address_line1 ?? '',
+            addressLine2: profile.address_line2 ?? '',
+            town: profile.town ?? '',
+            postcode: profile.postcode ?? '',
+            bcNumber: profile.bc_membership_number ?? '',
+            emergencyContactName: profile.emergency_contact_name ?? '',
+            emergencyContactPhone: profile.emergency_contact_phone ?? '',
+            guardianName: profile.guardian_name ?? '',
+            guardianPhone: profile.guardian_phone ?? '',
+            emailOptIn: profile.email_opt_in,
+          }}
+        />
 
         <section className="rounded-xl border border-stone bg-card p-5">
           <h2 className="text-lg">Memberships</h2>

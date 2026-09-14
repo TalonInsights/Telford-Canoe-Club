@@ -280,43 +280,5 @@ export async function adminCreateMembershipAction(input: {
   }
 }
 
-const updateProfileSchema = z.object({
-  phone: z.string().trim().min(7, 'Enter a phone number').max(30),
-  addressLine1: z.string().trim().min(1, 'Enter your address').max(200),
-  addressLine2: z.string().trim().max(200).optional(),
-  town: z.string().trim().min(1, 'Enter your town').max(100),
-  postcode: z.string().trim().min(3, 'Enter your postcode').max(10),
-  bcNumber: z.string().trim().max(30).optional(),
-  emergencyContactName: z.string().trim().max(120).optional(),
-  emergencyContactPhone: z.string().trim().max(30).optional(),
-  emailOptIn: z.boolean(),
-})
-
-export async function updateProfileAction(
-  input: z.infer<typeof updateProfileSchema>
-): Promise<ActionResult> {
-  if (!isSupabaseConfigured()) return { ok: false, message: NOT_CONFIGURED_MESSAGE }
-  const session = await getSession()
-  if (!session) return { ok: false, message: 'Log in first' }
-  const parsed = updateProfileSchema.safeParse(input)
-  if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message ?? 'Check the form' }
-
-  const supabase = await createClient()
-  const { error } = await supabase
-    .from('profiles')
-    .update({
-      phone: parsed.data.phone,
-      address_line1: parsed.data.addressLine1,
-      address_line2: parsed.data.addressLine2 || null,
-      town: parsed.data.town,
-      postcode: parsed.data.postcode.toUpperCase(),
-      bc_membership_number: parsed.data.bcNumber || null,
-      emergency_contact_name: parsed.data.emergencyContactName || null,
-      emergency_contact_phone: parsed.data.emergencyContactPhone || null,
-      email_opt_in: parsed.data.emailOptIn,
-    })
-    .eq('user_id', session.userId)
-  if (error) return { ok: false, message: error.message }
-  revalidatePath('/members/profile')
-  return { ok: true, message: 'Profile saved' }
-}
+// Profile editing lives in lib/actions/profile.ts, where the member's own
+// edits and the committee's share one schema and one set of rules.
