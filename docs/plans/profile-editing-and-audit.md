@@ -23,8 +23,8 @@ Written before code per §0 rule 1.
 | # | Item | Where |
 | --- | --- | --- |
 | 1 | Log every profile change in the database, not the app | 0031 |
-| 2 | Members edit their own name, guardian details and a missing date of birth | members/profile |
-| 3 | The committee edits any member's record | admin/members/[id] |
+| 2 | Members edit their contact, emergency and guardian details | members/profile |
+| 3 | The committee edits a record; admins also the name and date of birth | admin/members/[id], 0032 |
 | 4 | An audit log you can actually search | admin/audit |
 | 5 | Say so in the privacy notice | about/privacy |
 
@@ -50,13 +50,33 @@ to check or undo a change. **Phone, address, emergency contact and guardian
 details record only that they changed.** Free-text internal and medical notes
 are not touched by this work at all.
 
-**D3. A member may set a missing date of birth, but not change one already
-recorded.**
-Date of birth decides `is_junior()`, which is what keeps under-18 accounts off
-the on-site board and drives safeguarding elsewhere. A member who can edit it
-freely can switch their own junior status off. Filling in a blank is completing
-your record; changing one that exists is a safeguarding-relevant fact and goes
-through the committee. Enforced in the trigger, not only in the form.
+**D3. Name and date of birth are fixed at sign-up and changed only by an
+admin.** *(Client ruling, 15 Sep, replacing the softer rule below.)*
+Date of birth decides `is_junior()`, which keeps under-18 accounts off the
+on-site board and drives safeguarding elsewhere; the name is what ties the
+membership record to a person. Neither is the member's to change, and neither
+is the committee's. Enforced in a trigger (0032) rather than only in the forms,
+so it holds for a screen nobody has written yet. A change made with nobody
+signed in is still allowed: an authenticated request always carries a uid, so a
+null one is the service key, and refusing it would leave no way to correct an
+imported record at all. It is recorded as `profile.updated_by_system`.
+
+**D3a. What that replaced, and why the first reading was wrong.**
+0031 shipped the softer rule below: a member could rename themselves freely and
+fill in a blank date of birth, and any committee member could change either.
+The reasoning was that people do change names, and a club that makes you email
+somebody about it ends up with a members list that is quietly wrong. The club's
+position is the opposite and is the better one here: these are the two fields a
+membership, a Paddle UK affiliation and a safeguarding decision are all keyed
+on, so a rare correction going through an admin is cheaper than an unnoticed
+change to any of them. Superseded text:
+
+> **A member may set a missing date of birth, but not change one already
+> recorded.** Date of birth decides `is_junior()`, which is what keeps under-18
+> accounts off the on-site board and drives safeguarding elsewhere. A member who
+> can edit it freely can switch their own junior status off. Filling in a blank
+> is completing your record; changing one that exists is a safeguarding-relevant
+> fact and goes through the committee.
 
 **D4. Email address stays uneditable, in both places, and the screens now say
 why.**
@@ -67,10 +87,13 @@ than the inconvenience it fixes. Changing it properly means the account holder
 confirming the new address, which needs the club's email working (D5). Flagged,
 not bodged.
 
-**D5. The committee edits records; only an admin changes roles.**
-Editing a member's details is ordinary club administration and matches the
-existing RLS, which already gives the committee write access to every profile
-except `role`. Roles keep their own admin-only panel from 0030.
+**D5. The committee edits records; only an admin changes roles, names and
+dates of birth.**
+Editing a member's contact details is ordinary club administration and matches
+the existing RLS, which already gives the committee write access to every
+profile except `role`. The three things that decide who somebody *is* on the
+site — their role, their name and their date of birth — sit above that line:
+roles in the admin-only panel from 0030, the other two under D3.
 
 **D6. The log is grouped by day, labelled in English, and filtered by
 category, person and date — not paginated 200 rows of JSON.**

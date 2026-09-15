@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 
-import { getSession, requireRole } from '@/lib/auth/guards'
+import { getSession, requireRole, roleAtLeast } from '@/lib/auth/guards'
 import { isJuniorDob, ukPostcode } from '@/lib/schemas/auth'
 import { isSupabaseConfigured, NOT_CONFIGURED_MESSAGE } from '@/lib/supabase/configured'
 import { createClient } from '@/lib/supabase/server'
@@ -17,22 +17,20 @@ import type { ActionResult } from '@/lib/actions/auth'
  * path through this file — or any future one — that can change a record
  * quietly.
  *
- * Two fields behave differently from the rest, and both are deliberate:
+ * Three fields are not ordinary details, and none of them is edited here by a
+ * member or by the committee:
  *
- * - **Date of birth** decides `is_junior()`, which keeps under-18 accounts off
- *   the on-site board. A member may fill in a blank one; changing one already
- *   recorded goes through the committee. Refused here and in the database.
- * - **Email address** is not editable anywhere. `profiles.email` mirrors the
- *   login address; writing it directly would leave somebody logging in with
- *   the old one while club email went to the new one.
+ * - **Name and date of birth** are fixed at sign-up and changed only by an
+ *   admin (0032). They are what ties a membership record to a person, and the
+ *   date decides junior status and so safeguarding.
+ * - **Email address** is not editable by anybody, including an admin.
+ *   `profiles.email` mirrors the login address; writing it directly would
+ *   leave somebody logging in with the old one while club email went to the
+ *   new one. Changing it properly needs the account holder to confirm the new
+ *   address, which waits on the club's email being set up.
  */
 
-const identity = {
-  firstName: z.string().trim().min(1, 'Enter a first name').max(80),
-  lastName: z.string().trim().min(1, 'Enter a last name').max(80),
-}
-
-const contact = {
+const contactFields = {
   phone: z.string().trim().min(7, 'Enter a phone number').max(30),
   addressLine1: z.string().trim().min(1, 'Enter the address').max(200),
   addressLine2: z.string().trim().max(200).optional(),
@@ -45,48 +43,42 @@ const contact = {
   guardianPhone: z.string().trim().max(30).optional(),
 }
 
-const dateOfBirth = z
-  .string()
-  .trim()
-  .refine((v) => {
-    if (!v) return true
-    const d = new Date(v)
-    return !Number.isNaN(+d) && d < new Date() && d > new Date('1900-01-01')
-  }, 'Enter a real date of birth')
-  .optional()
-
-/** Under-18s need a named adult, the same rule the join form applies. */
-function guardianIssue(dob: string | undefined, name?: string, phone?: string): string | null {
-  if (!dob || !isJuniorDob(dob)) return null
-  if (!name?.trim()) return "Under-18 records need a parent or guardian's name"
-  if (!phone?.trim()) return "Under-18 records need a parent or guardian's phone number"
-  return null
+const identityFields = {
+  firstName: z.string().trim().min(1, 'Enter a first name').max(80),
+  lastName: z.string().trim().min(1, 'Enter a last name').max(80),
+  dateOfBirth: z
+    .string()
+    .trim()
+    .refine((v) => {
+      if (!v) return true
+      const d = new Date(v)
+      return !Number.isNaN(+d) && d < new Date() && d > new Date('1900-01-01')
+    }, 'Enter a real date of birth')
+    .optional(),
 }
 
-const ownProfileSchema = z.object({
-  ...identity,
-  ...contact,
-  dateOfBirth,
-  emailOptIn: z.boolean(),
-})
+const ownProfileSchema = z.object({ ...contactFields, emailOptIn: z.boolean() })
 
 const memberProfileSchema = z.object({
   userId: z.uuid(),
-  ...identity,
-  ...contact,
-  dateOfBirth,
+  ...contactFields,
+  ...identityFields,
   emailOptIn: z.boolean(),
 })
 
 export type OwnProfileInput = z.input<typeof ownProfileSchema>
 export type MemberProfileInput = z.input<typeof memberProfileSchema>
 
-type Parsed = z.infer<typeof ownProfileSchema>
+/** Under-18 records need a named adult, the same rule the join form applies. */
+function guardianIssue(dob: string | null, name?: string, phone?: string): string | null {
+  if (!dob || !isJuniorDob(dob)) return null
+  if (!name?.trim()) return "Under-18 records need a parent or guardian's name"
+  if (!phone?.trim()) return "Under-18 records need a parent or guardian's phone number"
+  return null
+}
 
-function columns(v: Parsed) {
+function contactColumns(v: z.infer<typeof ownProfileSchema>) {
   return {
-    first_name: v.firstName,
-    last_name: v.lastName,
     phone: v.phone,
     address_line1: v.addressLine1,
     address_line2: v.addressLine2 || null,
@@ -100,7 +92,7 @@ function columns(v: Parsed) {
   }
 }
 
-/** A member editing their own record. */
+/** A member editing their own record. Never their name or date of birth. */
 export async function updateProfileAction(input: OwnProfileInput): Promise<ActionResult> {
   if (!isSupabaseConfigured()) return { ok: false, message: NOT_CONFIGURED_MESSAGE }
   const session = await getSession()
@@ -112,27 +104,17 @@ export async function updateProfileAction(input: OwnProfileInput): Promise<Actio
   }
   const v = parsed.data
 
-  const existingDob = session.profile.date_of_birth
-  const wantsDob = v.dateOfBirth || null
-  if (existingDob && wantsDob && wantsDob !== existingDob) {
-    return {
-      ok: false,
-      message: 'Ask the committee to change a date of birth that is already recorded',
-    }
-  }
-
-  const effectiveDob = existingDob ?? wantsDob
-  const guardian = guardianIssue(effectiveDob ?? undefined, v.guardianName, v.guardianPhone)
+  const guardian = guardianIssue(
+    session.profile.date_of_birth,
+    v.guardianName,
+    v.guardianPhone
+  )
   if (guardian) return { ok: false, message: guardian }
 
   const supabase = await createClient()
   const { error } = await supabase
     .from('profiles')
-    .update({
-      ...columns(v),
-      email_opt_in: v.emailOptIn,
-      ...(existingDob ? {} : { date_of_birth: wantsDob }),
-    })
+    .update({ ...contactColumns(v), email_opt_in: v.emailOptIn })
     .eq('user_id', session.userId)
 
   if (error) return { ok: false, message: error.message }
@@ -142,7 +124,8 @@ export async function updateProfileAction(input: OwnProfileInput): Promise<Actio
 }
 
 /**
- * The committee editing somebody's record.
+ * The committee editing somebody's record — and an admin, who can also change
+ * the name and date of birth the rest of us cannot.
  *
  * Club news consent can be turned off here but never on: honouring "stop
  * emailing me" is admin, recording a consent on somebody's behalf is not. Only
@@ -151,30 +134,44 @@ export async function updateProfileAction(input: OwnProfileInput): Promise<Actio
 export async function updateMemberProfileAction(
   input: MemberProfileInput
 ): Promise<ActionResult> {
-  await requireRole('committee')
+  const session = await requireRole('committee')
   const parsed = memberProfileSchema.safeParse(input)
   if (!parsed.success) {
     return { ok: false, message: parsed.error.issues[0]?.message ?? 'Check the form' }
   }
   const v = parsed.data
+  const isAdmin = roleAtLeast(session.profile.role, 'admin')
 
   const supabase = await createClient()
   const { data: before } = await supabase
     .from('profiles')
-    .select('email_opt_in, date_of_birth')
+    .select('email_opt_in, date_of_birth, first_name, last_name')
     .eq('user_id', v.userId)
     .maybeSingle()
   if (!before) return { ok: false, message: 'That member record no longer exists' }
 
-  const guardian = guardianIssue(v.dateOfBirth, v.guardianName, v.guardianPhone)
+  const wantsIdentityChange =
+    v.firstName !== (before.first_name ?? '') ||
+    v.lastName !== (before.last_name ?? '') ||
+    (v.dateOfBirth || null) !== before.date_of_birth
+
+  if (wantsIdentityChange && !isAdmin) {
+    return {
+      ok: false,
+      message: 'A name or date of birth is changed by an admin, everything else you can edit',
+    }
+  }
+
+  const dob = isAdmin ? v.dateOfBirth || null : before.date_of_birth
+  const guardian = guardianIssue(dob, v.guardianName, v.guardianPhone)
   if (guardian) return { ok: false, message: guardian }
 
   const { error } = await supabase
     .from('profiles')
     .update({
-      ...columns(v),
-      date_of_birth: v.dateOfBirth || null,
+      ...contactColumns(v),
       email_opt_in: before.email_opt_in ? v.emailOptIn : false,
+      ...(isAdmin ? { first_name: v.firstName, last_name: v.lastName, date_of_birth: dob } : {}),
     })
     .eq('user_id', v.userId)
 

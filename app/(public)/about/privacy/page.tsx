@@ -53,9 +53,12 @@ export default function PrivacyPage() {
           </Block>
           <Block heading="Keeping track of changes to your record">
             <p>
-              You can edit your own details from your profile, and the committee can correct a
-              member&apos;s record when asked. Either way the site keeps a note of it, so the club
-              can see who changed what and when, and so a mistake can be found and put right.
+              You can edit your contact details, emergency contact and guardian details from your
+              profile, and the committee can correct them for you. Your name and date of birth are
+              fixed when you join and are changed only by a club admin, because they are what ties
+              your membership to you and what tells the club whether you are under 18. Either way
+              the site keeps a note of the change, so the club can see who changed what and when,
+              and so a mistake can be found and put right.
             </p>
             <p>
               That note records the date, who made the change and which fields were touched. For
@@ -114,7 +117,7 @@ export default function PrivacyPage() {
           </Block>
           <Block heading="Your rights">
             <p>
-              You can see and edit your details any time from your profile. You can ask for an
+              You can see your details any time from your profile, and edit your contact and emergency details there. To correct your name or date of birth, email the committee. You can ask for an
               export of the personal data we hold about you, or ask us to delete it, email the
               committee and it will be actioned, except where the club is obliged to keep a
               record.

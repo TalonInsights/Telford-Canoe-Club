@@ -25,7 +25,8 @@ export default async function MemberRecordPage({ params }: { params: Promise<{ i
   const detail = await getMemberDetail(id)
   if (!detail) notFound()
   const { profile, memberships, bookings } = detail
-  const canSetRoles = roleAtLeast(session.profile.role, 'admin')
+  // Admins alone set roles and change a name or date of birth.
+  const isAdmin = roleAtLeast(session.profile.role, 'admin')
 
   return (
     <>
@@ -37,7 +38,7 @@ export default async function MemberRecordPage({ params }: { params: Promise<{ i
           <p className="text-sm text-ink-muted">{profile.email}</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          {canSetRoles && (
+          {isAdmin && (
             <Button asChild variant="outline" size="sm">
               <Link href={`/admin/audit?person=${profile.user_id}`}>
                 <History aria-hidden="true" /> Their change log
@@ -55,6 +56,7 @@ export default async function MemberRecordPage({ params }: { params: Promise<{ i
           userId={profile.user_id}
           email={profile.email}
           role={roleLabels[profile.role]}
+          canEditIdentity={isAdmin}
           initial={{
             firstName: profile.first_name ?? '',
             lastName: profile.last_name ?? '',
@@ -154,7 +156,7 @@ export default async function MemberRecordPage({ params }: { params: Promise<{ i
           )}
         </section>
 
-        {canSetRoles && (
+        {isAdmin && (
           <RoleControl
             userId={profile.user_id}
             memberName={`${profile.first_name} ${profile.last_name}`.trim()}

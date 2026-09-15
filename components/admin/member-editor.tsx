@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
-import { Pencil } from 'lucide-react'
+import { Lock, Pencil } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { updateMemberProfileAction } from '@/lib/actions/profile'
@@ -19,6 +19,11 @@ import { Input } from '@/components/ui/input'
  * common case and twelve input boxes is a worse way to read anything. Every
  * save is logged by the database trigger, named as a committee edit rather
  * than the member's own, so the two are told apart in the change log.
+ *
+ * Name and date of birth are shown to the committee and edited only by an
+ * admin. They are fixed at sign-up: they tie the record to a person, and the
+ * date decides junior status and therefore safeguarding. The database refuses
+ * it too, so this is a courtesy to the reader rather than the control.
  */
 
 export type MemberValues = {
@@ -52,11 +57,14 @@ export function MemberEditor({
   email,
   role,
   initial,
+  canEditIdentity,
 }: {
   userId: string
   email: string
   role: string
   initial: MemberValues
+  /** Admins only: name and date of birth are fixed at sign-up for everyone else. */
+  canEditIdentity: boolean
 }) {
   const router = useRouter()
   const [editing, setEditing] = useState(false)
@@ -133,28 +141,42 @@ export function MemberEditor({
       </p>
 
       <div className="mt-4 grid gap-4">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="First name" htmlFor="me-first">
-            <Input id="me-first" value={values.firstName} onChange={set('firstName')} />
-          </Field>
-          <Field label="Last name" htmlFor="me-last">
-            <Input id="me-last" value={values.lastName} onChange={set('lastName')} />
-          </Field>
-        </div>
-
-        <Field
-          label="Date of birth"
-          htmlFor="me-dob"
-          helper="Decides junior status, so only the committee can change it."
-        >
-          <Input
-            id="me-dob"
-            type="date"
-            className="max-w-52"
-            value={values.dateOfBirth}
-            onChange={set('dateOfBirth')}
-          />
-        </Field>
+        {canEditIdentity ? (
+          <>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="First name" htmlFor="me-first">
+                <Input id="me-first" value={values.firstName} onChange={set('firstName')} />
+              </Field>
+              <Field label="Last name" htmlFor="me-last">
+                <Input id="me-last" value={values.lastName} onChange={set('lastName')} />
+              </Field>
+            </div>
+            <Field
+              label="Date of birth"
+              htmlFor="me-dob"
+              helper="Decides junior status, so an admin changes it and nobody else."
+            >
+              <Input
+                id="me-dob"
+                type="date"
+                className="max-w-52"
+                value={values.dateOfBirth}
+                onChange={set('dateOfBirth')}
+              />
+            </Field>
+          </>
+        ) : (
+          <div className="rounded-lg border border-stone bg-foam/40 p-3">
+            <p className="flex items-center gap-2 text-sm font-medium">
+              <Lock aria-hidden="true" className="size-3.5 shrink-0 text-ink-muted" />
+              {[initial.firstName, initial.lastName].filter(Boolean).join(' ') || 'No name recorded'}
+              {initial.dateOfBirth && <span className="text-ink-muted">· born {formatDate(initial.dateOfBirth)}</span>}
+            </p>
+            <p className="mt-1 text-micro text-ink-muted">
+              Name and date of birth are fixed at sign-up. Ask an admin if either is wrong.
+            </p>
+          </div>
+        )}
 
         <Field label="Phone" htmlFor="me-phone">
           <Input id="me-phone" type="tel" value={values.phone} onChange={set('phone')} />

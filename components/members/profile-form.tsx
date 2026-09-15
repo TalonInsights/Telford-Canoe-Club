@@ -14,19 +14,14 @@ import { Input } from '@/components/ui/input'
 /**
  * A member keeping their own record right.
  *
- * Almost everything here is theirs to change, including their name — people
- * do change names, and a club that makes you email the committee about it
- * ends up with a members list that is quietly wrong.
- *
- * Two things are not theirs to change, and the form says why rather than
- * simply disabling a box: the email address is what they log in with, and a
- * date of birth already on file decides junior status.
+ * Their contact details, emergency contact and guardian details are theirs to
+ * change. Their name, date of birth and email address are not, and the form
+ * says why and who to ask rather than simply disabling a box — a greyed-out
+ * field with no explanation is how a member ends up emailing the committee to
+ * ask whether the site is broken.
  */
 
 export type ProfileValues = {
-  firstName: string
-  lastName: string
-  dateOfBirth: string
   phone: string
   addressLine1: string
   addressLine2: string
@@ -40,7 +35,7 @@ export type ProfileValues = {
   emailOptIn: boolean
 }
 
-function Locked({ label, value, why }: { label: string; value: string; why: string }) {
+function Locked({ label, value, why }: { label: string; value: string; why?: string }) {
   return (
     <div>
       <p className="text-sm font-medium">{label}</p>
@@ -48,20 +43,20 @@ function Locked({ label, value, why }: { label: string; value: string; why: stri
         <Lock aria-hidden="true" className="size-3.5 shrink-0 text-ink-muted" />
         <span>{value || 'Not recorded'}</span>
       </p>
-      <p className="mt-1 text-micro text-ink-muted">{why}</p>
+      {why && <p className="mt-1 text-micro text-ink-muted">{why}</p>}
     </div>
   )
 }
 
 export function ProfileForm({
   initial,
+  identity,
   email,
-  dobOnFile,
 }: {
   initial: ProfileValues
+  /** Shown, never edited: set at sign-up and changed only by an admin. */
+  identity: { name: string; dateOfBirth: string }
   email: string
-  /** A date of birth already recorded is committee-only from here on. */
-  dobOnFile: boolean
 }) {
   const router = useRouter()
   const [values, setValues] = useState(initial)
@@ -91,42 +86,15 @@ export function ProfileForm({
     >
       <section className="grid gap-4 rounded-xl border border-stone bg-card p-6">
         <h2 className="text-lg">You</h2>
+        <p className="text-sm text-ink-muted">
+          These three are set when you join and are not changed from here. If any of them is
+          wrong, email the committee and a club admin will put it right.
+        </p>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="First name" htmlFor="pf-first">
-            <Input id="pf-first" autoComplete="given-name" value={values.firstName} onChange={set('firstName')} />
-          </Field>
-          <Field label="Last name" htmlFor="pf-last">
-            <Input id="pf-last" autoComplete="family-name" value={values.lastName} onChange={set('lastName')} />
-          </Field>
+          <Locked label="Name" value={identity.name} />
+          <Locked label="Date of birth" value={identity.dateOfBirth} />
         </div>
-
-        <Locked
-          label="Email address"
-          value={email}
-          why="This is what you log in with, so it is changed by the committee rather than here."
-        />
-
-        {dobOnFile ? (
-          <Locked
-            label="Date of birth"
-            value={initial.dateOfBirth}
-            why="Already on file. Ask the committee if it is wrong — it decides junior status, so it is not changed from this page."
-          />
-        ) : (
-          <Field
-            label="Date of birth"
-            htmlFor="pf-dob"
-            helper="We do not have this yet. Once saved, the committee makes any later correction."
-          >
-            <Input
-              id="pf-dob"
-              type="date"
-              className="max-w-52"
-              value={values.dateOfBirth}
-              onChange={set('dateOfBirth')}
-            />
-          </Field>
-        )}
+        <Locked label="Email address" value={email} why="This is what you log in with." />
       </section>
 
       <section className="grid gap-4 rounded-xl border border-stone bg-card p-6">

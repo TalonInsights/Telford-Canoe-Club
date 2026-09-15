@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 
 import { getSession } from '@/lib/auth/guards'
+import { formatDate } from '@/lib/format'
 import { ProfileForm } from '@/components/members/profile-form'
 
 export const metadata: Metadata = { title: 'My profile' }
@@ -21,11 +22,11 @@ export default async function ProfilePage() {
       <div className="mt-6">
         <ProfileForm
           email={session.email}
-          dobOnFile={Boolean(p.date_of_birth)}
+          identity={{
+            name: `${p.first_name ?? ''} ${p.last_name ?? ''}`.trim(),
+            dateOfBirth: p.date_of_birth ? formatDate(p.date_of_birth) : '',
+          }}
           initial={{
-            firstName: p.first_name ?? '',
-            lastName: p.last_name ?? '',
-            dateOfBirth: p.date_of_birth ?? '',
             phone: p.phone ?? '',
             addressLine1: p.address_line1 ?? '',
             addressLine2: p.address_line2 ?? '',
