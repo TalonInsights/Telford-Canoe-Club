@@ -30,3 +30,17 @@ export function eventCoverPath(eventId: string, fileName: string): string {
 export function committeePhotoPath(roleId: string, fileName: string): string {
   return `committee/${roleId}/photo-${Date.now()}.${fileExtension(fileName)}`
 }
+
+/**
+ * Does a stored path look like one of ours for this role? The action uses it to
+ * refuse a caller-supplied path that points anywhere else.
+ *
+ * Built with `new RegExp`, so the backslashes are doubled on purpose. Writing
+ * this in a template literal with single backslashes turns `\d` into a literal
+ * "d" and `\.` into ".", so it stops matching the digits a real timestamp path
+ * carries and rejects every genuine upload — that was the "Unexpected photo
+ * path" bug. The companion test pins both the match and that failure shape.
+ */
+export function isCommitteePhotoPath(roleId: string, path: string): boolean {
+  return new RegExp(`^committee/${roleId}/photo-\\d+\\.[a-z0-9]{2,5}$`).test(path)
+}

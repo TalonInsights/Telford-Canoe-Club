@@ -116,7 +116,7 @@ export function SettingsForm({ initial }: { initial: SettingsInput }) {
           <Field
             label="Label shown on the join page"
             htmlFor="set-year"
-            helper='D2: once the committee settles when the year runs, put it here (e.g. "Runs April to March").'
+            helper='How the club describes the membership year, e.g. "Runs April to March". Leave it as a general label until the committee sets the dates.'
           >
             <Input id="set-year" value={yearLabel} onChange={(e) => setYearLabel(e.target.value)} />
           </Field>

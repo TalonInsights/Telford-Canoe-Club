@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 
 import { requireRole } from '@/lib/auth/guards'
+import { isCommitteePhotoPath } from '@/lib/storage/site-images'
 import { createClient } from '@/lib/supabase/server'
 import type { ActionResult } from '@/lib/actions/auth'
 
@@ -86,12 +87,10 @@ const photoSchema = z
     id: z.uuid(),
     photoPath: z.string().max(200).nullable(),
   })
-  .refine(
-    (v) =>
-      v.photoPath === null ||
-      new RegExp(`^committee/${v.id}/photo-\d+\.[a-z0-9]{2,5}$`).test(v.photoPath),
-    { message: 'Unexpected photo path', path: ['photoPath'] }
-  )
+  .refine((v) => v.photoPath === null || isCommitteePhotoPath(v.id, v.photoPath), {
+    message: 'Unexpected photo path',
+    path: ['photoPath'],
+  })
 
 export type CommitteeRolePhotoInput = z.infer<typeof photoSchema>
 
