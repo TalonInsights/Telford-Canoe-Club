@@ -68,6 +68,8 @@ const explicitLabels: Record<string, string> = {
   'merch.capture_declined': 'Shop payment declined',
   'payment.capture_declined': 'Payment declined',
   'booking.cancelled_by_club': 'Booking cancelled by the club',
+  'event.created': 'Event created',
+  'event.duplicated': 'Event duplicated',
   'committee.photo_updated': 'Committee photo added',
   'committee.photo_removed': 'Committee photo removed',
 }

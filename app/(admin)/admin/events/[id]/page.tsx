@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { ExternalLink } from 'lucide-react'
 
 import { AttendeesTable } from '@/components/admin/attendees-table'
+import { DuplicateEventButton } from '@/components/admin/duplicate-event-button'
 import { EventForm } from '@/components/admin/event-form'
 import { EventStatusButtons } from '@/components/admin/event-status-buttons'
 import { Badge } from '@/components/ui/badge'
@@ -68,6 +69,7 @@ export default async function AdminEventPage({
               View on the site <ExternalLink aria-hidden="true" className="size-3.5" />
             </Link>
           )}
+          <DuplicateEventButton eventId={event.id} />
           <EventStatusButtons eventId={event.id} status={event.status} title={event.title} confirmed={confirmed} />
         </div>
       </div>

@@ -171,6 +171,75 @@ export async function saveEventAction(
   }
 }
 
+/**
+ * Copy an event into a new draft (Simon 6.2). Everything carries over except
+ * the identity and the state: the copy gets a fresh id, a free slug, draft
+ * status, and the person duplicating it as organiser. The date comes straight
+ * across so the common case — "same event, new date" — is one field to change
+ * before publishing. The cover image is shared by path, no re-upload needed.
+ */
+export async function duplicateEventAction(id: string): Promise<SaveEventResult> {
+  const session = await requireRole('committee')
+  if (!z.uuid().safeParse(id).success) return { ok: false, message: 'Invalid event' }
+
+  const supabase = await createClient()
+  const { data: src } = await supabase.from('events').select('*').eq('id', id).maybeSingle()
+  if (!src) return { ok: false, message: 'Event not found' }
+
+  // A free slug: "<slug>-copy", then -copy-2, -copy-3… so a second duplicate
+  // never collides with the first.
+  const base = `${src.slug}-copy`.slice(0, 120)
+  let slug = base
+  for (let n = 2; n <= 50; n++) {
+    const { data: clash } = await supabase.from('events').select('id').eq('slug', slug).maybeSingle()
+    if (!clash) break
+    slug = `${base}-${n}`
+  }
+
+  const newId = crypto.randomUUID()
+  const { error } = await supabase.from('events').insert({
+    id: newId,
+    kind: src.kind,
+    on_site_note: src.on_site_note,
+    title: `${src.title} (copy)`,
+    slug,
+    category: src.category,
+    summary: src.summary,
+    body: src.body,
+    starts_at: src.starts_at,
+    ends_at: src.ends_at,
+    location_name: src.location_name,
+    location_address: src.location_address,
+    visibility: src.visibility,
+    water_level_dependent: src.water_level_dependent,
+    cost_pence: src.cost_pence,
+    cost_note: src.cost_note,
+    booking_enabled: src.booking_enabled,
+    capacity: src.capacity,
+    allow_waitlist: src.allow_waitlist,
+    members_only_booking: src.members_only_booking,
+    booking_opens_at: src.booking_opens_at,
+    booking_closes_at: src.booking_closes_at,
+    cover_image_path: src.cover_image_path,
+    status: 'draft',
+    organiser_user_id: session.userId,
+  })
+  if (error) return { ok: false, message: error.message }
+
+  await supabase.rpc('audit', {
+    p_action: 'event.duplicated',
+    p_entity: 'events',
+    p_entity_id: newId,
+    p_after: { title: `${src.title} (copy)`, copied_from: src.slug },
+  })
+  revalidatePath('/admin/events')
+  return {
+    ok: true,
+    id: newId,
+    message: 'Copied to a new draft — change the date, then publish when it is ready',
+  }
+}
+
 const statusSchema = z.object({
   id: z.uuid(),
   status: z.enum(['draft', 'published', 'cancelled']),

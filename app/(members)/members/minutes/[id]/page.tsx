@@ -6,6 +6,7 @@ import { ArrowLeft, Paperclip } from 'lucide-react'
 import { MinutesView } from '@/components/site/minutes-view'
 import { requireCurrentMember } from '@/lib/auth/guards'
 import { formatDate } from '@/lib/format'
+import { pruneBlocks } from '@/lib/minutes/blocks'
 import { getMinutesById } from '@/lib/queries/minutes'
 import { createClient } from '@/lib/supabase/server'
 
@@ -32,6 +33,12 @@ export default async function MemberMinutesDetailPage({
     attachmentUrl = data?.signedUrl ?? null
   }
 
+  // When the committee has uploaded a document and left the template blank, the
+  // minutes ARE that document — show it alone and hide the empty template, so
+  // nobody reads "not written up yet" under a set of minutes that plainly exist
+  // (Simon 8).
+  const written = pruneBlocks(minutes.body).length > 0
+
   return (
     <>
       <Link
@@ -46,12 +53,17 @@ export default async function MemberMinutesDetailPage({
         <p className="text-micro font-medium text-river">{formatDate(minutes.meeting_date)}</p>
         <h1 className="mt-1 text-2xl">{minutes.title}</h1>
 
-        <div className="mt-6">
-          <MinutesView body={minutes.body} />
-        </div>
+        {(written || !attachmentUrl) && (
+          <div className="mt-6">
+            <MinutesView body={minutes.body} />
+          </div>
+        )}
 
         {attachmentUrl && (
-          <p className="mt-8 border-t border-stone pt-4 text-sm">
+          <div className={written ? 'mt-8 border-t border-stone pt-4 text-sm' : 'mt-6 text-sm'}>
+            {!written && (
+              <p className="mb-3 text-ink-muted">These minutes are the uploaded document below.</p>
+            )}
             <a
               href={attachmentUrl}
               target="_blank"
@@ -61,7 +73,7 @@ export default async function MemberMinutesDetailPage({
               <Paperclip aria-hidden="true" className="size-4" />
               {minutes.attachment_name ?? 'Signed copy'}
             </a>
-          </p>
+          </div>
         )}
       </article>
     </>
