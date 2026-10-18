@@ -126,24 +126,33 @@ export function SettingsForm({ initial }: { initial: SettingsInput }) {
       <section className="rounded-xl border border-stone bg-card p-5">
         <h2 className="text-lg">Site</h2>
         <div className="mt-4 grid gap-4">
-          <Field label="Site status" htmlFor="set-status" helper="Closed shows the banner across the public site.">
+          <Field label="Site status" htmlFor="set-status" helper="Amber and closed both show on the home status strip; amber stays open, closed reads as not paddling.">
             <Select value={siteStatus} onValueChange={(v) => setSiteStatus(v as typeof siteStatus)}>
               <SelectTrigger id="set-status" className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="open">Open, paddling as usual</SelectItem>
+                <SelectItem value="amber">Open, with a notice (e.g. road diversion)</SelectItem>
                 <SelectItem value="closed">Closed, show a notice</SelectItem>
               </SelectContent>
             </Select>
           </Field>
-          {siteStatus === 'closed' && (
-            <Field label="Status note" htmlFor="set-status-note" optional>
+          {siteStatus !== 'open' && (
+            <Field
+              label="Status note"
+              htmlFor="set-status-note"
+              optional={siteStatus === 'closed'}
+            >
               <Input
                 id="set-status-note"
                 value={siteStatusNote}
                 onChange={(e) => setSiteStatusNote(e.target.value)}
-                placeholder="e.g. River in flood, sessions off this week"
+                placeholder={
+                  siteStatus === 'amber'
+                    ? 'e.g. Road diversion in place'
+                    : 'e.g. River in flood, sessions off this week'
+                }
               />
             </Field>
           )}

@@ -51,8 +51,8 @@ export function Anomaly() {
         <p>
           The Severn runs broad and quiet through most of Shropshire, then squeezes into the
           Ironbridge gorge and breaks into white water at Jackfield. That accident of geography
-          gives a landlocked county something almost no club can offer: a paddleable rapid its
-          members can call their own, gate, bank and car park included.
+          gives a landlocked county something almost no club can offer: a year round paddleable
+          rapid its members can call their own, with car parking and toilets included.
         </p>
         <p className="mt-4 text-ink-muted">
           Telford Canoe Club has paddled this stretch since the 1960s and has held the lease at
@@ -145,7 +145,7 @@ export function PaddleYourWay({ sports }: { sports: Sport[] }) {
       tone="white"
       kicker="Disciplines"
       title="Paddle your way"
-      intro="Three ways onto the water, one membership, club boats and kit included while you find your feet."
+      intro="However you want to paddle, one membership gives you year round access, club boats and kit available while you find your feet at club events."
     >
       <FullGrid maxColumns={3}>
         {sports.map((s) => (

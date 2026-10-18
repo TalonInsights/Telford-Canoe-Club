@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Car, DoorOpen, MapPin, Waves } from 'lucide-react'
+import { Beer, Car, DoorOpen, MapPin, Tent, Waves } from 'lucide-react'
 
 import { FullGrid, Split75 } from '@/components/layout/grids'
 import { PageHero } from '@/components/layout/page-hero'
@@ -91,6 +91,18 @@ export default function VenuePage() {
               icon: Waves,
               title: 'The water',
               body: 'A natural rapid whose character changes with the level, check before you travel.',
+            },
+            {
+              icon: Tent,
+              title: 'Camping',
+              body: 'For authorised events only.',
+            },
+            {
+              // Body ends cleanly at "food" — Simon's message was cut off there;
+              // the full sentence is still to come (agm-launch.md, needs-Simon 1).
+              icon: Beer,
+              title: 'The Black Swan pub',
+              body: 'On the opposite bank of the river, overlooking the rapids, perfect for post-paddle refreshment and food.',
             },
           ].map((f) => (
             <FeatureCard key={f.title} icon={f.icon} title={f.title} body={f.body} />

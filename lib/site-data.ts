@@ -8,7 +8,7 @@
  */
 
 export type SiteSettings = {
-  siteStatus: 'open' | 'closed'
+  siteStatus: 'open' | 'amber' | 'closed'
   siteStatusNote: string | null
   /** D2 open (Jan–Dec vs Apr–Mar) — neutral label until the committee settles it. */
   membershipYearLabel: string
@@ -95,12 +95,13 @@ export function getFacilities(): Facility[] {
     {
       key: 'parking',
       title: 'Parking on site',
-      description: 'Drive in and unload by the water, the access road and parking were built for the club by army reserves.',
+      description:
+        'Drive in and unload in either of our parking areas. The lower parking area, with picnic tables, is just above the water, and the top area, next to the containers, takes the overflow when that is full.',
       confirmed: true,
     },
     {
       key: 'toilets',
-      title: 'Toilets',
+      title: 'Changing rooms and toilets',
       description: 'On-site facilities, kept going by the members who use them.',
       confirmed: true,
     },

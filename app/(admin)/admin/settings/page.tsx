@@ -32,7 +32,7 @@ export default async function AdminSettingsPage() {
       <div className="mt-6">
         <SettingsForm
           initial={{
-            siteStatus: data.site_status as 'open' | 'closed',
+            siteStatus: data.site_status as 'open' | 'amber' | 'closed',
             siteStatusNote: data.site_status_note ?? '',
             membershipYearLabel: data.membership_year_label,
             priceAdultPence: data.price_adult_pence,

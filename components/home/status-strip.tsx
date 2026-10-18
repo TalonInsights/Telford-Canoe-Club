@@ -130,9 +130,21 @@ export async function StatusStrip() {
           <Cell
             icon={DoorOpen}
             label="Site status"
-            value={settings.siteStatus === 'open' ? 'Site open' : 'Site closed'}
-            detail={settings.siteStatusNote ?? 'Jackfield Rapids, Ironbridge'}
-            tone={settings.siteStatus === 'open' ? 'success' : 'neutral'}
+            value={settings.siteStatus === 'closed' ? 'Site closed' : 'Site open'}
+            detail={
+              settings.siteStatus === 'amber'
+                ? (settings.siteStatusNote ?? 'Road diversion in place')
+                : settings.siteStatus === 'closed'
+                  ? (settings.siteStatusNote ?? 'Closed, see notice')
+                  : (settings.siteStatusNote ?? 'Jackfield Rapids, Ironbridge')
+            }
+            tone={
+              settings.siteStatus === 'open'
+                ? 'success'
+                : settings.siteStatus === 'amber'
+                  ? 'warn'
+                  : 'neutral'
+            }
           />
           {level ? (
             <Cell

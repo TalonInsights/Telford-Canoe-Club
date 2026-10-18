@@ -70,9 +70,9 @@ export function Hero() {
             className="tcc-reveal-guarantee mt-4 max-w-[68ch] text-lg text-stone"
             {...rise(0.1)}
           >
-            That&apos;s what makes Telford Canoe Club different: our own gated site and our own
-            rapid at Jackfield, in the Ironbridge gorge. Join, and this water is yours to
-            paddle, whitewater, freestyle and paddleboarding included.
+            That&apos;s what makes Telford Canoe Club different: our own site right by the
+            rapid at Jackfield, in the Ironbridge gorge. Join, for year round easy access to the
+            water, whether you fancy whitewater, freestyle or paddleboarding.
           </motion.p>
           <motion.div className="tcc-reveal-guarantee mt-7 flex flex-wrap gap-3" {...rise(0.15)}>
             <Button asChild variant="signal" size="lg">

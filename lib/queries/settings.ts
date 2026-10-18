@@ -45,7 +45,7 @@ export const getClubSettings = cache(async (): Promise<ClubSettings> => {
     .order('sort_order', { ascending: true })
 
   return {
-    siteStatus: data.site_status as 'open' | 'closed',
+    siteStatus: data.site_status as 'open' | 'amber' | 'closed',
     siteStatusNote: data.site_status_note,
     membershipYearLabel: data.membership_year_label,
     showUnconfirmed: data.show_unconfirmed,

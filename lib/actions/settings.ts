@@ -8,7 +8,7 @@ import { createClient } from '@/lib/supabase/server'
 import type { ActionResult } from '@/lib/actions/auth'
 
 const settingsSchema = z.object({
-  siteStatus: z.enum(['open', 'closed']),
+  siteStatus: z.enum(['open', 'amber', 'closed']),
   siteStatusNote: z.string().trim().max(300).optional(),
   membershipYearLabel: z.string().trim().min(3).max(80),
   priceAdultPence: z.number().int().min(0).max(100_000),
