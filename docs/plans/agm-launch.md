@@ -14,27 +14,43 @@ acceptance line is true (rule 3).
 
 | # | Item | Verdict | Where |
 | --- | --- | --- | --- |
-| 1.1 | Profile/committee photo "unexpected photo path" | **DONE** | `committee.ts`, `site-images.ts` |
-| 1.2 | River gauge points to wrong station | **CONFIRM** | code already Buildwas 2134 |
+| 1.1 | Profile/committee photo "unexpected photo path" | **DONE, pushed** | `committee.ts`, `site-images.ts` |
+| 1.2 | River gauge points to wrong station | **CONFIRM w/ Simon** | code already Buildwas 2134 |
 | 1.3 | "Page words" admin area blank | **VERIFY LIVE** | code correct; data/deploy |
-| 1.4 | "D2:" dev prefix on membership-year field | **DONE** | `settings-form.tsx` |
+| 1.4 | "D2:" dev prefix on membership-year field | **DONE, pushed** | `settings-form.tsx` |
 | 1.5 | Wrong images (waterfall, 2 paddleboard) | **BLOCKED** | needs images from Simon |
-| 2 | Amber site status | build | enum + status strip + settings |
-| 3.1 | Camping + Black Swan tiles | build (Black Swan text from Simon) | `/venue` |
-| 3.2 | Six exact wording changes | build | `hero.tsx`, `sections.tsx`, `/venue` |
-| 4 | "Where we paddle" managed content | build (new) | migration + committee CRUD + public |
-| 5.1 | Rename → "Paddle UK / Governing body number" | build | everywhere the label appears |
-| 5.2 | Car registration, admin/committee-only | build (**personal data**) | migration + column privilege |
-| 5.3 | Add a child to a family account after creation | build | `membership_members` |
-| 5.4 | Junior-turns-18 alert + type-change history | build | cron + audit |
-| 5.5 | Admin-create accounts + set-password email | build (**service role, D5**) | admin API, server-only |
-| 5.6 | Bulk import robust, no emails before go-live | build (**compliance-critical**) | dry-run / invite switch |
-| 6.1 | Event audit: creator + timestamp | build | events already audited |
-| 6.2 | Duplicate an event | build | admin events |
-| 6.3 | Booking gate (4 conditions) | build (**health data**) | migration + booking flow |
-| 6.4 | Leader attendee view (kit/medical/emergency) | build | leaders + admins only |
-| 7 | FAQ, committee-managed | build (new) | migration + CRUD + Contact page |
-| 8 | Minutes: uploaded doc hides empty template | build | minutes view |
+| 2 | Amber site status | **DONE, pushed** (0033) | enum + status strip + settings |
+| 3.1 | Camping + Black Swan tiles | **DONE, pushed** (Black Swan ends at "food") | `/venue` |
+| 3.2 | Six exact wording changes | **DONE, pushed** | `hero.tsx`, `sections.tsx`, `site-data.ts` |
+| 4 | "Where we paddle" managed content | **needs DB login** | migration + committee CRUD + public |
+| 5.1 | Rename → "Paddle UK / governing body number" | **DONE, pushed** | everywhere the label appears |
+| 5.2 | Car registration, admin/committee-only | **coded + 0034, needs DB login** | code shelved (`git stash`) pending type regen |
+| 5.3 | Add a child to a family account after creation | **needs DB login** | `membership_members` + a policy/fn |
+| 5.4 | Junior-turns-18 alert + type-change history | **needs DB login** | cron + a "notified" flag |
+| 5.5 | Admin-create accounts + set-password email | **needs DB login + D5** | admin API, server-only |
+| 5.6 | Bulk import robust, no emails before go-live | **needs DB login + D5** | dry-run / invite switch |
+| 6.1 | Event audit: creator + timestamp | **DONE** (already met; labels added) | events already audited |
+| 6.2 | Duplicate an event | **DONE, pushed** | admin events |
+| 6.3 | Booking gate (4 conditions) | **needs DB login** | migration + booking flow |
+| 6.4 | Leader attendee view (kit/medical/emergency) | **needs DB login** | with 6.3 |
+| 7 | FAQ, committee-managed | **needs DB login** | migration + CRUD + Contact page |
+| 8 | Minutes: uploaded doc hides empty template | **DONE, pushed** | member minutes view |
+
+## Progress, 19 Oct
+
+Shipped and deploying (no database change, or the change is already live):
+1.1, 1.4, 2 (amber), 3.1, 3.2, 5.1, 6.1, 6.2, 8. Commits `e83af2e`, section
+2/3, 5.1, and `fb2e380`.
+
+**The wall: the Supabase dashboard is signed out in both browsers and I will
+not sign in as anyone.** Everything left either adds a column or a table —
+which means a migration AND a regenerated `types/database.ts`, and that file is
+never hand-edited — or sends email (gated on D5), or waits on Simon. So the
+remaining DB items are written as migrations but cannot be applied or
+type-checked until someone signs in to Supabase. Migrations staged and ready to
+apply: `0033` (amber, no new types needed, already safe), `0034` (car
+registration). Once signed in I apply them, regenerate types, unshelve 5.2, and
+build 4, 5.3, 5.4, 5.5/5.6, 6.3, 6.4 and 7.
 
 ## Done this turn
 

@@ -179,3 +179,21 @@ Plan and decisions: `docs/plans/change-request-sept.md`. Migrations 0024 to 0029
   not `next dev`.
 - **Performance (4 Sep):** Vercel functions were in `iad1` while Supabase is in `eu-west-2` — every auth/data query crossed the Atlantic (members tab switch ≈ 1.0–1.2 s). Fixed: `vercel.json` `"regions": ["lhr1"]` (+ project default region set to lhr1), `getAuthUser`/`getSession`/`getClubSettings` wrapped in React `cache()` (one GoTrue call per request instead of 3–4), guards run in parallel with page queries, `loading.tsx` skeletons for the members and admin page slots so tab switches paint instantly.
 - **Analytics (5 Sep, client order):** Vercel Web Analytics — `@vercel/analytics` `<Analytics />` in the root layout, enabled on the Vercel project. Cookieless and aggregate-only, so no consent banner is needed under PECR; the privacy page's "Cookies and analytics" section describes it.
+
+## AGM launch spec (Simon, relayed 19 Oct 2026) — target 7 Nov
+
+Full triage: `docs/plans/agm-launch.md`.
+
+- **Live on deploy now (no DB change):** 1.1 photo-upload fix, 1.4 "D2:" removed,
+  3.1 venue tiles, 3.2 the six wording changes, 5.1 governing-body rename,
+  6.1 event creator in the change log, 6.2 duplicate event, 8 minutes show an
+  uploaded doc alone.
+- **Coded, needs migration applied:** 2 amber status (code deployed; selectable
+  once 0033 is applied), 5.2 car registration (code shelved in `git stash`,
+  0034 staged, needs type regen).
+- **Blocked on a Supabase sign-in** (migrate + regenerate `types/database.ts`):
+  4 where-we-paddle, 5.3 add child, 5.4 junior-18, 5.5/5.6 admin-create + import,
+  6.3 booking gate, 6.4 leader view, 7 FAQ.
+- **Blocked on Simon:** 1.5 images, Black Swan full text, 1.2 gauge confirmation,
+  "Page words" intent (1.3 also needs a live DB look).
+- **Blocked on D5 (Resend):** any real email — 5.5/5.6 invites, junior-18 alerts.
