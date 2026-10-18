@@ -74,7 +74,7 @@ describe('describeAudit', () => {
 
   it('says blank rather than null when a value is cleared', () => {
     expect(describeAudit({ fields: ['bc_membership_number'], bc_membership_number: '12345' }, { fields: ['bc_membership_number'], bc_membership_number: null })).toBe(
-      'Paddle UK number: 12345 → blank'
+      'Paddle UK / governing body number: 12345 → blank'
     )
   })
 

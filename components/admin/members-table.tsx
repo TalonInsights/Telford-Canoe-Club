@@ -103,7 +103,7 @@ export function MembersDirectoryTable({ rows }: { rows: DirectoryRow[] }) {
       },
       {
         accessorKey: 'bc_membership_number',
-        header: 'Paddle UK no.',
+        header: 'Paddle UK / gov body no.',
         cell: ({ getValue }) => getValue<string | null>() ?? 'None',
       },
       {
@@ -204,7 +204,7 @@ export function MembersDirectoryTable({ rows }: { rows: DirectoryRow[] }) {
                 status: r.membership_status,
                 tier: r.tier ?? '',
                 junior: r.is_junior ? 'yes' : 'no',
-                paddle_uk: r.bc_membership_number ?? '',
+                governing_body_number: r.bc_membership_number ?? '',
                 paid: r.paid_at ?? '',
               }))
             )

@@ -44,7 +44,7 @@ export default function PrivacyPage() {
               date of birth, phone number, address, an emergency contact, and, for under-18s, a
               parent or guardian&apos;s details. We use this to run your membership, keep people
               safe on the water, and contact you about club activity. You can add your Paddle UK
-              membership number so the club&apos;s affiliation records line up.
+              or other governing body membership number so the club&apos;s affiliation records line up.
             </p>
             <p>
               Payment records (who paid, which tier, when and how) are kept so the committee can
@@ -62,7 +62,7 @@ export default function PrivacyPage() {
             </p>
             <p>
               That note records the date, who made the change and which fields were touched. For
-              your name, date of birth, Paddle UK number and whether you want club news it also
+              your name, date of birth, governing body number and whether you want club news it also
               keeps the old value, because that is what makes a wrong change reversible.{' '}
               <strong className="font-medium text-ink">
                 It does not copy your address, phone number, emergency contact or guardian details

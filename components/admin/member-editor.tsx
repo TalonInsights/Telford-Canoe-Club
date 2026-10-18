@@ -114,7 +114,7 @@ export function MemberEditor({
             label="Date of birth"
             value={initial.dateOfBirth ? formatDate(initial.dateOfBirth) : null}
           />
-          <Row label="Paddle UK number" value={initial.bcNumber} />
+          <Row label="Paddle UK / governing body number" value={initial.bcNumber} />
           <Row
             label="Emergency contact"
             value={[initial.emergencyContactName, initial.emergencyContactPhone]
@@ -213,7 +213,7 @@ export function MemberEditor({
           </Field>
         </div>
 
-        <Field label="Paddle UK membership number" htmlFor="me-bc" optional>
+        <Field label="Paddle UK / governing body number" htmlFor="me-bc" optional>
           <Input id="me-bc" value={values.bcNumber} onChange={set('bcNumber')} />
         </Field>
 

@@ -146,7 +146,7 @@ export function ProfileForm({
       <section className="grid gap-4 rounded-xl border border-stone bg-card p-6">
         <h2 className="text-lg">Club admin</h2>
         <Field
-          label="Paddle UK membership number"
+          label="Paddle UK / governing body number"
           htmlFor="pf-bc"
           optional
           helper="Helps the club line up its affiliation records."

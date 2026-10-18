@@ -105,7 +105,7 @@ export const fieldLabels: Record<string, string> = {
   last_name: 'last name',
   date_of_birth: 'date of birth',
   email_opt_in: 'club news preference',
-  bc_membership_number: 'Paddle UK number',
+  bc_membership_number: 'Paddle UK / governing body number',
   deactivated_at: 'account status',
   phone: 'phone',
   address_line1: 'address',

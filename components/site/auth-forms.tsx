@@ -229,10 +229,10 @@ export function SignUpForm({ onSubmit }: { onSubmit: (values: SignUpValues) => P
         <Input id="su-postcode" autoComplete="postal-code" aria-invalid={!!errors.postcode} className="max-w-40" {...form.register('postcode')} />
       </Field>
       <Field
-        label="Paddle UK membership number"
+        label="Paddle UK / governing body number"
         htmlFor="su-bc"
         optional
-        helper="Formerly British Canoeing, add it later if you don't know it."
+        helper="Paddle UK (formerly British Canoeing) or your own national governing body, e.g. Canoe Wales. Add it later if you don't know it."
         error={err('bcNumber')}
       >
         <Input id="su-bc" aria-invalid={!!errors.bcNumber} {...form.register('bcNumber')} />
