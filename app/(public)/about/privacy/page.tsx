@@ -45,6 +45,8 @@ export default function PrivacyPage() {
               parent or guardian&apos;s details. We use this to run your membership, keep people
               safe on the water, and contact you about club activity. You can add your Paddle UK
               or other governing body membership number so the club&apos;s affiliation records line up.
+              If you park on the club site you can add your car registration, so the committee can
+              identify a vehicle left there; only the committee and admins can see it.
             </p>
             <p>
               Payment records (who paid, which tier, when and how) are kept so the committee can

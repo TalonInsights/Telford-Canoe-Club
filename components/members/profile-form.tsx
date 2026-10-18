@@ -28,6 +28,7 @@ export type ProfileValues = {
   town: string
   postcode: string
   bcNumber: string
+  carRegistration: string
   emergencyContactName: string
   emergencyContactPhone: string
   guardianName: string
@@ -152,6 +153,20 @@ export function ProfileForm({
           helper="Helps the club line up its affiliation records."
         >
           <Input id="pf-bc" value={values.bcNumber} onChange={set('bcNumber')} />
+        </Field>
+        <Field
+          label="Car registration"
+          htmlFor="pf-car"
+          optional
+          helper="Only the committee can see this. It lets them identify a vehicle left on site."
+        >
+          <Input
+            id="pf-car"
+            value={values.carRegistration}
+            onChange={set('carRegistration')}
+            className="max-w-48 uppercase"
+            autoCapitalize="characters"
+          />
         </Field>
         <label className="flex min-h-11 items-center gap-2.5 text-sm">
           <Checkbox

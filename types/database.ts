@@ -1577,6 +1577,7 @@ export type Database = {
           address_line2: string | null
           avatar_path: string | null
           bc_membership_number: string | null
+          car_registration: string | null
           created_at: string
           date_of_birth: string | null
           deactivated_at: string | null
@@ -1604,6 +1605,7 @@ export type Database = {
           address_line2?: string | null
           avatar_path?: string | null
           bc_membership_number?: string | null
+          car_registration?: string | null
           created_at?: string
           date_of_birth?: string | null
           deactivated_at?: string | null
@@ -1631,6 +1633,7 @@ export type Database = {
           address_line2?: string | null
           avatar_path?: string | null
           bc_membership_number?: string | null
+          car_registration?: string | null
           created_at?: string
           date_of_birth?: string | null
           deactivated_at?: string | null

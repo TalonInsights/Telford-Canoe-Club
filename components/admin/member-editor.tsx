@@ -36,6 +36,7 @@ export type MemberValues = {
   town: string
   postcode: string
   bcNumber: string
+  carRegistration: string
   emergencyContactName: string
   emergencyContactPhone: string
   guardianName: string
@@ -115,6 +116,7 @@ export function MemberEditor({
             value={initial.dateOfBirth ? formatDate(initial.dateOfBirth) : null}
           />
           <Row label="Paddle UK / governing body number" value={initial.bcNumber} />
+          <Row label="Car registration" value={initial.carRegistration} />
           <Row
             label="Emergency contact"
             value={[initial.emergencyContactName, initial.emergencyContactPhone]
@@ -215,6 +217,19 @@ export function MemberEditor({
 
         <Field label="Paddle UK / governing body number" htmlFor="me-bc" optional>
           <Input id="me-bc" value={values.bcNumber} onChange={set('bcNumber')} />
+        </Field>
+        <Field
+          label="Car registration"
+          htmlFor="me-car"
+          optional
+          helper="For identifying a vehicle left on site. Committee and admins only."
+        >
+          <Input
+            id="me-car"
+            value={values.carRegistration}
+            onChange={set('carRegistration')}
+            className="max-w-48 uppercase"
+          />
         </Field>
 
         <div>

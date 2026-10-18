@@ -67,6 +67,7 @@ export default async function MemberRecordPage({ params }: { params: Promise<{ i
             town: profile.town ?? '',
             postcode: profile.postcode ?? '',
             bcNumber: profile.bc_membership_number ?? '',
+            carRegistration: profile.car_registration ?? '',
             emergencyContactName: profile.emergency_contact_name ?? '',
             emergencyContactPhone: profile.emergency_contact_phone ?? '',
             guardianName: profile.guardian_name ?? '',

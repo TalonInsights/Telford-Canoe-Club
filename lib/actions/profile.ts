@@ -37,6 +37,7 @@ const contactFields = {
   town: z.string().trim().min(1, 'Enter the town').max(100),
   postcode: z.string().trim().regex(ukPostcode, 'Enter a postcode like TF8 7HJ'),
   bcNumber: z.string().trim().max(30).optional(),
+  carRegistration: z.string().trim().max(15).optional(),
   emergencyContactName: z.string().trim().max(120).optional(),
   emergencyContactPhone: z.string().trim().max(30).optional(),
   guardianName: z.string().trim().max(120).optional(),
@@ -85,6 +86,8 @@ function contactColumns(v: z.infer<typeof ownProfileSchema>) {
     town: v.town,
     postcode: v.postcode.toUpperCase(),
     bc_membership_number: v.bcNumber || null,
+    // Stored uppercased with inner spaces collapsed, the way a plate is read.
+    car_registration: v.carRegistration ? v.carRegistration.toUpperCase().replace(/\s+/g, ' ').trim() : null,
     emergency_contact_name: v.emergencyContactName || null,
     emergency_contact_phone: v.emergencyContactPhone || null,
     guardian_name: v.guardianName || null,

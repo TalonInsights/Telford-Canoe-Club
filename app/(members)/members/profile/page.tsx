@@ -33,6 +33,7 @@ export default async function ProfilePage() {
             town: p.town ?? '',
             postcode: p.postcode ?? '',
             bcNumber: p.bc_membership_number ?? '',
+            carRegistration: p.car_registration ?? '',
             emergencyContactName: p.emergency_contact_name ?? '',
             emergencyContactPhone: p.emergency_contact_phone ?? '',
             guardianName: p.guardian_name ?? '',
