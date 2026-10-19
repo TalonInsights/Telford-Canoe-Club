@@ -949,6 +949,7 @@ export type Database = {
           id: string
           is_junior: boolean
           membership_id: string
+          turned18_notified_at: string | null
           user_id: string | null
         }
         Insert: {
@@ -960,6 +961,7 @@ export type Database = {
           id?: string
           is_junior?: boolean
           membership_id: string
+          turned18_notified_at?: string | null
           user_id?: string | null
         }
         Update: {
@@ -971,6 +973,7 @@ export type Database = {
           id?: string
           is_junior?: boolean
           membership_id?: string
+          turned18_notified_at?: string | null
           user_id?: string | null
         }
         Relationships: [
@@ -1957,6 +1960,14 @@ export type Database = {
           capacity: number
           confirmed: number
           waitlist: number
+        }[]
+      }
+      flag_junior_18: {
+        Args: never
+        Returns: {
+          display_name: string
+          member_id: string
+          membership_id: string
         }[]
       }
       has_role: {
