@@ -1443,6 +1443,45 @@ export type Database = {
           },
         ]
       }
+      paddle_places: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          id: string
+          is_published: boolean
+          links: Json
+          name: string
+          photo_path: string | null
+          sort_order: number
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string
+          id?: string
+          is_published?: boolean
+          links?: Json
+          name: string
+          photo_path?: string | null
+          sort_order?: number
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          id?: string
+          is_published?: boolean
+          links?: Json
+          name?: string
+          photo_path?: string | null
+          sort_order?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       pages: {
         Row: {
           author_user_id: string | null

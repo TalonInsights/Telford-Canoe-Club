@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest'
 
-import { committeePhotoPath, isCommitteePhotoPath } from './site-images'
+import {
+  committeePhotoPath,
+  isCommitteePhotoPath,
+  isPlacePhotoPath,
+  placePhotoPath,
+} from './site-images'
 
 /**
  * The matcher rejected every real upload once, because its pattern was written
@@ -32,5 +37,16 @@ describe('isCommitteePhotoPath', () => {
     expect(isCommitteePhotoPath(role, `events/${role}/cover-1.jpg`)).toBe(false)
     expect(isCommitteePhotoPath(role, `committee/${role}/photo-.jpg`)).toBe(false)
     expect(isCommitteePhotoPath(role, `committee/${role}/photo-123`)).toBe(false)
+  })
+})
+
+describe('isPlacePhotoPath', () => {
+  const place = '2c1d6507-2904-4d12-9987-5d8d670f046c'
+
+  it('accepts what placePhotoPath builds and refuses another place or shape', () => {
+    expect(isPlacePhotoPath(place, placePhotoPath(place, 'dee.jpg'))).toBe(true)
+    expect(isPlacePhotoPath(place, `places/${place}/photo-1699999999999.webp`)).toBe(true)
+    expect(isPlacePhotoPath(place, `places/00000000-0000-4000-8000-000000000001/photo-1.jpg`)).toBe(false)
+    expect(isPlacePhotoPath(place, `committee/${place}/photo-1.jpg`)).toBe(false)
   })
 })

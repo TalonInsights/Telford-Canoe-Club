@@ -44,3 +44,13 @@ export function committeePhotoPath(roleId: string, fileName: string): string {
 export function isCommitteePhotoPath(roleId: string, path: string): boolean {
   return new RegExp(`^committee/${roleId}/photo-\\d+\\.[a-z0-9]{2,5}$`).test(path)
 }
+
+/** A photo for a "where we paddle" place, keyed by the row so replacements never collide. */
+export function placePhotoPath(placeId: string, fileName: string): string {
+  return `places/${placeId}/photo-${Date.now()}.${fileExtension(fileName)}`
+}
+
+/** Same doubled-escape care as the committee matcher — see its note. */
+export function isPlacePhotoPath(placeId: string, path: string): boolean {
+  return new RegExp(`^places/${placeId}/photo-\\d+\\.[a-z0-9]{2,5}$`).test(path)
+}
