@@ -184,6 +184,8 @@ Plan and decisions: `docs/plans/change-request-sept.md`. Migrations 0024 to 0029
 
 Full triage: `docs/plans/agm-launch.md`.
 
+**Overnight 19 Oct: all buildable items shipped** (migrations 0033–0039 live, types regenerated, each DB rule verified by rolled-back impersonation): amber status, venue tiles + wording, where-we-paddle (new), governing-body rename, car registration, add-a-child, junior-turns-18 alert, admin-created accounts + bulk import (dry-run, email off by default), event duplicate + creator audit, the booking gate (emergency contact, kit, policy agreement, medical yes/no — flag only, never detail) + leader view, FAQ (new), minutes-upload display, and the photo-upload and D2 fixes. 1.2 gauge is already Buildwas 2134 on the live site (confirm with Simon). 1.3 Page words has its three blocks in the DB (was a stale deploy). Still blocked: 1.5 images, Black Swan text (Simon); real emails (D5).
+
 - **Live on deploy now (no DB change):** 1.1 photo-upload fix, 1.4 "D2:" removed,
   3.1 venue tiles, 3.2 the six wording changes, 5.1 governing-body rename,
   6.1 event creator in the change log, 6.2 duplicate event, 8 minutes show an

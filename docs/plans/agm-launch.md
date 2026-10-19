@@ -36,6 +36,28 @@ acceptance line is true (rule 3).
 | 7 | FAQ, committee-managed | **needs DB login** | migration + CRUD + Contact page |
 | 8 | Minutes: uploaded doc hides empty template | **DONE, pushed** | member minutes view |
 
+## Final status, 19 Oct (overnight)
+
+**Built, verified and pushed** — migrations 0033–0039 applied to the live
+database, types regenerated: 1.1, 1.4, 2 (amber), 3.1, 3.2, 4 (where we
+paddle), 5.1, 5.2 (car reg), 5.3 (add a child), 5.4 (junior-18), 5.5/5.6
+(admin create + import), 6.1, 6.2, 6.3/6.4 (booking gate + leader view), 7
+(FAQ), 8 (minutes). Every DB rule exercised live via impersonation, each in a
+rolled-back transaction.
+
+**Settled without a fix:**
+- **1.2 gauge** — the deployed river-levels page already links Buildwas, Severn
+  station 2134 (confirmed against the live site). Nothing to fix; just confirm
+  2134 is the station Simon means (the EA "Ironbridge" gauge is the Dee).
+- **1.3 Page words** — the three editable blocks are present in the live
+  database and the admin screen lists them. If it looked blank, that was an
+  older deploy; tonight's deploy shows it. Open question 4 (should more
+  passages be editable there) still stands.
+
+**Still genuinely blocked on Simon:** 1.5 images, the Black Swan full sentence.
+**Blocked on D5 (Resend):** real invite emails (5.5/5.6) and junior-18 alert
+emails — all built with email off/dry-run so nothing sends until D5 is live.
+
 ## Progress, 19 Oct
 
 Shipped and deploying (no database change, or the change is already live):
