@@ -15,10 +15,12 @@ import {
   ChevronDown,
   ClipboardList,
   FileText,
+  HelpCircle,
   History,
   Home,
   IdCard,
   Mail,
+  MapPin,
   Megaphone,
   PencilLine,
   Settings2,
@@ -54,6 +56,8 @@ const ICONS: Record<string, LucideIcon> = {
   mail: Mail,
   pencil: PencilLine,
   waves: Waves,
+  help: HelpCircle,
+  map: MapPin,
   settings: Settings2,
 }
 

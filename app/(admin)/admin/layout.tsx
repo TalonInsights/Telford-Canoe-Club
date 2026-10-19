@@ -20,6 +20,7 @@ const links: RailLink[] = [
   { title: 'Minutes', href: '/admin/minutes', icon: 'clipboard' },
   { title: 'Documents', href: '/admin/documents', icon: 'file' },
   { title: 'Page words', href: '/admin/content', icon: 'pencil' },
+  { title: 'FAQ', href: '/admin/faq', icon: 'help' },
   { title: 'River levels', href: '/admin/river-levels', icon: 'waves' },
   { title: 'Committee', href: '/admin/committee', icon: 'id' },
   { title: 'Change log', href: '/admin/audit', icon: 'history' },
@@ -43,8 +44,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         rootHref="/admin"
         groups={[
           { title: 'Club', links: links.slice(0, 6) },
-          { title: 'Records', links: links.slice(6, 12) },
-          { title: 'Setup', links: links.slice(12) },
+          { title: 'Records', links: links.slice(6, 13) },
+          { title: 'Setup', links: links.slice(13) },
         ]}
         footer={
           <div className="grid gap-3">

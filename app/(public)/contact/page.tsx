@@ -7,6 +7,7 @@ import { Section } from '@/components/layout/section'
 import { ContactForm } from '@/components/site/contact-form'
 import { CtaBand } from '@/components/site/cta-band'
 import { Button } from '@/components/ui/button'
+import { getPublishedFaqs } from '@/lib/queries/faqs'
 import { IMAGES } from '@/lib/site-data'
 
 export const metadata: Metadata = {
@@ -40,7 +41,8 @@ function Way({
   )
 }
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const faqs = await getPublishedFaqs()
   return (
     <>
       <PageHero
@@ -115,6 +117,18 @@ export default function ContactPage() {
           </div>
         </div>
       </Section>
+      {faqs.length > 0 && (
+        <Section tone="foam" kicker="Good to know" title="Frequently asked">
+          <dl className="mx-auto grid max-w-[68ch] gap-4">
+            {faqs.map((faq) => (
+              <div key={faq.id} className="rounded-xl border border-stone bg-card p-5">
+                <dt className="font-heading text-lg font-semibold">{faq.question}</dt>
+                <dd className="mt-2 text-sm whitespace-pre-line text-ink-muted">{faq.answer}</dd>
+              </div>
+            ))}
+          </dl>
+        </Section>
+      )}
       <CtaBand
         title="Rather see the river first?"
         intro="No membership needed to come and say hello. Club evenings run through the season at Jackfield, levels permitting."

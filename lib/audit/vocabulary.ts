@@ -49,6 +49,8 @@ const categoryByPrefix: Record<string, AuditCategory> = {
   minutes: 'content',
   document: 'content',
   river_band: 'content',
+  faq: 'content',
+  place: 'content',
   settings: 'settings',
 }
 
