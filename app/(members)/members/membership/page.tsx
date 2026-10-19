@@ -9,6 +9,7 @@ import { isOnlinePaymentOn } from '@/lib/payments/mode'
 import { getMyMemberships, getRenewalOffer } from '@/lib/queries/members'
 import { getClubSettings } from '@/lib/queries/settings'
 import { AbandonOrderButton, PayOnlineButton } from '@/components/members/payment-buttons'
+import { AddFamilyMember } from '@/components/members/add-family-member'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -102,6 +103,7 @@ export default async function MyMembershipPage({
                   .join(', ')}
               </p>
             )}
+            {active.tier === 'family' && <AddFamilyMember membershipId={active.id} />}
             {expiringSoon && !nextPeriodRow && (
               <p className="mt-3 flex items-center gap-2 text-sm text-warn">
                 <CalendarClock className="size-4" aria-hidden="true" />

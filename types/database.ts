@@ -1866,6 +1866,16 @@ export type Database = {
         Args: { p_order_ref: string }
         Returns: undefined
       }
+      add_family_member: {
+        Args: {
+          p_dob?: string
+          p_emergency_name?: string
+          p_emergency_phone?: string
+          p_membership_id: string
+          p_name: string
+        }
+        Returns: string
+      }
       admin_create_membership: {
         Args: {
           p_activate?: boolean
