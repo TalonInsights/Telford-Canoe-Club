@@ -17,6 +17,7 @@ const links: RailLink[] = [
   { title: 'Events', href: '/admin/events', icon: 'calendar' },
   { title: 'Club shop', href: '/admin/shop', icon: 'bag' },
   { title: 'Email members', href: '/admin/email', icon: 'mail' },
+  { title: 'Import members', href: '/admin/members/invite', icon: 'upload' },
   { title: 'Minutes', href: '/admin/minutes', icon: 'clipboard' },
   { title: 'Documents', href: '/admin/documents', icon: 'file' },
   { title: 'Page words', href: '/admin/content', icon: 'pencil' },
@@ -44,9 +45,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         title="TCC admin"
         rootHref="/admin"
         groups={[
-          { title: 'Club', links: links.slice(0, 6) },
-          { title: 'Records', links: links.slice(6, 14) },
-          { title: 'Setup', links: links.slice(14) },
+          { title: 'Club', links: links.slice(0, 7) },
+          { title: 'Records', links: links.slice(7, 15) },
+          { title: 'Setup', links: links.slice(15) },
         ]}
         footer={
           <div className="grid gap-3">

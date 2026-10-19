@@ -25,6 +25,7 @@ import {
   PencilLine,
   Settings2,
   ShoppingBag,
+  Upload,
   UserRound,
   UserRoundPlus,
   Users,
@@ -58,6 +59,7 @@ const ICONS: Record<string, LucideIcon> = {
   waves: Waves,
   help: HelpCircle,
   map: MapPin,
+  upload: Upload,
   settings: Settings2,
 }
 
