@@ -52,6 +52,16 @@ export default function PrivacyPage() {
               Payment records (who paid, which tier, when and how) are kept so the committee can
               tell who is a current member. This site never sees or stores card details.
             </p>
+            <p>
+              When you confirm a place on a session we record whether you asked to borrow club kit
+              and a simple yes or no to a medical question, so the session leader knows who to check
+              in with.{' '}
+              <strong className="font-medium text-ink">
+                We never store any medical detail
+              </strong>
+              : if your answer is yes the leader contacts you, and what you tell them stays between
+              you and the leader.
+            </p>
           </Block>
           <Block heading="Keeping track of changes to your record">
             <p>

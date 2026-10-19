@@ -186,6 +186,8 @@ export type AttendeeRow = Tables<'event_bookings'> & {
   email: string
   phone: string | null
   is_junior: boolean
+  /** The gate (6.4): does the leader have an emergency contact to call? */
+  has_emergency_contact: boolean
 }
 
 /** Who is coming — every booking row for the event with the person attached. */
@@ -194,7 +196,9 @@ export async function getEventAttendees(eventId: string): Promise<AttendeeRow[]>
   const supabase = await createClient()
   const { data } = await supabase
     .from('event_bookings')
-    .select('*, profiles(first_name, last_name, email, phone, date_of_birth)')
+    .select(
+      '*, profiles(first_name, last_name, email, phone, date_of_birth, emergency_contact_name, emergency_contact_phone)'
+    )
     .eq('event_id', eventId)
     .order('booked_at', { ascending: true })
   const cutoff = new Date()
@@ -207,6 +211,8 @@ export async function getEventAttendees(eventId: string): Promise<AttendeeRow[]>
       email: string
       phone: string | null
       date_of_birth: string | null
+      emergency_contact_name: string | null
+      emergency_contact_phone: string | null
     } | null
     const dob = p?.date_of_birth ? new Date(p.date_of_birth) : null
     return {
@@ -216,6 +222,9 @@ export async function getEventAttendees(eventId: string): Promise<AttendeeRow[]>
       email: p?.email ?? '',
       phone: p?.phone ?? null,
       is_junior: Boolean(dob && dob > cutoff),
+      has_emergency_contact: Boolean(
+        p?.emergency_contact_name?.trim() && p?.emergency_contact_phone?.trim()
+      ),
     }
   })
 }

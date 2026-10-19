@@ -17,6 +17,7 @@ import { toast } from 'sonner'
 import { bookEventAction } from '@/lib/actions/bookings'
 import { CancelBookingButton } from '@/components/members/cancel-booking'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import { formatDateShort } from '@/lib/format'
 import type { Attendance, MyBooking } from '@/lib/queries/events'
 
@@ -46,16 +47,21 @@ export function BookingPanel({
   isCurrentMember,
   myBooking = null,
   attendance = null,
+  hasEmergencyContact = false,
 }: {
   event: EventInfo
   signedIn: boolean
   isCurrentMember: boolean
   myBooking?: MyBooking | null
   attendance?: Attendance | null
+  /** The gate: a member needs an emergency contact on file before booking. */
+  hasEmergencyContact?: boolean
 }) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const [done, setDone] = useState<string | null>(null)
+  const [needsKit, setNeedsKit] = useState(false)
+  const [medical, setMedical] = useState<'yes' | 'no' | null>(null)
   const now = new Date()
   const counts = countLine(attendance)
   const full = attendance?.capacity != null && attendance.confirmed >= attendance.capacity
@@ -200,6 +206,19 @@ export function BookingPanel({
         </p>
       </>
     )
+  } else if (!hasEmergencyContact) {
+    body = (
+      <>
+        <h2 className="text-xl">One thing first</h2>
+        <p className="mt-2 text-sm text-ink-muted">
+          Before you can book onto sessions, add an emergency contact to your profile, the person
+          the club would call if something happened on the water.
+        </p>
+        <Button asChild variant="signal" className="mt-4">
+          <Link href="/members/profile">Add an emergency contact</Link>
+        </Button>
+      </>
+    )
   } else {
     body = (
       <>
@@ -207,18 +226,59 @@ export function BookingPanel({
           <Users className="size-4" aria-hidden="true" /> {counts ?? 'Confirmations open'}
         </p>
         <h2 className="mt-1 text-xl">{full ? 'Full: join the waitlist' : 'Are you coming?'}</h2>
-        <p className="mt-2 text-sm text-ink-muted">
-          {full
-            ? 'If a place frees up you move in automatically and we email you.'
-            : 'One tap tells the committee to expect you. Change your mind later from my bookings.'}
+
+        <fieldset className="mt-4">
+          <legend className="text-sm font-medium">
+            Do you have any medical condition, allergy, injury or medication requirement that could
+            affect your participation, or that leaders should know about in an emergency?
+          </legend>
+          <p className="mt-1 text-micro text-ink-muted">
+            We only record your yes or no. If yes, the session leader will contact you, no details
+            are stored on the site.
+          </p>
+          <div className="mt-2 flex gap-2">
+            {(['no', 'yes'] as const).map((v) => (
+              <button
+                key={v}
+                type="button"
+                aria-pressed={medical === v}
+                onClick={() => setMedical(v)}
+                className={
+                  'min-h-11 flex-1 rounded-lg border px-3 text-sm font-medium transition-colors ' +
+                  (medical === v ? 'border-river bg-foam text-ink' : 'border-stone text-ink-muted hover:border-river')
+                }
+              >
+                {v === 'no' ? 'No' : 'Yes'}
+              </button>
+            ))}
+          </div>
+        </fieldset>
+
+        <label className="mt-3 flex items-start gap-2.5 text-sm">
+          <Checkbox checked={needsKit} onCheckedChange={(v) => setNeedsKit(!!v)} className="mt-0.5" />
+          I need to borrow club kit for this session
+        </label>
+
+        <p className="mt-3 text-micro text-ink-muted">
+          Confirming means you agree to the club&apos;s{' '}
+          <Link href="/about/policies" className="font-medium text-river underline-offset-4 hover:underline">
+            code of conduct and policies
+          </Link>
+          , and that you paddle at your own risk.
         </p>
+
         <Button
           variant="signal"
           className="mt-4"
-          disabled={pending}
+          disabled={pending || medical === null}
           onClick={() =>
             startTransition(async () => {
-              const result = await bookEventAction(event.id)
+              if (medical === null) return
+              const result = await bookEventAction({
+                eventId: event.id,
+                needsKit,
+                medicalFlag: medical === 'yes',
+              })
               if (result.ok) {
                 setDone(result.message ?? "You're confirmed")
                 toast.success(result.message ?? "You're confirmed")
@@ -229,7 +289,13 @@ export function BookingPanel({
             })
           }
         >
-          {pending ? 'Confirming…' : full ? 'Join the waitlist' : "Confirm I'm coming"}
+          {pending
+            ? 'Confirming…'
+            : medical === null
+              ? 'Answer the question above'
+              : full
+                ? 'Join the waitlist'
+                : "Confirm I'm coming"}
         </Button>
       </>
     )

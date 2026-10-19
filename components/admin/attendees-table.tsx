@@ -188,6 +188,34 @@ export function AttendeesTable({
         cell: ({ getValue }) => getValue<string | null>() ?? 'None',
       },
       {
+        accessorKey: 'has_emergency_contact',
+        header: 'Emergency contact',
+        cell: ({ getValue }) =>
+          getValue<boolean>() ? (
+            <span className="inline-flex items-center gap-1 text-sm text-success">
+              <Check className="size-4" aria-hidden="true" /> On file
+            </span>
+          ) : (
+            <Badge variant="warn">Missing</Badge>
+          ),
+      },
+      {
+        accessorKey: 'needs_kit',
+        header: 'Kit',
+        cell: ({ getValue }) =>
+          getValue<boolean>() ? <Badge variant="signal">Needs kit</Badge> : <span className="text-ink-muted">—</span>,
+      },
+      {
+        accessorKey: 'medical_flag',
+        header: 'Medical',
+        cell: ({ getValue }) => {
+          const v = getValue<boolean | null>()
+          if (v === true) return <Badge variant="warn">Yes, contact them</Badge>
+          if (v === false) return <span className="text-ink-muted">No</span>
+          return <span className="text-ink-muted">—</span>
+        },
+      },
+      {
         accessorKey: 'status',
         header: 'Status',
         cell: ({ getValue }) => <StatusBadge status={getValue<string>()} />,
@@ -240,6 +268,9 @@ export function AttendeesTable({
       last_name: r.last_name,
       email: r.email,
       phone: r.phone ?? '',
+      emergency_contact: r.has_emergency_contact ? 'on file' : 'MISSING',
+      needs_kit: r.needs_kit ? 'yes' : 'no',
+      medical_flag: r.medical_flag === true ? 'YES — contact' : r.medical_flag === false ? 'no' : 'not answered',
       status: r.status,
       confirmed_at: r.booked_at,
       checked_in_at: r.checked_in_at ?? '',

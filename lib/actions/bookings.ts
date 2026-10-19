@@ -16,26 +16,45 @@ function friendly(message: string): string {
   return m.charAt(0).toUpperCase() + m.slice(1)
 }
 
+const bookingInput = z.object({
+  eventId: z.uuid(),
+  needsKit: z.boolean(),
+  // Yes/No with no default — the gate refuses a booking that never answered.
+  medicalFlag: z.boolean(),
+})
+
+export type BookingInput = z.input<typeof bookingInput>
+
 /**
- * P5-04 — "I'm coming". The place is decided by `book_event()` inside the
- * database (row lock on the event, capacity, waitlist, members-only), so this
- * action only validates, calls, emails and revalidates.
+ * P5-04 / change request 6.3 — "I'm coming", through the booking gate. The
+ * place and the gate (emergency contact on file, medical answered, agreement,
+ * capacity, waitlist, members-only) are decided by `book_event()` inside the
+ * database, so this action validates, calls, emails and revalidates.
+ *
+ * Clicking the button IS the agreement to the code of conduct — the panel
+ * shows that in words with a link — so `p_agree` is true here. Only the
+ * medical yes/no flag is passed on; no detail is collected or stored.
  */
-export async function bookEventAction(eventId: string): Promise<ActionResult> {
+export async function bookEventAction(input: BookingInput): Promise<ActionResult> {
   if (!isSupabaseConfigured()) return { ok: false, message: NOT_CONFIGURED_MESSAGE }
-  const parsed = z.uuid().safeParse(eventId)
-  if (!parsed.success) return { ok: false, message: 'Unknown event' }
+  const parsed = bookingInput.safeParse(input)
+  if (!parsed.success) return { ok: false, message: 'Answer the questions, then confirm' }
   const session = await getSession()
   if (!session) return { ok: false, message: 'Log in to confirm your place' }
 
   const supabase = await createClient()
-  const { data: status, error } = await supabase.rpc('book_event', { p_event_id: parsed.data })
+  const { data: status, error } = await supabase.rpc('book_event', {
+    p_event_id: parsed.data.eventId,
+    p_needs_kit: parsed.data.needsKit,
+    p_medical_flag: parsed.data.medicalFlag,
+    p_agree: true,
+  })
   if (error) return { ok: false, message: friendly(error.message) }
 
   const { data: event } = await supabase
     .from('events')
     .select('title, slug, starts_at, ends_at, location_name')
-    .eq('id', parsed.data)
+    .eq('id', parsed.data.eventId)
     .maybeSingle()
   if (event) {
     await sendBookingEmail({
@@ -51,7 +70,7 @@ export async function bookEventAction(eventId: string): Promise<ActionResult> {
   }
   revalidatePath('/members/events')
   revalidatePath('/members')
-  revalidatePath(`/admin/events/${parsed.data}`)
+  revalidatePath(`/admin/events/${parsed.data.eventId}`)
 
   return {
     ok: true,

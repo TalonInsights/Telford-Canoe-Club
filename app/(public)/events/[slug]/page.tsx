@@ -188,6 +188,10 @@ export default async function EventDetailPage({ params }: Params) {
               isCurrentMember={Boolean(session?.isCurrentMember)}
               myBooking={myBooking}
               attendance={attendance}
+              hasEmergencyContact={Boolean(
+                session?.profile.emergency_contact_name?.trim() &&
+                  session?.profile.emergency_contact_phone?.trim()
+              )}
             />
             )}
           </div>

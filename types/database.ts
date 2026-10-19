@@ -471,6 +471,7 @@ export type Database = {
       }
       event_bookings: {
         Row: {
+          agreed_terms_at: string | null
           booked_at: string
           cancelled_at: string | null
           checked_in_at: string | null
@@ -478,12 +479,15 @@ export type Database = {
           event_id: string
           guests: number
           id: string
+          medical_flag: boolean | null
+          needs_kit: boolean
           note: string | null
           status: Database["public"]["Enums"]["booking_status"]
           updated_at: string | null
           user_id: string
         }
         Insert: {
+          agreed_terms_at?: string | null
           booked_at?: string
           cancelled_at?: string | null
           checked_in_at?: string | null
@@ -491,12 +495,15 @@ export type Database = {
           event_id: string
           guests?: number
           id?: string
+          medical_flag?: boolean | null
+          needs_kit?: boolean
           note?: string | null
           status?: Database["public"]["Enums"]["booking_status"]
           updated_at?: string | null
           user_id: string
         }
         Update: {
+          agreed_terms_at?: string | null
           booked_at?: string
           cancelled_at?: string | null
           checked_in_at?: string | null
@@ -504,6 +511,8 @@ export type Database = {
           event_id?: string
           guests?: number
           id?: string
+          medical_flag?: boolean | null
+          needs_kit?: boolean
           note?: string | null
           status?: Database["public"]["Enums"]["booking_status"]
           updated_at?: string | null
@@ -1907,7 +1916,12 @@ export type Database = {
         Returns: undefined
       }
       book_event: {
-        Args: { p_event_id: string }
+        Args: {
+          p_agree?: boolean
+          p_event_id: string
+          p_medical_flag?: boolean
+          p_needs_kit?: boolean
+        }
         Returns: Database["public"]["Enums"]["booking_status"]
       }
       cancel_booking: { Args: { p_booking_id: string }; Returns: Json }
