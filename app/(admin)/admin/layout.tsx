@@ -17,7 +17,7 @@ const links: RailLink[] = [
   { title: 'Events', href: '/admin/events', icon: 'calendar' },
   { title: 'Club shop', href: '/admin/shop', icon: 'bag' },
   { title: 'Email members', href: '/admin/email', icon: 'mail' },
-  { title: 'Import members', href: '/admin/members/invite', icon: 'upload' },
+  { title: 'Add members', href: '/admin/members/invite', icon: 'upload' },
   { title: 'Minutes', href: '/admin/minutes', icon: 'clipboard' },
   { title: 'Documents', href: '/admin/documents', icon: 'file' },
   { title: 'Page words', href: '/admin/content', icon: 'pencil' },
