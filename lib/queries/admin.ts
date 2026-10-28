@@ -82,8 +82,22 @@ export async function getMembersDirectory(): Promise<DirectoryRow[]> {
 
 export type MemberDetail = {
   profile: Tables<'profiles'>
-  memberships: (Tables<'memberships'> & { periodLabel: string; covered: CoveredMember[] })[]
+  memberships: (Tables<'memberships'> & {
+    periodLabel: string
+    /** The membership's own end date, or the club period end if unset. */
+    endsOnEffective: string | null
+    daysLeft: number | null
+    covered: CoveredMember[]
+  })[]
   bookings: (Tables<'event_bookings'> & { eventTitle: string | null })[]
+}
+
+/** Whole days until a date (end of that day, UTC); null if none. Query-layer only. */
+function daysUntil(endsOnISO: string | null | undefined): number | null {
+  if (!endsOnISO) return null
+  const end = new Date(`${endsOnISO}T23:59:59Z`)
+  if (Number.isNaN(+end)) return null
+  return Math.ceil((end.getTime() - Date.now()) / 86_400_000)
 }
 
 export async function getMemberDetail(userId: string): Promise<MemberDetail | null> {
@@ -93,7 +107,7 @@ export async function getMemberDetail(userId: string): Promise<MemberDetail | nu
     supabase.from('profiles').select('*').eq('user_id', userId).maybeSingle(),
     supabase
       .from('memberships')
-      .select('*, membership_periods(label), membership_members(*)')
+      .select('*, membership_periods(label, ends_on), membership_members(*)')
       .eq('primary_user_id', userId)
       .order('created_at', { ascending: false }),
     supabase
@@ -106,11 +120,17 @@ export async function getMemberDetail(userId: string): Promise<MemberDetail | nu
   if (!profile) return null
   return {
     profile,
-    memberships: (memberships ?? []).map((m) => ({
-      ...m,
-      periodLabel: (m.membership_periods as unknown as { label: string } | null)?.label ?? '',
-      covered: (m.membership_members as unknown as CoveredMember[]) ?? [],
-    })),
+    memberships: (memberships ?? []).map((m) => {
+      const period = m.membership_periods as unknown as { label: string; ends_on: string } | null
+      const endsOnEffective = m.ends_on ?? period?.ends_on ?? null
+      return {
+        ...m,
+        periodLabel: period?.label ?? '',
+        endsOnEffective,
+        daysLeft: daysUntil(endsOnEffective),
+        covered: (m.membership_members as unknown as CoveredMember[]) ?? [],
+      }
+    }),
     bookings: (bookings ?? []).map((b) => ({
       ...b,
       eventTitle: (b.events as unknown as { title: string } | null)?.title ?? null,

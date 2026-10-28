@@ -10,7 +10,23 @@ export type NoticeRow = Tables<'notices'>
 export type MyMembership = MembershipRow & {
   periodLabel: string
   periodEndsOn: string
+  /** When this membership actually ends: its own ends_on, or the period end if unset. */
+  endsOnEffective: string
+  /** Whole days until it ends (negative once past); null if no end date is known. */
+  daysLeft: number | null
   covered: CoveredMember[]
+}
+
+/**
+ * Days until a membership ends, counted to the end of that day in UTC. Null
+ * when there is no date. Computed here, never in a component, so reading the
+ * clock stays out of render.
+ */
+export function daysUntil(endsOnISO: string | null | undefined): number | null {
+  if (!endsOnISO) return null
+  const end = new Date(`${endsOnISO}T23:59:59Z`)
+  if (Number.isNaN(+end)) return null
+  return Math.ceil((end.getTime() - Date.now()) / 86_400_000)
 }
 
 export async function getMyMemberships(): Promise<MyMembership[]> {
@@ -28,10 +44,15 @@ export async function getMyMemberships(): Promise<MyMembership[]> {
     .order('created_at', { ascending: false })
   return (memberships ?? []).map((m) => {
     const period = m.membership_periods as unknown as { label: string; ends_on: string } | null
+    // The membership's own end date is the truth; fall back to the club period
+    // end for the older rows that never had one set.
+    const endsOnEffective = m.ends_on ?? period?.ends_on ?? ''
     return {
       ...m,
       periodLabel: period?.label ?? '',
       periodEndsOn: period?.ends_on ?? '',
+      endsOnEffective,
+      daysLeft: daysUntil(endsOnEffective),
       covered: (m.membership_members as unknown as CoveredMember[]) ?? [],
     }
   })

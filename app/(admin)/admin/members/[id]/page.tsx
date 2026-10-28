@@ -105,6 +105,19 @@ export default async function MemberRecordPage({ params }: { params: Promise<{ i
                     {m.paypal_capture_id && <> · ref {m.paypal_capture_id}</>}
                     {m.notes && <> · {m.notes}</>}
                   </p>
+                  {m.status === 'active' && m.endsOnEffective && (
+                    <p className="mt-1 text-micro text-ink-muted">
+                      Runs to {formatDate(m.endsOnEffective)}
+                      {m.daysLeft !== null && (
+                        <>
+                          {' · '}
+                          {m.daysLeft > 0
+                            ? `${m.daysLeft} day${m.daysLeft === 1 ? '' : 's'} left`
+                            : 'expired'}
+                        </>
+                      )}
+                    </p>
+                  )}
                   {m.covered.length > 1 && (
                     <div className="mt-2">
                       <p className="text-micro font-medium text-ink-muted">Covers {m.covered.length} people</p>

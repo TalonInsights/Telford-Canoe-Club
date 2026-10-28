@@ -48,8 +48,9 @@ export default async function MyMembershipPage({
         (m) => m.periodLabel === renewal.nextPeriod!.label && m.status !== 'cancelled'
       )
     : undefined
-  const expiringSoon =
-    active && renewal.daysLeft !== null && renewal.daysLeft <= 60 && renewal.daysLeft > 0
+  // Count down to THIS membership's own end, not the club period's — they only
+  // differ for a non-annual type or a mid-year import, but then it matters.
+  const expiringSoon = active && active.daysLeft !== null && active.daysLeft <= 60 && active.daysLeft > 0
 
   return (
     <div className="grid gap-4">
@@ -87,7 +88,8 @@ export default async function MyMembershipPage({
               {tierLabel[active.tier]} membership · {active.periodLabel}
             </h2>
             <p className="mt-1 text-sm text-ink-muted">
-              Runs to {formatDate(active.periodEndsOn)} · {formatMoneyGBP(active.amount_pence)}
+              {active.endsOnEffective && <>Runs to {formatDate(active.endsOnEffective)} · </>}
+              {formatMoneyGBP(active.amount_pence)}
               {active.paid_at && <> · paid {formatDate(active.paid_at)}</>}
             </p>
             {active.paypal_capture_id && (
@@ -104,11 +106,11 @@ export default async function MyMembershipPage({
               </p>
             )}
             {active.tier === 'family' && <AddFamilyMember membershipId={active.id} />}
-            {expiringSoon && !nextPeriodRow && (
+            {expiringSoon && (
               <p className="mt-3 flex items-center gap-2 text-sm text-warn">
                 <CalendarClock className="size-4" aria-hidden="true" />
-                Expires in {renewal.daysLeft} day{renewal.daysLeft === 1 ? '' : 's'}, renewal is
-                open below.
+                Expires in {active.daysLeft} day{active.daysLeft === 1 ? '' : 's'}
+                {renewal.open && !nextPeriodRow ? ', renewal is open below.' : '.'}
               </p>
             )}
           </>
