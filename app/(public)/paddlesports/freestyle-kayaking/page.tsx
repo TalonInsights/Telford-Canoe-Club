@@ -24,8 +24,8 @@ export default function FreestylePage() {
             'At the extreme end, freestyle kayakers throw huge loops into the air and link impressive combinations of moves. But freestyle isn’t just for advanced paddlers, it’s for everyone, from beginners to veterans who have only ever paddled river boats. Enjoy a soul surf carving along a green wave, spin your boat, or push for aerial moves: there’s an aspect of freestyle for any paddler at any level.',
           ],
           image: IMAGES.freestyle,
-          imageAlt: 'A freestyle kayaker throws huge air',
-          caption: 'Throwing huge air at Nottingham. Photo: Simon Wyndham',
+          imageAlt: 'A freestyle kayaker throwing an aerial move',
+          caption: 'Throwing big air on a freestyle feature',
         },
         {
           heading: 'Why freestyle makes every paddler better',
@@ -34,8 +34,8 @@ export default function FreestylePage() {
             'It will also hugely improve your roll. Yes, you will be getting very wet indeed, very often. The result is confidence: a reliable roll in all sorts of situations and positions.',
           ],
           image: IMAGES.newsFreestyle,
-          imageAlt: 'Surfing the wave at Jackfield',
-          caption: 'Surfing on the wave, the club’s own freestyle playground',
+          imageAlt: 'Freestyle paddler Matt Stephenson mid-move',
+          caption: 'Coaching with C1 world champion Matt Stephenson',
         },
         {
           heading: 'Workshops, Burners and world champions',

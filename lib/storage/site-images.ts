@@ -11,7 +11,7 @@ export const SITE_IMAGES_BUCKET = 'site-images'
 export function siteImageUrl(path: string | null | undefined): string | null {
   if (!path) return null
   if (/^https?:\/\//.test(path)) return path
-  if (path.startsWith('placeholders/')) return `/images/${path}`
+  if (path.startsWith('photos/')) return `/images/${path}`
   const base = process.env.NEXT_PUBLIC_SUPABASE_URL
   if (!base) return null
   return `${base.replace(/\/$/, '')}/storage/v1/object/public/${SITE_IMAGES_BUCKET}/${path}`

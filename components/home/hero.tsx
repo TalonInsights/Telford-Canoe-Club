@@ -39,7 +39,7 @@ export function Hero() {
   return (
     <section className="relative flex min-h-[80svh] items-end overflow-hidden bg-deep text-white md:min-h-[72svh]">
       <Image
-        src="/images/placeholders/hero-jackfield.jpg"
+        src="/images/photos/jackfield-rapid-wide.jpg"
         alt="Looking down on the River Severn breaking into rapids at Jackfield"
         fill
         priority

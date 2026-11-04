@@ -32,7 +32,7 @@ values
    'club_night', 'Jackfield Rapids', 'The Lloyds, Jackfield, Ironbridge, Telford TF8 7HJ',
    date_trunc('day', now()) + interval '4 days' + interval '17 hours 30 minutes',
    date_trunc('day', now()) + interval '4 days' + interval '21 hours',
-   'public', 'published', true, false, 'placeholders/hero-jackfield.jpg'),
+   'public', 'published', true, false, 'photos/jackfield-rapid-wide.jpg'),
   ('pool-session',
    'Pool session',
    'Indoor skills session — rolling practice and boat handling in warm water.',
@@ -46,7 +46,7 @@ values
    'freestyle', 'Jackfield Rapids', 'The Lloyds, Jackfield, Ironbridge, Telford TF8 7HJ',
    date_trunc('day', now()) + interval '13 days' + interval '10 hours',
    date_trunc('day', now()) + interval '13 days' + interval '13 hours',
-   'public', 'published', true, false, 'placeholders/fs-hpp-air.jpg');
+   'public', 'published', true, false, 'photos/freestyle-kayaking.jpg');
 
 insert into posts (slug, title, excerpt, category, cover_image_path, visibility, status, published_at, body)
 values

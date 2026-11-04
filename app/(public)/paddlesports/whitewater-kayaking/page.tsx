@@ -24,8 +24,8 @@ export default function WhitewaterPage() {
             'It’s a great way to spend time outdoors at any time of year, and a pastime that can take you all over the world if you want it to.',
           ],
           image: IMAGES.whitewater,
-          imageAlt: 'Kayaker relaxing on a wave on the River Dee',
-          caption: 'The less extreme end, chilling out on a wave on the River Dee in North Wales',
+          imageAlt: 'A kayaker running a whitewater drop',
+          caption: 'Reading the water on a whitewater river',
         },
         {
           heading: 'As mellow or as extreme as you like',
@@ -33,9 +33,9 @@ export default function WhitewaterPage() {
             'Despite the images you may have seen of paddlers launching off waterfalls, whitewater is graded from two to five, two the easiest, five the hardest, and there’s a grade for everyone. Beyond river trips there are also whole subsets to explore, from the dynamic tricks of freestyle to the technical racing of slalom.',
             'Whitewater kayaking at Telford Canoe Club suits all abilities. Whether you want a chilled-out day on the river or to push yourself, trips run to suit different skill levels and experience.',
           ],
-          image: IMAGES.newsFreestyle,
-          imageAlt: 'A member running a big rapid',
-          caption: 'One of our members running a waterfall in Norway',
+          image: IMAGES.rapid,
+          imageAlt: 'The Severn breaking into white water at Jackfield',
+          caption: 'Our own rapid at Jackfield when the river is up',
         },
         {
           heading: 'Learn on our own rapid',

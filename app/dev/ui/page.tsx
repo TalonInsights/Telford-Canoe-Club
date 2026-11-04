@@ -571,7 +571,7 @@ export default function UiGallery() {
               items={[
                 {
                   kind: 'image',
-                  src: '/images/placeholders/hero-jackfield.jpg',
+                  src: '/images/photos/jackfield-rapid-wide.jpg',
                   alt: 'Jackfield Rapids from above',
                   caption: 'Jackfield Rapids',
                 },

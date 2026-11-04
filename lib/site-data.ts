@@ -64,15 +64,24 @@ export type HomePost = {
   category: string | null
 }
 
-/** Local copies of the club's own photography (§9 map); originals from Simon replace these in place. */
+/** The club's own photography, served from `public/images/photos` (§9 map). */
 export const IMAGES = {
-  hero: '/images/placeholders/hero-jackfield.jpg',
-  anomaly: '/images/placeholders/cover-02.jpg',
-  rapid: '/images/placeholders/cover-03.jpg',
-  whitewater: '/images/placeholders/ww-dee-wave.jpg',
-  freestyle: '/images/placeholders/fs-hpp-air.jpg',
-  sup: '/images/placeholders/sup-hero.jpg',
-  newsFreestyle: '/images/placeholders/news-freestyle-2025.jpg',
+  /** Three kayakers on the rapid at Jackfield, shot from the gorge side (wide). */
+  hero: '/images/photos/jackfield-rapid-wide.jpg',
+  /** Freestyle play on the rapid at Jackfield. */
+  anomaly: '/images/photos/jackfield-play.jpg',
+  /** The Severn breaking into white water at Jackfield, from a paddler's view. */
+  rapid: '/images/photos/jackfield-wave.jpg',
+  /** A club paddler on a whitewater river. */
+  whitewater: '/images/photos/whitewater-kayaking.jpg',
+  /** A freestyle kayaker throwing an aerial move. */
+  freestyle: '/images/photos/freestyle-kayaking.jpg',
+  /** A club paddleboarder on calm water. */
+  sup: '/images/photos/paddleboarding.jpg',
+  /** A group paddleboarding session on calm water. */
+  supGroup: '/images/photos/paddleboarding-group.jpg',
+  /** Freestyle paddler Matt Stephenson mid-move. */
+  newsFreestyle: '/images/photos/matt-stephenson-freestyle.jpg',
 } as const
 
 export function getSiteSettings(): SiteSettings {
@@ -127,21 +136,21 @@ export function getSportCards(): SportCard[] {
       title: 'Whitewater kayaking',
       summary: 'Learn to read moving water on our own rapid, then join club trips further afield.',
       image: IMAGES.whitewater,
-      imageAlt: 'Kayaker paddling a wave on the River Dee',
+      imageAlt: 'A kayaker on a whitewater river',
     },
     {
       slug: 'freestyle-kayaking',
       title: 'Freestyle kayaking',
       summary: 'Surfing, spinning and throwing ends, the playful side of whitewater, coached at club sessions.',
       image: IMAGES.freestyle,
-      imageAlt: 'Freestyle kayaker mid-air at Holme Pierrepont',
+      imageAlt: 'A freestyle kayaker throwing an aerial move',
     },
     {
       slug: 'paddleboarding',
       title: 'Paddleboarding',
       summary: 'Calmer water on quieter days, stand-up paddling for everyone from first-timers up.',
       image: IMAGES.sup,
-      imageAlt: 'Paddleboarders on flat water',
+      imageAlt: 'A club paddleboarder on calm water',
     },
   ]
 }
@@ -182,7 +191,7 @@ export function getLatestPosts(_limit = 3): HomePost[] {
       excerpt: 'A coached freestyle session on our own wave with GB freestyle paddler Matt Stephenson.',
       publishedAt: '2025-08-09',
       image: IMAGES.newsFreestyle,
-      imageAlt: 'Freestyle kayaker playing the wave at Jackfield',
+      imageAlt: 'Freestyle paddler Matt Stephenson mid-move',
       category: 'Coaching',
     },
   ]

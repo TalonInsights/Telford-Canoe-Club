@@ -50,7 +50,7 @@ function seedEvents(): EventRow[] {
       ends_at: day(4, 21),
       booking_enabled: false,
       water_level_dependent: true,
-      cover_image_path: 'placeholders/hero-jackfield.jpg',
+      cover_image_path: 'photos/jackfield-rapid-wide.jpg',
     },
     {
       ...base,
@@ -81,7 +81,7 @@ function seedEvents(): EventRow[] {
       ends_at: day(13, 13),
       booking_enabled: false,
       water_level_dependent: true,
-      cover_image_path: 'placeholders/fs-hpp-air.jpg',
+      cover_image_path: 'photos/freestyle-kayaking.jpg',
     },
   ]
 }

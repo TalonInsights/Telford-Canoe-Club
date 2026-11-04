@@ -79,7 +79,7 @@ export const newsPosts: NewsPost[] = [
     category: 'Events',
     publishedAt: '2025-08-09',
     image: IMAGES.newsFreestyle,
-    imageAlt: 'Freestyle kayaker playing the wave at Jackfield',
+    imageAlt: 'Freestyle paddler Matt Stephenson mid-move',
     body: [
       {
         paragraphs: [
