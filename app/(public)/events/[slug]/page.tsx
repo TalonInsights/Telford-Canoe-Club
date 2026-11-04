@@ -55,6 +55,7 @@ export default async function EventDetailPage({ params }: Params) {
         intro={event.summary ?? undefined}
         image={eventImageUrl(event.cover_image_path) ?? undefined}
         imageAlt={event.title}
+        imagePosition="object-top"
         crumbs={[{ title: 'Events', href: '/events' }]}
       />
       <Section tone="white">

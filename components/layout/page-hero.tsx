@@ -33,6 +33,7 @@ export function PageHero({
   intro,
   image,
   imageAlt = '',
+  imagePosition = 'object-center',
   crumbs,
   breadcrumb,
   className,
@@ -41,6 +42,8 @@ export function PageHero({
   intro?: string
   image?: string
   imageAlt?: string
+  /** object-position utility for covers we don't frame (e.g. 'object-top' for event uploads). */
+  imagePosition?: string
   crumbs?: Crumb[]
   breadcrumb?: React.ReactNode
   className?: string
@@ -60,7 +63,7 @@ export function PageHero({
             fill
             priority
             sizes="100vw"
-            className="object-cover object-center"
+            className={cn('object-cover', imagePosition)}
           />
           <div
             className="absolute inset-0 bg-gradient-to-t from-deep/95 via-deep/65 via-40% to-deep/25"

@@ -19,6 +19,7 @@ export function CardShell({
   image,
   imageAlt = '',
   imageSizes = '(min-width: 1024px) 384px, (min-width: 640px) 50vw, 100vw',
+  imagePosition,
   eyebrow,
   title,
   summary,
@@ -30,6 +31,8 @@ export function CardShell({
   image?: string | null
   imageAlt?: string
   imageSizes?: string
+  /** object-position utility (e.g. 'object-top') for covers we don't control the framing of. */
+  imagePosition?: string
   eyebrow?: React.ReactNode
   title: string
   summary?: string
@@ -47,7 +50,13 @@ export function CardShell({
     >
       <div className="relative aspect-[3/2] w-full">
         {image ? (
-          <Image src={image} alt={imageAlt} fill sizes={imageSizes} className="object-cover" />
+          <Image
+            src={image}
+            alt={imageAlt}
+            fill
+            sizes={imageSizes}
+            className={cn('object-cover', imagePosition)}
+          />
         ) : (
           <ImageFallback />
         )}
@@ -127,6 +136,9 @@ export function EventCard({
   return (
     <CardShell
       {...props}
+      // Event covers are member-uploaded and often portrait; anchor to the top
+      // so a standing paddler's head is never cropped out of the 3:2 thumbnail.
+      imagePosition="object-top"
       eyebrow={category ? <Badge variant="outline">{category}</Badge> : undefined}
       meta={
         <>

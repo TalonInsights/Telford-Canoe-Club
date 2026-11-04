@@ -304,10 +304,10 @@ export function EventForm({
       </div>
 
       <div className="grid gap-4 lg:col-span-5">
-        <Card title="Picture" intro="Landscape works best, it fills the card and the top of the event page.">
+        <Card title="Picture" intro="Landscape works best. It fills the card and the top of the event page, anchored to the top so heads aren't cropped — this preview shows the exact crop.">
           {coverUrl ? (
             <div className="relative aspect-[3/2] overflow-hidden rounded-lg border border-stone">
-              <Image src={coverUrl} alt="" fill unoptimized sizes="480px" className="object-cover" />
+              <Image src={coverUrl} alt="" fill unoptimized sizes="480px" className="object-cover object-top" />
             </div>
           ) : (
             <div className="flex aspect-[3/2] items-center justify-center rounded-lg bg-deep text-white/40">
