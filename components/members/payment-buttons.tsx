@@ -7,6 +7,7 @@ import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { abandonOnlineOrderAction, payPendingOnlineAction } from '@/lib/actions/payments'
+import { goToCheckout } from '@/lib/payments/checkout-redirect'
 
 /** "Pay online instead" on a pending (treasurer-path) membership. */
 export function PayOnlineButton({
@@ -25,7 +26,7 @@ export function PayOnlineButton({
       onClick={() =>
         startTransition(async () => {
           const result = await payPendingOnlineAction(membershipId)
-          if (result.ok) router.push(result.redirect)
+          if (result.ok) goToCheckout(result.redirect, router)
           else toast.error(result.message)
         })
       }

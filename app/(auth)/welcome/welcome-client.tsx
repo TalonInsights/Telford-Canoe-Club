@@ -8,6 +8,7 @@ import { toast } from 'sonner'
 
 import { requestMembershipAction } from '@/lib/actions/membership'
 import { startOnlineCheckoutAction } from '@/lib/actions/payments'
+import { goToCheckout } from '@/lib/payments/checkout-redirect'
 import type { FamilyMemberInput } from '@/lib/membership/family'
 import type { PaymentMode } from '@/lib/payments/mode'
 import { isOnlinePaymentOn } from '@/lib/payments/mode'
@@ -73,7 +74,7 @@ export function WelcomeClient({
       })
       setBusy(null)
       if (result.ok) {
-        router.push(result.redirect)
+        goToCheckout(result.redirect, router)
       } else {
         toast.error(result.message)
       }

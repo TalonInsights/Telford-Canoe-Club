@@ -1,16 +1,23 @@
 import { NextResponse } from 'next/server'
 
 import { isPaypalConfigured, verifyWebhookSignature } from '@/lib/payments/paypal'
+import {
+  activateMembershipByOrder,
+  activateMerchByOrder,
+  refundByCapture,
+} from '@/lib/payments/paypal-activate'
 import { createAdminClient } from '@/lib/supabase/admin'
-import type { Json } from '@/types/database'
 
 export const runtime = 'nodejs'
 
 /**
- * P4-03 — PayPal webhook: the reconciliation path (on-approve capture is the
- * fast path). DORMANT until D1: without PayPal credentials + webhook id +
- * service-role key it answers 503 and touches nothing. Idempotent on capture
- * id; replays are safe.
+ * P4-03 — PayPal webhook: the reconciliation path (the /checkout/return capture
+ * is the fast path; both share the idempotent helpers in paypal-activate, so
+ * whichever arrives first wins). DORMANT until D1: without PayPal credentials +
+ * webhook id + service-role key it answers 503 and touches nothing.
+ *
+ * A membership and a shop order are told apart by the `custom_id` PayPal echoes
+ * back: shop orders carry a `merch|…` prefix, memberships carry `user|tier|period`.
  */
 export async function POST(request: Request) {
   if (!isPaypalConfigured() || !process.env.PAYPAL_WEBHOOK_ID) {
@@ -41,85 +48,74 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'invalid body' }, { status: 400 })
   }
 
-  const supabase = createAdminClient()
   const captureId = event.resource?.id ?? null
   const orderId = event.resource?.supplementary_data?.related_ids?.order_id ?? null
-
-  const audit = (action: string, entityId: string | null, after: Json) =>
-    supabase.rpc('audit', {
-      p_action: action,
-      p_entity: 'memberships',
-      ...(entityId ? { p_entity_id: entityId } : {}),
-      p_after: after,
-    })
+  const isMerch = (event.resource?.custom_id ?? '').startsWith('merch|')
 
   switch (event.event_type) {
     case 'PAYMENT.CAPTURE.COMPLETED': {
-      if (!captureId) return NextResponse.json({ error: 'no capture id' }, { status: 400 })
-
-      // Already recorded (fast path won) → done.
-      const { data: byCapture } = await supabase
-        .from('memberships')
-        .select('id, status')
-        .eq('paypal_capture_id', captureId)
-        .maybeSingle()
-      if (byCapture) return NextResponse.json({ ok: true, deduped: true })
-
-      // Browser closed mid-capture: find the pending row by order id.
-      if (orderId) {
-        const { data: byOrder } = await supabase
-          .from('memberships')
-          .select('id, status')
-          .eq('paypal_order_id', orderId)
-          .maybeSingle()
-        if (byOrder && byOrder.status === 'pending') {
-          await supabase
-            .from('memberships')
-            .update({ status: 'active', paid_at: new Date().toISOString(), paypal_capture_id: captureId })
-            .eq('id', byOrder.id)
-          await audit('membership.paid_online', byOrder.id, {
-            status: 'active',
-            capture_ref: captureId,
-            gateway: 'paypal-webhook',
-          })
-          return NextResponse.json({ ok: true, activated: byOrder.id })
-        }
+      if (!captureId || !orderId) {
+        return NextResponse.json({ error: 'missing capture or order id' }, { status: 400 })
       }
-      await audit('payment.webhook_unmatched', null, {
-        event: event.event_type,
-        capture: captureId,
-        order: orderId,
+      const result = isMerch
+        ? await activateMerchByOrder({ orderId, captureId })
+        : await activateMembershipByOrder({ orderId, captureId })
+      if (!result.ok) {
+        await createAdminClient().rpc('audit', {
+          p_action: 'payment.webhook_unmatched',
+          p_entity: isMerch ? 'merch_orders' : 'memberships',
+          p_after: { event: event.event_type, capture: captureId, order: orderId, reason: result.reason },
+        })
+        return NextResponse.json({ ok: true, unmatched: true })
+      }
+      return NextResponse.json({
+        ok: true,
+        kind: result.kind,
+        id: result.id,
+        deduped: !result.newlyActivated,
       })
-      return NextResponse.json({ ok: true, unmatched: true })
     }
 
     case 'PAYMENT.CAPTURE.REFUNDED': {
       if (!captureId) return NextResponse.json({ error: 'no capture id' }, { status: 400 })
-      const { data: m } = await supabase
-        .from('memberships')
-        .select('id, status')
-        .eq('paypal_capture_id', captureId)
-        .maybeSingle()
-      if (m && m.status !== 'refunded') {
-        await supabase.from('memberships').update({ status: 'refunded' }).eq('id', m.id)
-        await audit('membership.refunded', m.id, { via: 'paypal-webhook', capture_ref: captureId })
-      }
+      await refundByCapture({ captureId, kind: isMerch ? 'merch' : 'membership' })
       return NextResponse.json({ ok: true })
     }
 
     case 'PAYMENT.CAPTURE.DENIED':
     case 'PAYMENT.CAPTURE.PENDING': {
       if (orderId) {
-        const { data: m } = await supabase
-          .from('memberships')
-          .select('id')
-          .eq('paypal_order_id', orderId)
-          .maybeSingle()
-        if (m) {
-          await audit('payment.capture_' + (event.event_type.endsWith('DENIED') ? 'declined' : 'held'), m.id, {
-            via: 'paypal-webhook',
-            status: event.resource?.status,
-          })
+        const supabase = createAdminClient()
+        const action = 'payment.capture_' + (event.event_type.endsWith('DENIED') ? 'declined' : 'held')
+        const after = { via: 'paypal-webhook', status: event.resource?.status }
+        if (isMerch) {
+          const { data: row } = await supabase
+            .from('merch_orders')
+            .select('id')
+            .eq('order_ref', orderId)
+            .maybeSingle()
+          if (row) {
+            await supabase.rpc('audit', {
+              p_action: action,
+              p_entity: 'merch_orders',
+              p_entity_id: row.id,
+              p_after: after,
+            })
+          }
+        } else {
+          const { data: row } = await supabase
+            .from('memberships')
+            .select('id')
+            .eq('paypal_order_id', orderId)
+            .maybeSingle()
+          if (row) {
+            await supabase.rpc('audit', {
+              p_action: action,
+              p_entity: 'memberships',
+              p_entity_id: row.id,
+              p_after: after,
+            })
+          }
         }
       }
       return NextResponse.json({ ok: true })

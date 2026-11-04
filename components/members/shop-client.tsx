@@ -12,6 +12,7 @@ import {
   startShopCheckoutAction,
 } from '@/lib/actions/merch'
 import type { MerchOrder, MerchProduct } from '@/lib/queries/merch'
+import { goToCheckout } from '@/lib/payments/checkout-redirect'
 import { formatMoneyGBP } from '@/lib/format'
 import { siteImageUrl } from '@/lib/storage/site-images'
 import { ClubBadge } from '@/components/site/brand'
@@ -187,7 +188,7 @@ export function ShopClient({
     startTransition(async () => {
       if (!basket) return
       const result = await startShopCheckoutAction(basket.id)
-      if (result.ok) router.push(result.redirect)
+      if (result.ok) goToCheckout(result.redirect, router)
       else toast.error(result.message)
     })
 
