@@ -10,7 +10,7 @@ import { BlocksView } from '@/components/site/blocks-view'
 import { getContentBlock } from '@/lib/queries/content'
 import { getClubSettings } from '@/lib/queries/settings'
 import { getRiverBands } from '@/lib/queries/river-bands'
-import { getRiverLevel } from '@/lib/river-level'
+import { BUILDWAS_STATION_URL, getRiverLevel } from '@/lib/river-level'
 import { bandRangeLabel, matchBand, metresToCm } from '@/lib/river/bands'
 import { cn } from '@/lib/utils'
 
@@ -89,7 +89,7 @@ export default async function RiverLevelsPage() {
 
             <Button asChild variant="secondary" className="mt-4">
               <a
-                href={level?.stationUrl ?? 'https://check-for-flooding.service.gov.uk/station/2134'}
+                href={level?.stationUrl ?? BUILDWAS_STATION_URL}
                 target="_blank"
                 rel="noopener noreferrer"
               >

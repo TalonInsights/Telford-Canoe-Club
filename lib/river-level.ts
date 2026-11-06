@@ -73,8 +73,22 @@ const WINDOW_READINGS = 13
  */
 const TREND_THRESHOLD_METRES = 0.01
 
+/**
+ * The public "Check for flooding" site keys stations by their RLOIid, NOT by the
+ * real-time API's station notation. For Buildwas those differ: the API notation
+ * is 2134, but /station/2134 on the public site is a River Tame gauge (Lea
+ * Marston). Buildwas on the Severn is RLOIid 2058. Linking by notation was the
+ * "river level links to the wrong river" bug — always build the public link from
+ * the RLOIid.
+ */
+const CHECK_FOR_FLOODING = 'https://check-for-flooding.service.gov.uk/station'
+
+/** The Buildwas (Severn) public gauge page — the correct fallback for both river-level surfaces. */
+export const BUILDWAS_STATION_URL = `${CHECK_FOR_FLOODING}/2058`
+
 const DEFAULT_STATION = {
   ref: '2134',
+  rloiId: '2058',
   label: 'Buildwas',
   riverName: 'River Severn',
 }
@@ -86,6 +100,8 @@ type EAStation = {
   notation?: string
   label?: string
   riverName?: string
+  /** River Levels On the Internet id — the key the public "Check for flooding" site uses. */
+  RLOIid?: string
 }
 
 type EAReading = {
@@ -113,7 +129,7 @@ async function eaFetch<T>(path: string, timeoutMs: number): Promise<T | null> {
   }
 }
 
-type ResolvedStation = { ref: string; label?: string; riverName?: string }
+type ResolvedStation = { ref: string; rloiId?: string; label?: string; riverName?: string }
 
 /**
  * The station to read. The default costs nothing: we already know which gauge
@@ -133,7 +149,12 @@ async function resolveStation(timeoutMs: number): Promise<ResolvedStation | null
   const station =
     data?.items?.find((s) => s.riverName === 'River Severn') ?? data?.items?.[0] ?? null
   if (!station?.notation) return null
-  return { ref: station.notation, label: station.label, riverName: station.riverName }
+  return {
+    ref: station.notation,
+    rloiId: station.RLOIid,
+    label: station.label,
+    riverName: station.riverName,
+  }
 }
 
 async function readLevel(timeoutMs: number): Promise<RiverLevel | null> {
@@ -160,6 +181,9 @@ async function readLevel(timeoutMs: number): Promise<RiverLevel | null> {
   if (typeof latest?.value !== 'number' || !latest.dateTime) return null
 
   const described = Array.isArray(doc?.items) ? doc?.items?.[0] : doc?.items
+  // The public gauge page is keyed by RLOIid, never the API notation. Prefer the
+  // id resolved from the search/default; fall back to the station document's.
+  const rloiId = station.rloiId ?? described?.RLOIid
 
   // A station can publish more than one level measure (upstream and downstream
   // stage, say). Comparing across measures would invent a trend, so the window
@@ -185,7 +209,9 @@ async function readLevel(timeoutMs: number): Promise<RiverLevel | null> {
     riverName: station.riverName ?? described?.riverName ?? DEFAULT_STATION.riverName,
     levelMetres: latest.value,
     readingTime: latest.dateTime,
-    stationUrl: `https://check-for-flooding.service.gov.uk/station/${station.ref}`,
+    stationUrl: rloiId
+      ? `${CHECK_FOR_FLOODING}/${rloiId}`
+      : `${API}/id/stations/${encodeURIComponent(station.ref)}`,
     trend:
       changeMetres === null
         ? null

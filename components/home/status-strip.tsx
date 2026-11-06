@@ -23,7 +23,7 @@ import Link from 'next/link'
 
 import { Container } from '@/components/layout/container'
 import { formatDateShort, formatTime } from '@/lib/format'
-import { describeRiverTrend, getRiverLevel, type RiverTrend } from '@/lib/river-level'
+import { BUILDWAS_STATION_URL, describeRiverTrend, getRiverLevel, type RiverTrend } from '@/lib/river-level'
 import { getRiverBands } from '@/lib/queries/river-bands'
 import { matchBand, metresToCm } from '@/lib/river/bands'
 import { getClubSettings } from '@/lib/queries/settings'
@@ -161,7 +161,7 @@ export async function StatusStrip() {
               label="Severn level"
               value="Level unavailable"
               detail="Check the EA gauge"
-              href="https://check-for-flooding.service.gov.uk/station/2134"
+              href={BUILDWAS_STATION_URL}
               external
             />
           )}
