@@ -58,5 +58,5 @@ export async function addFamilyMemberAction(input: AddFamilyMemberInput): Promis
 
   revalidatePath('/members/membership')
   revalidatePath(`/admin/members/${session.userId}`)
-  return { ok: true, message: `${v.name} added to your membership` }
+  return { ok: true, message: `${v.name} added to the membership` }
 }

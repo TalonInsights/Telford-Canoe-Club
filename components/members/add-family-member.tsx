@@ -15,7 +15,14 @@ import { Input } from '@/components/ui/input'
  * raised of a parent who adds one child at sign-up and forgets the second.
  * The form is collapsed until asked for, so it never clutters the common view.
  */
-export function AddFamilyMember({ membershipId }: { membershipId: string }) {
+export function AddFamilyMember({
+  membershipId,
+  admin = false,
+}: {
+  membershipId: string
+  /** Committee editing someone else's record — neutral wording instead of "my". */
+  admin?: boolean
+}) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [pending, startTransition] = useTransition()
@@ -59,7 +66,7 @@ export function AddFamilyMember({ membershipId }: { membershipId: string }) {
       </div>
       <div className="flex flex-wrap gap-2">
         <Button disabled={pending || v.name.trim().length < 2} onClick={add}>
-          {pending ? 'Adding…' : 'Add to my membership'}
+          {pending ? 'Adding…' : admin ? 'Add to this membership' : 'Add to my membership'}
         </Button>
         <Button variant="ghost" disabled={pending} onClick={() => setOpen(false)}>
           Cancel

@@ -5,6 +5,7 @@ import { History } from 'lucide-react'
 
 import { CancelMembershipButton } from '@/components/admin/cancel-membership'
 import { MemberEditor } from '@/components/admin/member-editor'
+import { AddFamilyMember } from '@/components/members/add-family-member'
 import { ExtendMembershipButton, MarkRefundedButton } from '@/components/admin/membership-tools'
 import { RecordPaymentButton } from '@/components/admin/record-payment'
 import { RoleControl } from '@/components/admin/role-control'
@@ -164,6 +165,9 @@ export default async function MemberRecordPage({ params }: { params: Promise<{ i
                       />
                     )}
                   </div>
+                  {m.status === 'active' && m.tier === 'family' && (
+                    <AddFamilyMember membershipId={m.id} admin />
+                  )}
                 </li>
               ))}
             </ul>
