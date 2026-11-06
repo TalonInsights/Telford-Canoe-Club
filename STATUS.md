@@ -2,6 +2,15 @@
 
 Spec: `docs/TCC-BUILD-SPEC-v2.0.md` · Validation: `docs/SPEC-VALIDATION.md` · Rule: a task is ticked only when its acceptance line is demonstrably true.
 
+## Pre-ship readiness pass (6 Nov 2026)
+Full audit for launch onto **telfordcanoeclub.co.uk**. Code is green and functional; what remains is ops/content the club must provide.
+- [x] Health: typecheck clean, 0 lint errors, 27/27 tests, production build OK. All public routes 200, unknown routes 404, no console errors, no mobile overflow at 375. Nav + footer links all resolve; account menu role-gated.
+- [x] `robots.ts` opened for production only (private areas disallowed, sitemap advertised); previews stay blocked. **[P2-23 done]**
+- [x] `/dev/*` proving grounds removed. **[P12-02 done]**
+- [x] All site URLs now default to the real domain and build email links from `NEXT_PUBLIC_SITE_URL`. Cron endpoints all fail-closed without `CRON_SECRET`.
+- [ ] **LAUNCH BLOCKER — policy & role-description PDFs** still link to the old WordPress site (`/wp-content/uploads/...`); they 404 the moment the new site takes the domain. Club must supply the ~9 policy PDFs + role-description docs to re-host (public/ or Supabase). **[P6-03]**
+- [ ] **Ops before cutover:** set `NEXT_PUBLIC_SITE_URL`, `CRON_SECRET`, Supabase keys (+ D5 Resend, D1 PayPal) in Vercel; turn Supabase email confirmation back ON; remove the `rls-*@test.invalid` accounts. Without D5 Resend, NO club email sends (receipts, reminders, contact form, admin-created members' login links).
+
 ## Phase 0 — Scaffold, tokens, component sourcing, shell
 - [x] P0-01 Init Next + TS strict + Tailwind v4 + pnpm; ESLint/Prettier; CLAUDE.md; STATUS.md; .env.example; design-decisions — `pnpm build` passes (Next 16.3.3, React 19.2.8, Tailwind v4, TS strict)
 - [x] P0-02 shadcn init (radix base, CSS vars, neutral); 21st via connected MCP (live search verified); docs/components.md created
