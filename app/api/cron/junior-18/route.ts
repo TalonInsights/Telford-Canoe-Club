@@ -16,7 +16,7 @@ export const dynamic = 'force-dynamic'
  */
 export async function GET(request: Request) {
   const secret = process.env.CRON_SECRET
-  if (secret && request.headers.get('authorization') !== `Bearer ${secret}`) {
+  if (!secret || request.headers.get('authorization') !== `Bearer ${secret}`) {
     return NextResponse.json({ error: 'unauthorised' }, { status: 401 })
   }
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY || !process.env.NEXT_PUBLIC_SUPABASE_URL) {
@@ -31,7 +31,7 @@ export async function GET(request: Request) {
   if (flagged.length === 0) return NextResponse.json({ ok: true, flagged: 0 })
 
   const names = flagged.map((r) => r.display_name).filter(Boolean)
-  const site = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://telford-canoe-club.vercel.app'
+  const site = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://telfordcanoeclub.co.uk'
   const email = await notifyCommittee({
     subject: `${flagged.length} junior${flagged.length === 1 ? '' : 's'} turned 18 — membership to sort`,
     body:

@@ -2,15 +2,9 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   images: {
-    // Placeholder photography can also load straight from the club's current
-    // WordPress uploads until Simon's originals arrive.
+    // Committee-uploaded event covers (P5-02) in the public site-images bucket.
+    // The club's own photography now ships locally under public/images/photos.
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'telfordcanoeclub.co.uk',
-        pathname: '/wp-content/uploads/**',
-      },
-      // Committee-uploaded event covers (P5-02) in the public site-images bucket.
       {
         protocol: 'https',
         hostname: '*.supabase.co',

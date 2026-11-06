@@ -17,7 +17,7 @@ export async function GET(_req: Request, ctx: { params: Promise<{ slug: string }
     return new Response('Not found', { status: 404 })
   }
 
-  const site = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://telford-canoe-club.vercel.app'
+  const site = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://telfordcanoeclub.co.uk'
   const end = event.ends_at ?? new Date(+new Date(event.starts_at) + 2 * 3600_000).toISOString()
   const location = [event.location_name, event.location_address].filter(Boolean).join(', ')
 

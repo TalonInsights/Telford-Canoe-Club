@@ -22,6 +22,7 @@ export async function sendMembershipActivatedEmails(input: {
   const { Resend } = await import('resend')
   const resend = new Resend(process.env.RESEND_API_KEY)
   const from = process.env.EMAIL_FROM ?? 'Telford Canoe Club <onboarding@resend.dev>'
+  const site = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://telfordcanoeclub.co.uk'
   const amount = formatMoneyGBP(input.amountPence)
   const ref = input.paymentRef ? `\nPayment reference: ${input.paymentRef}` : ''
 
@@ -37,8 +38,8 @@ export async function sendMembershipActivatedEmails(input: {
           `Your ${input.tierLabel.toLowerCase()} membership for ${input.periodLabel} is now active` +
           ` (${amount}, paid by ${input.method}).${ref}\n\n` +
           `What's next:\n` +
-          `- Your members area is open: https://telford-canoe-club.vercel.app/members\n` +
-          `- Session times and bookings: https://telford-canoe-club.vercel.app/events\n` +
+          `- Your members area is open: ${site}/members\n` +
+          `- Session times and bookings: ${site}/events\n` +
           `- Site access details live under member notices.\n\n` +
           `See you on the water,\nTelford Canoe Club`,
       })
@@ -52,7 +53,7 @@ export async function sendMembershipActivatedEmails(input: {
         subject: `Membership activated: ${input.memberName} (${input.tierLabel}, ${input.periodLabel})`,
         text:
           `${input.memberName}, ${input.tierLabel}, ${input.periodLabel}, ${amount}, via ${input.method}.${ref}\n` +
-          `Directory: https://telford-canoe-club.vercel.app/admin/members`,
+          `Directory: ${site}/admin/members`,
       })
     )
   }

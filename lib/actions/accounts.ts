@@ -54,7 +54,7 @@ export type ImportResult =
   | { ok: false; message: string }
   | { ok: true; dryRun: boolean; invitesRequested: boolean; emailLive: boolean; rows: RowOutcome[] }
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://telford-canoe-club.vercel.app'
+const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://telfordcanoeclub.co.uk'
 
 export async function adminCreateAccountsAction(input: AccountImportInput): Promise<ImportResult> {
   await requireRole('admin')

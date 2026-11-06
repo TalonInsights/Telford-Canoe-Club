@@ -16,7 +16,7 @@ const figtree = Figtree({
   variable: '--font-figtree',
 })
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://telford-canoe-club.vercel.app'
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://telfordcanoeclub.co.uk'
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

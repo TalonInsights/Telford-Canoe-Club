@@ -33,7 +33,7 @@ export type BatchOutcome = {
 }
 
 function siteUrl(): string {
-  return process.env.NEXT_PUBLIC_SITE_URL ?? 'https://telford-canoe-club.vercel.app'
+  return process.env.NEXT_PUBLIC_SITE_URL ?? 'https://telfordcanoeclub.co.uk'
 }
 
 export function unsubscribeUrl(token: string): string {

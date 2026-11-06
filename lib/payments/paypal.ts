@@ -59,7 +59,7 @@ export const paypalProvider: PaymentProvider = {
   mode: 'paypal',
 
   async createOrder(input) {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://telford-canoe-club.vercel.app'
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://telfordcanoeclub.co.uk'
     const res = await paypalFetch('/v2/checkout/orders', {
       method: 'POST',
       body: JSON.stringify({
@@ -102,7 +102,7 @@ export const paypalProvider: PaymentProvider = {
    * cross-phase defect in STATUS and must be fixed before D1 goes live.
    */
   async createMerchOrder(input) {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://telford-canoe-club.vercel.app'
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://telfordcanoeclub.co.uk'
     const res = await paypalFetch('/v2/checkout/orders', {
       method: 'POST',
       body: JSON.stringify({

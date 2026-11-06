@@ -28,7 +28,7 @@ export async function sendBookingEmail(input: {
   const { Resend } = await import('resend')
   const resend = new Resend(process.env.RESEND_API_KEY)
   const from = process.env.EMAIL_FROM ?? 'Telford Canoe Club <onboarding@resend.dev>'
-  const site = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://telford-canoe-club.vercel.app'
+  const site = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://telfordcanoeclub.co.uk'
   const link = `${site}/events/${input.slug}`
   const where = input.location ? `\nWhere: ${input.location}` : ''
   const greeting = `Hi ${input.name || 'there'},\n\n`

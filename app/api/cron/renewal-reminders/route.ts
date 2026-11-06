@@ -20,7 +20,7 @@ function isReminderDay(now: Date): boolean {
  */
 export async function GET(request: Request) {
   const secret = process.env.CRON_SECRET
-  if (secret && request.headers.get('authorization') !== `Bearer ${secret}`) {
+  if (!secret || request.headers.get('authorization') !== `Bearer ${secret}`) {
     return NextResponse.json({ error: 'unauthorised' }, { status: 401 })
   }
   if (!isReminderDay(new Date()) && !request.headers.get('x-tcc-force')) {
@@ -80,6 +80,7 @@ export async function GET(request: Request) {
   const { Resend } = await import('resend')
   const resend = new Resend(process.env.RESEND_API_KEY)
   const from = process.env.EMAIL_FROM ?? 'Telford Canoe Club <onboarding@resend.dev>'
+  const site = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://telfordcanoeclub.co.uk'
   let sent = 0
   for (const p of sendable) {
     const tier = tierByUser.get(p.user_id) ?? 'adult'
@@ -91,10 +92,10 @@ export async function GET(request: Request) {
         `Hi ${p.first_name ?? 'there'},\n\n` +
         `Your ${current.label} membership wraps up soon, renewing for ${next.label} takes two minutes ` +
         `(${tier} membership, ${formatMoneyGBP(priceByTier[tier])}).\n\n` +
-        `Renew here: https://telford-canoe-club.vercel.app/welcome?renew=1\n` +
+        `Renew here: ${site}/welcome?renew=1\n` +
         `Prefer bank transfer or cash? The same page shows the treasurer route.\n\n` +
         `See you on the water,\nTelford Canoe Club\n\n` +
-        `You can switch these emails off in your profile: https://telford-canoe-club.vercel.app/members/profile`,
+        `You can switch these emails off in your profile: ${site}/members/profile`,
     })
     if (!error) sent += 1
   }

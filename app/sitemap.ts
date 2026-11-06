@@ -4,7 +4,7 @@ import { newsPosts } from '@/lib/content/news'
 import { getPublishedEvents } from '@/lib/queries/events'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://telford-canoe-club.vercel.app'
+  const base = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://telfordcanoeclub.co.uk'
   const events = await getPublishedEvents()
 
   const fixed = [
