@@ -2,13 +2,19 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 import { MembershipTypesEditor } from '@/components/admin/membership-types-editor'
+import { MembershipYearEditor } from '@/components/admin/membership-year-editor'
 import { requireRole } from '@/lib/auth/guards'
 import { getAllMembershipTypes } from '@/lib/queries/membership-types'
+import { getMembershipPeriods } from '@/lib/queries/membership-periods'
 
 export const metadata: Metadata = { title: 'Memberships on sale' }
 
 export default async function AdminMembershipTypesPage() {
-  const [, types] = await Promise.all([requireRole('admin'), getAllMembershipTypes()])
+  const [, types, periods] = await Promise.all([
+    requireRole('admin'),
+    getAllMembershipTypes(),
+    getMembershipPeriods(),
+  ])
 
   return (
     <>
@@ -37,6 +43,24 @@ export default async function AdminMembershipTypesPage() {
       <div className="mt-6">
         <MembershipTypesEditor types={types} />
       </div>
+
+      <section className="mt-12">
+        <h2 className="text-xl">The membership year</h2>
+        <p className="mt-1 max-w-[68ch] text-sm text-ink-muted">
+          When the club&apos;s year starts and ends. Run a calendar year, or set it to something
+          like April to March — whatever the club uses. The year marked <strong>current</strong> is
+          the one the join page sells and the one renewals count down to. Changing a year never
+          alters a membership somebody already bought: each one fixed its own end date when it was
+          paid for. The wording shown on the join page is set separately under{' '}
+          <Link href="/admin/settings" className="underline underline-offset-2">
+            settings
+          </Link>
+          .
+        </p>
+        <div className="mt-4">
+          <MembershipYearEditor periods={periods} />
+        </div>
+      </section>
     </>
   )
 }
