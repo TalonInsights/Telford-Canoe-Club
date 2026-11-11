@@ -56,6 +56,15 @@ export type ImportResult =
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://telfordcanoeclub.co.uk'
 
+/**
+ * Creating an account needs the service-role key. Without it the Supabase admin
+ * client throws at construction ("supabaseKey is required"), which would surface
+ * as the generic error screen. Check first and return a plain, actionable
+ * message instead — this is a one-time hosting setting, not a user mistake.
+ */
+const NO_SERVICE_KEY =
+  'Creating accounts isn’t switched on for the live site yet: the server is missing its service key (a one-time hosting setting). Flag it to whoever manages the website — SUPABASE_SERVICE_ROLE_KEY needs adding — then try again.'
+
 export async function adminCreateAccountsAction(input: AccountImportInput): Promise<ImportResult> {
   await requireRole('admin')
   const parsed = inputSchema.safeParse(input)
@@ -91,6 +100,7 @@ export async function adminCreateAccountsAction(input: AccountImportInput): Prom
     return { ok: true, dryRun: true, invitesRequested: sendInvites, emailLive, rows: results }
   }
 
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) return { ok: false, message: NO_SERVICE_KEY }
   const admin = createAdminClient()
   let created = 0
   let skipped = 0
@@ -220,6 +230,7 @@ export async function adminCreateMemberAction(input: CreateMemberInput): Promise
     }
   }
 
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) return { ok: false, message: NO_SERVICE_KEY }
   const admin = createAdminClient()
   const { data, error } = await admin.auth.admin.createUser({
     email: v.email,
